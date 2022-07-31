@@ -1,0 +1,29 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Roboto", sans-serif;
+}
+
+body,
+button,
+input {
+  color: #e1e1e6;
+}
+
+button {
+  cursor: pointer;
+}
+
+body {
+  height: 100vh;
+  background-color: #121214;
+}
+
+#root {
+  display: flex;
+  height: 100vh;
+}

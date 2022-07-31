@@ -1,0 +1,77 @@
+.container {
+  margin: auto;
+  padding: 32px;
+
+  border-radius: 20px;
+  border: 1rem solid #121214;
+
+  background: #202024;
+
+  max-width: 500px;
+  width: 100%;
+}
+
+.tabOptions {
+  margin: 1rem 0;
+  border-bottom: 2px solid #29292e;
+}
+
+.tabOptions button {
+  background: none;
+  border: none;
+
+  padding: 0.75rem 2rem;
+
+  font-size: 1rem;
+
+  transform: translateY(2px);
+}
+
+.tabOptions button.selected {
+  font-weight: bold;
+  border-bottom: 2px solid #8257e5;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 0.5rem;
+}
+
+.form input {
+  background: #121214;
+  border: none;
+  height: 3rem;
+
+  border: 2px solid #121214;
+  border-radius: 5px;
+  padding: 0 1rem;
+
+  font-size: 1rem;
+}
+
+.form input:focus {
+  border-color: #8257e5;
+  outline: none;
+}
+
+.form button {
+  height: 2.5rem;
+  background: #8257e5;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  border: none;
+  border-radius: 5px;
+
+  margin-top: 1rem;
+}
+
+.form label {
+  font-size: 14px;
+  color: #87868b;
+}
+
+.form label ~ label {
+  margin-top: 0.5rem;
+}
