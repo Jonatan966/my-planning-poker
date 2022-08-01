@@ -8,7 +8,7 @@ type ButtonProps = HTMLAttributes<HTMLButtonElement> & {
 };
 
 function ButtonComponent(
-  { colorScheme, ...props }: ButtonProps,
+  { colorScheme = "primary", ...props }: ButtonProps,
   ref: ForwardedRef<HTMLButtonElement>
 ) {
   return (
