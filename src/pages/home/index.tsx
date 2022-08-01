@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Button from "../../components/button";
+import TextInput from "../../components/text-input";
 import styles from "./styles.module.css";
 
 function HomePage() {
@@ -25,30 +26,24 @@ function HomePage() {
 
       {menu === "enter" && (
         <form className={styles.form}>
-          <label>Nome da sala</label>
-          <input type="text" placeholder="Ex: Planejamento semanal" />
-
-          <label>Seu nome</label>
-          <input type="text" placeholder="Ex: Jonh Doe" />
-
-          <Button>Criar sala</Button>
+          <TextInput title="Seu nome" placeholder="Ex: John Doe" />
+          <TextInput
+            title="Código da sala"
+            placeholder="Ex: 4d71a4a3-f191-498d-a160-2de65febcb4e"
+          />
+          <Button>Entrar na sala</Button>
         </form>
       )}
 
       {menu === "create" && (
         <form className={styles.form}>
-          <label>Nome da sala</label>
-          <input type="text" placeholder="Ex: Planejamento semanal" />
-
-          <label>Seu nome</label>
-          <input type="text" placeholder="Ex: Jonh Doe" />
-
-          <label>Código da sala</label>
-          <input
-            type="text"
-            placeholder="Ex: 4d71a4a3-f191-498d-a160-2de65febcb4e"
+          <TextInput title="Seu nome" placeholder="Ex: John Doe" />
+          <TextInput
+            placeholder="Ex: Planejamento semanal"
+            title="Nome da sala"
           />
-          <Button>Entrar na sala</Button>
+
+          <Button>Criar sala</Button>
         </form>
       )}
     </section>
