@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import Button from "../../components/button";
+import PointButton from "../../components/point-button";
 import RoomHeader from "../../components/room-header";
 import styles from "./styles.module.css";
 
@@ -65,16 +66,14 @@ function RoomPage() {
           <strong>2</strong>
         </div>
 
-        <button className={`${styles.selectedPoint} ${styles.pointCard}`}>
-          1
-        </button>
-        <button className={styles.pointCard}>2</button>
-        <button className={styles.pointCard}>3</button>
-        <button className={styles.pointCard}>5</button>
-        <button className={styles.pointCard}>8</button>
-        <button className={styles.pointCard}>13</button>
-        <button className={styles.pointCard}>21</button>
-        <button className={styles.pointCard}>?</button>
+        <PointButton>1</PointButton>
+        <PointButton>2</PointButton>
+        <PointButton>3</PointButton>
+        <PointButton selected>5</PointButton>
+        <PointButton>8</PointButton>
+        <PointButton>13</PointButton>
+        <PointButton>21</PointButton>
+        <PointButton>?</PointButton>
       </footer>
     </>
   );
