@@ -1,0 +1,23 @@
+.textInputContainer {
+  background: #121214;
+  border: none;
+  height: 3rem;
+
+  border: 2px solid #121214;
+  border-radius: 5px;
+  padding: 0 1rem;
+
+  font-size: 1rem;
+
+  transition: border-color 0.2s;
+}
+
+.textInputContainer:focus {
+  border-color: #8257e5;
+  outline: none;
+}
+
+.textInputLabel {
+  font-size: 14px;
+  color: #87868b;
+}
