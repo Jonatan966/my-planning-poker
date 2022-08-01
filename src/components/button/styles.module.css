@@ -5,14 +5,22 @@
 
   border: none;
   border-radius: 5px;
-
-  margin-top: 1rem;
+  padding: 0 24px;
 
   background: var(--background);
   border-color: var(--border);
   color: var(--color);
 
   border: 2px solid var(--border);
+  transition: filter 0.2s;
+}
+
+.buttonContainer:hover {
+  filter: brightness(1.15);
+}
+
+.buttonContainer:active {
+  filter: brightness(0.95);
 }
 
 .primaryColorScheme {
