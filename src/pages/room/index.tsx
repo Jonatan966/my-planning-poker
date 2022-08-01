@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import Button from "../../components/button";
+import RoomHeader from "../../components/room-header";
 import styles from "./styles.module.css";
 
 function RoomPage() {
@@ -7,16 +8,7 @@ function RoomPage() {
 
   return (
     <>
-      <header className={styles.headerContainer}>
-        <div>
-          <strong>Sala tal</strong>
-          <nav>
-            <span>Jonas</span>
-            <Button colorScheme="primary">Copiar link da sala</Button>
-            <Button colorScheme="danger">Sair</Button>
-          </nav>
-        </div>
-      </header>
+      <RoomHeader />
 
       <main className={styles.mainConatainer}>
         <div className={styles.table}>
