@@ -19,28 +19,10 @@
   align-items: center;
 }
 
-.headerContainer button {
-  height: 2.5rem;
-  background: #8257e5;
-  font-weight: 700;
-  text-transform: uppercase;
-
-  border: none;
-  border-radius: 5px;
-  padding: 0 24px;
-}
-
 .headerContainer nav {
   display: flex;
   align-items: center;
   gap: 1rem;
-}
-
-.headerContainer button.exitButton {
-  background: #29292e;
-  color: #f75a68;
-
-  border: 2px solid #f75a68;
 }
 
 .mainConatainer {

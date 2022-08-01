@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import Button from "../../components/button";
 import styles from "./styles.module.css";
 
 function RoomPage() {
@@ -9,11 +10,10 @@ function RoomPage() {
       <header className={styles.headerContainer}>
         <div>
           <strong>Sala tal</strong>
-
           <nav>
             <span>Jonas</span>
-            <button>Copiar link da sala</button>
-            <button className={styles.exitButton}>Sair</button>
+            <Button colorScheme="primary">Copiar link da sala</Button>
+            <Button colorScheme="danger">Sair</Button>
           </nav>
         </div>
       </header>
@@ -62,7 +62,7 @@ function RoomPage() {
           </div>
 
           <div className={styles.tableCenter}>
-            <button>Começar nova votação</button>
+            <Button colorScheme="danger">Começar nova votação</Button>
           </div>
         </div>
       </main>

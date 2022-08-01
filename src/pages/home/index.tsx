@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Button from "../../components/button";
 import styles from "./styles.module.css";
 
 function HomePage() {
@@ -30,7 +31,7 @@ function HomePage() {
           <label>Seu nome</label>
           <input type="text" placeholder="Ex: Jonh Doe" />
 
-          <button>Criar sala</button>
+          <Button>Criar sala</Button>
         </form>
       )}
 
@@ -47,7 +48,7 @@ function HomePage() {
             type="text"
             placeholder="Ex: 4d71a4a3-f191-498d-a160-2de65febcb4e"
           />
-          <button>Entrar na sala</button>
+          <Button>Entrar na sala</Button>
         </form>
       )}
     </section>
