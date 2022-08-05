@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import Button from "../../components/button";
 import PointButton from "../../components/point-button";
+import PointCard from "../../components/point-card";
 import RoomHeader from "../../components/room-header";
 import styles from "./styles.module.css";
 
@@ -14,48 +15,28 @@ function RoomPage() {
       <main className={styles.mainConatainer}>
         <div className={styles.table}>
           <div className={styles.leftTableModule}>
-            <div className={styles.tableCard}>
-              <button className={styles.pointCard}>2</button>
-              <label>John Doe</label>
-            </div>
+            <PointCard
+              people={{ name: "Josep", isHost: true }}
+              mode="ready"
+              points={0}
+            />
           </div>
           <div className={styles.topTableModule}>
-            <div className={styles.tableCard}>
-              <button className={styles.pointCard}>2</button>
-              <label>John Doe</label>
-            </div>
-            <div className={styles.tableCard}>
-              <button className={styles.pointCard}>2</button>
-              <label>John Doe</label>
-            </div>
-            <div className={styles.tableCard}>
-              <button className={styles.pointCard}>2</button>
-              <label>John Doe</label>
-            </div>
+            <PointCard people={{ name: "Josep" }} mode="ready" points={0} />
+            <PointCard people={{ name: "Josep" }} mode="ready" points={0} />
+            <PointCard people={{ name: "Josep" }} mode="ready" points={0} />
           </div>
           <div className={styles.rightTableModule}>
-            <div className={styles.tableCard}>
-              <button className={styles.pointCard}>2</button>
-              <label>John Doe</label>
-            </div>
+            <PointCard people={{ name: "Josep" }} mode="ready" points={0} />
           </div>
           <div className={styles.bottomTableModule}>
-            <div className={styles.tableCard}>
-              <button className={styles.pointCard}>2</button>
-              <label>John Doe</label>
-            </div>
-            <div className={styles.tableCard}>
-              <button className={styles.pointCard}>2</button>
-              <label>John Doe</label>
-            </div>
-            <div className={styles.tableCard}>
-              <button className={styles.pointCard}>2</button>
-              <label>John Doe</label>
-            </div>
+            <PointCard people={{ name: "Josep" }} mode="ready" points={0} />
+            <PointCard people={{ name: "Josep" }} mode="ready" points={0} />
+            <PointCard people={{ name: "Josep" }} mode="ready" points={0} />
           </div>
 
           <div className={styles.tableCenter}>
-            <Button colorScheme="danger">Começar nova votação</Button>
+            <Button colorScheme="secondary">Começar nova votação</Button>
           </div>
         </div>
       </main>
