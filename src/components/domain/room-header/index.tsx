@@ -1,25 +1,32 @@
+import toast from "react-hot-toast";
 import { FaStar } from "react-icons/fa";
-import { People } from "../../../contexts/room-context";
+import { useRoom } from "../../../contexts/room-context";
 import Button from "../../ui/button";
 
 import styles from "./styles.module.css";
 
-interface RoomHeaderProps {
-  code?: string;
-  name?: string;
-  people?: People;
-}
+function RoomHeader() {
+  const { activeRoom, people } = useRoom();
 
-function RoomHeader({ code, name, people }: RoomHeaderProps) {
+  async function copyRoomCode() {
+    toast.promise(navigator.clipboard.writeText(activeRoom?.id || ""), {
+      error: "Não foi possível copiar o código da sala",
+      loading: "Copiando código da sala...",
+      success: "Código da sala copiado com sucesso!",
+    });
+  }
+
   return (
     <header className={styles.headerContainer}>
       <div>
-        <strong>{name}</strong>
+        <strong>{activeRoom?.name}</strong>
         <nav>
           <span>
             {people?.isHost && <FaStar />} {people?.name}
           </span>
-          <Button colorScheme="primary">Copiar link da sala</Button>
+          <Button colorScheme="primary" onClick={copyRoomCode}>
+            Copiar código da sala
+          </Button>
           <Button colorScheme="danger">Sair</Button>
         </nav>
       </div>
