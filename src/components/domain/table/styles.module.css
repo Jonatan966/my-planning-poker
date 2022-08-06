@@ -1,0 +1,49 @@
+.table {
+  display: grid;
+  grid-template-columns: 6rem 1fr 6rem;
+  grid-template-rows: 10rem 1fr 10rem;
+
+  grid-template-areas: "left top right" "left table right" "left bottom right";
+
+  margin: auto;
+}
+
+.tableCenter {
+  grid-area: table;
+
+  background: #202024;
+
+  padding: 3rem 5rem;
+  border-radius: 5px;
+}
+
+.tableCenter button {
+  min-width: 12rem;
+}
+
+.leftTableModule,
+.topTableModule,
+.rightTableModule,
+.bottomTableModule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leftTableModule {
+  grid-area: left;
+  flex-direction: column;
+}
+
+.topTableModule {
+  grid-area: top;
+}
+
+.rightTableModule {
+  grid-area: right;
+  flex-direction: column;
+}
+
+.bottomTableModule {
+  grid-area: bottom;
+}
