@@ -19,9 +19,12 @@ export interface People {
   mode: PointCardModes;
 }
 
+type RoomMode = "scoring" | "count_average";
+
 interface Room {
   id: string;
   name: string;
+  mode: RoomMode;
   peoples: People[];
 }
 
@@ -33,12 +36,17 @@ interface RoomContextParams {
   connectOnRoom(id: string, peopleName: string): Promise<Room>;
   createRoom(roomName: string, hostName: string): string;
   selectPoint(point: number): void;
+  toggleRoomMode(): void;
   activeRoom?: Room;
   people?: People;
 }
 
 interface RoomEvent {
-  type: "people_enter" | "people_leave" | "people_change_data";
+  type:
+    | "people_enter"
+    | "people_leave"
+    | "people_change_data"
+    | "room_mode_change";
   people?: People;
   peopleId: string;
   room?: Room;
@@ -84,6 +92,24 @@ function removePeopleFromRoom(oldRoom: Room, peopleId: string) {
   return updatedRoom;
 }
 
+function updateRoomMode(oldRoom: Room, newMode: RoomMode) {
+  const updatedActiveRoom = cloneDeep(oldRoom);
+
+  if (!updatedActiveRoom) {
+    return;
+  }
+
+  updatedActiveRoom.mode = newMode;
+
+  updatedActiveRoom.peoples = updatedActiveRoom.peoples.map((people) => ({
+    ...people,
+    mode: newMode === "count_average" ? "show-points" : "unready",
+    points: newMode === "count_average" ? people.points : undefined,
+  }));
+
+  return updatedActiveRoom;
+}
+
 export function RoomContextProvider({ children }: RoomContextProviderProps) {
   const [peer] = useState(new Peer());
   const [activeRoom, setActiveRoom] = useState<Room>();
@@ -92,7 +118,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
     ? activeRoom.peoples.find((people) => people.id === peer.id)
     : undefined;
 
-  function onReceiveData(people: People) {
+  function syncPeople(people: People) {
     setActiveRoom((oldActiveRoom) => {
       const updatedActiveRoom = updatePeopleInRoom(
         oldActiveRoom as Room,
@@ -103,6 +129,20 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
         type: "people_change_data",
         peopleId: people.id,
         people,
+      });
+
+      return updatedActiveRoom;
+    });
+  }
+
+  function syncRoomMode(newMode: RoomMode) {
+    setActiveRoom((oldActiveRoom) => {
+      const updatedActiveRoom = updateRoomMode(oldActiveRoom as Room, newMode);
+
+      sendEventToAllPeoples(peer, {
+        type: "room_mode_change",
+        peopleId: people?.id || "",
+        room: updatedActiveRoom,
       });
 
       return updatedActiveRoom;
@@ -154,8 +194,13 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
         connection.on("data", (data) => {
           const typedData = data as RoomEvent;
 
-          if (typedData.people) {
-            onReceiveData(typedData.people);
+          switch (typedData.type) {
+            case "people_change_data":
+              syncPeople(typedData.people as People);
+              break;
+            case "room_mode_change":
+              syncRoomMode(typedData.room?.mode as RoomMode);
+              break;
           }
         });
 
@@ -176,6 +221,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
     setActiveRoom({
       id: peer.id,
       name: roomName,
+      mode: "scoring",
       peoples: [
         {
           id: peer.id,
@@ -224,6 +270,18 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
 
               return updatedActiveRoom;
             });
+            break;
+
+          case "room_mode_change":
+            setActiveRoom((oldActiveRoom) => {
+              const updatedActiveRoom = updateRoomMode(
+                oldActiveRoom as Room,
+                parsedRoomEvent.room?.mode as RoomMode
+              );
+
+              return updatedActiveRoom;
+            });
+            break;
         }
       });
     });
@@ -239,7 +297,11 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
     peopleClone.points = point;
     peopleClone.mode = "ready";
 
-    onReceiveData(peopleClone);
+    syncPeople(peopleClone);
+  }
+
+  function toggleRoomMode() {
+    syncRoomMode(activeRoom?.mode === "scoring" ? "count_average" : "scoring");
   }
 
   return (
@@ -248,6 +310,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
         connectOnRoom,
         createRoom,
         selectPoint,
+        toggleRoomMode,
         activeRoom,
         people,
       }}
