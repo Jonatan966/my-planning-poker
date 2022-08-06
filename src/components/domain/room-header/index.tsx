@@ -1,6 +1,6 @@
 import { FaStar } from "react-icons/fa";
-import { People } from "../../contexts/room-context";
-import Button from "../button";
+import { People } from "../../../contexts/room-context";
+import Button from "../../ui/button";
 
 import styles from "./styles.module.css";
 

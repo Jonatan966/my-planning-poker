@@ -1,5 +1,5 @@
 import { useRoom } from "../../../contexts/room-context";
-import PointButton from "../../point-button";
+import PointButton from "../../ui/point-button";
 import styles from "./styles.module.css";
 
 const AVAILABLE_POINTS = [1, 2, 3, 5, 8, 13, 21, 0];

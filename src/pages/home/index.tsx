@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../../components/button";
-import TextInput from "../../components/text-input";
+import Button from "../../components/ui/button";
+import TextInput from "../../components/ui/text-input";
 import { useRoom } from "../../contexts/room-context";
 import styles from "./styles.module.css";
 

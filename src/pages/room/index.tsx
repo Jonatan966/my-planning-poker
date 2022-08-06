@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
-import Button from "../../components/button";
+import Button from "../../components/ui/button";
 import PointsList from "../../components/domain/points-list";
-import PointCard from "../../components/point-card";
-import RoomHeader from "../../components/room-header";
+import PointCard from "../../components/domain/point-card";
+import RoomHeader from "../../components/domain/room-header";
 import { useRoom } from "../../contexts/room-context";
 import styles from "./styles.module.css";
 
