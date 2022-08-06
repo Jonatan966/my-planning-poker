@@ -1,12 +1,10 @@
 import { useParams } from "react-router-dom";
 import Button from "../../components/button";
-import PointButton from "../../components/point-button";
+import PointsList from "../../components/domain/points-list";
 import PointCard from "../../components/point-card";
 import RoomHeader from "../../components/room-header";
 import { useRoom } from "../../contexts/room-context";
 import styles from "./styles.module.css";
-
-const AVAILABLE_POINTS = [1, 2, 3, 5, 8, 13, 21, 0];
 
 function RoomPage() {
   const { room_id } = useParams();
@@ -19,7 +17,6 @@ function RoomPage() {
         name={activeRoom?.name}
         people={people}
       />
-
       <main className={styles.mainConatainer}>
         <div className={styles.table}>
           <div className={styles.leftTableModule}>
@@ -54,21 +51,7 @@ function RoomPage() {
         </div>
       </main>
 
-      <footer className={styles.footerContainer}>
-        <div className={styles.average}>
-          <span>Média</span>
-          <strong>2</strong>
-        </div>
-        {AVAILABLE_POINTS.map((point) => (
-          <PointButton
-            key={`point-${point}`}
-            onClick={() => selectPoint(point)}
-            selected={people?.points === point}
-          >
-            {point === 0 ? "?" : point}
-          </PointButton>
-        ))}
-      </footer>
+      <PointsList />
     </>
   );
 }
