@@ -8,7 +8,7 @@ import {
 } from "react";
 import cloneDeep from "lodash.clonedeep";
 
-import { PointCardModes } from "../components/point-card";
+import { PointCardModes } from "../components/domain/table/point-card";
 
 export interface People {
   id: string;
