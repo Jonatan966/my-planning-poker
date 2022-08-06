@@ -8,7 +8,7 @@ import styles from "./styles.module.css";
 
 function RoomPage() {
   const { room_id } = useParams();
-  const { activeRoom, selectPoint, people } = useRoom();
+  const { activeRoom, people, toggleRoomMode } = useRoom();
 
   return (
     <>
@@ -46,7 +46,11 @@ function RoomPage() {
           </div>
 
           <div className={styles.tableCenter}>
-            <Button colorScheme="secondary">Começar nova votação</Button>
+            <Button colorScheme="secondary" onClick={() => toggleRoomMode()}>
+              {activeRoom?.mode === "count_average"
+                ? "Nova partida"
+                : "Revelar cartas"}
+            </Button>
           </div>
         </div>
       </main>
