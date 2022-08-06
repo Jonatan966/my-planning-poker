@@ -3,14 +3,22 @@ import Button from "../../components/button";
 import PointButton from "../../components/point-button";
 import PointCard from "../../components/point-card";
 import RoomHeader from "../../components/room-header";
+import { useRoom } from "../../contexts/room-context";
 import styles from "./styles.module.css";
+
+const AVAILABLE_POINTS = [1, 2, 3, 5, 8, 13, 21, 0];
 
 function RoomPage() {
   const { room_id } = useParams();
+  const { activeRoom, selectPoint, people } = useRoom();
 
   return (
     <>
-      <RoomHeader />
+      <RoomHeader
+        code={activeRoom?.id}
+        name={activeRoom?.name}
+        people={people}
+      />
 
       <main className={styles.mainConatainer}>
         <div className={styles.table}>
@@ -22,9 +30,14 @@ function RoomPage() {
             />
           </div>
           <div className={styles.topTableModule}>
-            <PointCard people={{ name: "Josep" }} mode="ready" points={0} />
-            <PointCard people={{ name: "Josep" }} mode="ready" points={0} />
-            <PointCard people={{ name: "Josep" }} mode="ready" points={0} />
+            {activeRoom?.peoples.map((people) => (
+              <PointCard
+                people={{ name: people.name, isHost: people.isHost }}
+                mode={people.mode}
+                points={people.points}
+                key={people.id}
+              />
+            ))}
           </div>
           <div className={styles.rightTableModule}>
             <PointCard people={{ name: "Josep" }} mode="ready" points={0} />
@@ -46,15 +59,15 @@ function RoomPage() {
           <span>Média</span>
           <strong>2</strong>
         </div>
-
-        <PointButton>1</PointButton>
-        <PointButton>2</PointButton>
-        <PointButton>3</PointButton>
-        <PointButton selected>5</PointButton>
-        <PointButton>8</PointButton>
-        <PointButton>13</PointButton>
-        <PointButton>21</PointButton>
-        <PointButton>?</PointButton>
+        {AVAILABLE_POINTS.map((point) => (
+          <PointButton
+            key={`point-${point}`}
+            onClick={() => selectPoint(point)}
+            selected={people?.points === point}
+          >
+            {point === 0 ? "?" : point}
+          </PointButton>
+        ))}
       </footer>
     </>
   );

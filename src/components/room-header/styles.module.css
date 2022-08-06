@@ -24,3 +24,8 @@
   align-items: center;
   gap: 1rem;
 }
+
+.headerContainer nav span {
+  display: flex;
+  align-items: center;
+}

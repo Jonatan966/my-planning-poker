@@ -10,7 +10,7 @@ import cloneDeep from "lodash.clonedeep";
 
 import { PointCardModes } from "../components/point-card";
 
-interface People {
+export interface People {
   id: string;
   connectionId?: string;
   name: string;
