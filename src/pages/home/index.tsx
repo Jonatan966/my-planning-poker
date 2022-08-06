@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/ui/button";
 import TextInput from "../../components/ui/text-input";
 import { useRoom } from "../../contexts/room-context";
+import usePersistedState from "../../hooks/use-persisted-state";
 import styles from "./styles.module.css";
 
 function HomePage() {
@@ -10,7 +11,10 @@ function HomePage() {
   const [menu, setMenu] = useState("enter");
   const navigate = useNavigate();
 
-  const [peopleName, setPeopleName] = useState("");
+  const [peopleName, setPeopleName] = usePersistedState(
+    "@planning:people-name",
+    ""
+  );
   const [newRoomName, setNewRoomName] = useState("");
   const [roomCode, setRoomCode] = useState("");
 
