@@ -22,7 +22,7 @@ function Table() {
 
   const tableModules: People[][] = [[], [], [], []];
 
-  while (true) {
+  while (clonePeoples.length) {
     if (fullTableModuleCount === 4) {
       break;
     }
