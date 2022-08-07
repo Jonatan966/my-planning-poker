@@ -28,5 +28,9 @@
 .headerContainer nav span {
   display: flex;
   align-items: center;
+  font-weight: bold;
+}
+
+.isHost {
   color: #1ef7d0;
 }

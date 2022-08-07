@@ -1,5 +1,5 @@
+import classNames from "classnames";
 import toast from "react-hot-toast";
-import { FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useRoom } from "../../../contexts/room-context";
 import Button from "../../ui/button";
@@ -28,8 +28,12 @@ function RoomHeader() {
       <div>
         <strong>{activeRoom?.name}</strong>
         <nav>
-          <span>
-            {people?.isHost && <FaStar />} {people?.name}
+          <span
+            className={classNames({
+              [styles.isHost]: people?.isHost,
+            })}
+          >
+            {people?.name}
           </span>
           <Button colorScheme="primary" onClick={copyRoomCode}>
             Copiar link da sala

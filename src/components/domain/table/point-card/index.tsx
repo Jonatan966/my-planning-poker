@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { FaDice, FaStar } from "react-icons/fa";
+import { FaDice } from "react-icons/fa";
 
 import styles from "./styles.module.css";
 
@@ -40,9 +40,10 @@ function PointCard({ people, points, mode = "unready" }: PointCardProps) {
       <label
         className={classNames({
           [styles.isMe]: people.isMe,
+          [styles.isHost]: people.isHost,
         })}
       >
-        {people.isHost && <FaStar />} {people.name}
+        {people.name}
       </label>
     </div>
   );

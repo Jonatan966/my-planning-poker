@@ -9,6 +9,9 @@
   display: flex;
   align-items: center;
   gap: 2px;
+
+  max-width: 5rem;
+  text-align: center;
 }
 
 .point {
@@ -35,5 +38,9 @@
 }
 
 .isMe {
+  font-weight: bold;
+}
+
+.isHost {
   color: #1ef7d0;
 }
