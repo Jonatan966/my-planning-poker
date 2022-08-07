@@ -1,12 +1,14 @@
 import toast from "react-hot-toast";
 import { FaStar } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { useRoom } from "../../../contexts/room-context";
 import Button from "../../ui/button";
 
 import styles from "./styles.module.css";
 
 function RoomHeader() {
-  const { activeRoom, people } = useRoom();
+  const { activeRoom, people, leaveRoom } = useRoom();
+  const navigate = useNavigate();
 
   async function copyRoomCode() {
     toast.promise(navigator.clipboard.writeText(window.location.href), {
@@ -14,6 +16,11 @@ function RoomHeader() {
       loading: "Copiando link da sala...",
       success: "Link da sala copiado com sucesso!",
     });
+  }
+
+  function handleLeaveRoom() {
+    navigate("/");
+    leaveRoom();
   }
 
   return (
@@ -27,7 +34,9 @@ function RoomHeader() {
           <Button colorScheme="primary" onClick={copyRoomCode}>
             Copiar link da sala
           </Button>
-          <Button colorScheme="danger">Sair</Button>
+          <Button colorScheme="danger" onClick={handleLeaveRoom}>
+            Sair
+          </Button>
         </nav>
       </div>
     </header>
