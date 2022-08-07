@@ -15,12 +15,17 @@
   transition: filter 0.2s;
 }
 
-.buttonContainer:hover {
+.buttonContainer:not(:disabled):hover {
   filter: brightness(1.15);
 }
 
-.buttonContainer:active {
+.buttonContainer:not(:disabled):active {
   filter: brightness(0.95);
+}
+
+.buttonContainer:disabled {
+  cursor: not-allowed;
+  filter: brightness(0.5);
 }
 
 .primaryColorScheme {
