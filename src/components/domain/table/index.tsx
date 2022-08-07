@@ -10,7 +10,7 @@ const tableModuleNames = ["left", "right", "bottom", "top"];
 const TABLE_MODULE_LIMITS = [1, 1, 4, 4];
 
 function Table() {
-  const { activeRoom, toggleRoomMode } = useRoom();
+  const { activeRoom, toggleRoomMode, people: localPeople } = useRoom();
 
   if (!activeRoom) {
     return null;
@@ -57,17 +57,17 @@ function Table() {
   }
 
   const renderedTableModules = tableModules
-    .map((peoples, moduleIndex) => (
+    .map((roomPeoples, moduleIndex) => (
       <div
         className={styles[`${tableModuleNames[moduleIndex]}TableModule`]}
         key={`module-${moduleIndex}`}
       >
-        {peoples.map((people) => (
+        {roomPeoples.map((roomPeople) => (
           <PointCard
-            people={{ name: people.name, isHost: people.isHost }}
-            mode={people.mode}
-            points={people.points}
-            key={people.id}
+            people={{ ...roomPeople, isMe: roomPeople.id === localPeople?.id }}
+            mode={roomPeople.mode}
+            points={roomPeople.points}
+            key={roomPeople.id}
           />
         ))}
       </div>

@@ -11,6 +11,7 @@ interface PointCardProps {
   people: {
     name: string;
     isHost?: boolean;
+    isMe?: boolean;
   };
 }
 
@@ -36,7 +37,11 @@ function PointCard({ people, points, mode = "unready" }: PointCardProps) {
       >
         {parseMode(mode, parsedPoints)}
       </div>
-      <label>
+      <label
+        className={classNames({
+          [styles.isMe]: people.isMe,
+        })}
+      >
         {people.isHost && <FaStar />} {people.name}
       </label>
     </div>
