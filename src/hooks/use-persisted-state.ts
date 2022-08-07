@@ -1,4 +1,5 @@
 import { Dispatch, useEffect, useState } from "react";
+import { storageManager } from "../utils/storage-manager";
 
 function usePersistedState<V = string>(
   key: string,
@@ -9,17 +10,17 @@ function usePersistedState<V = string>(
       return initialValue;
     }
 
-    const storagedValue = localStorage.getItem(key);
+    const storagedValue = storageManager.getItem<V>(key);
 
     if (!storagedValue) {
       return initialValue;
     }
 
-    return JSON.parse(storagedValue) as V;
+    return storagedValue;
   });
 
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
+    storageManager.setItem(key, value);
   }, [value]);
 
   return [value, setValue];
