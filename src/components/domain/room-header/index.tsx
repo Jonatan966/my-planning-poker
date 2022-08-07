@@ -9,10 +9,10 @@ function RoomHeader() {
   const { activeRoom, people } = useRoom();
 
   async function copyRoomCode() {
-    toast.promise(navigator.clipboard.writeText(activeRoom?.id || ""), {
-      error: "Não foi possível copiar o código da sala",
-      loading: "Copiando código da sala...",
-      success: "Código da sala copiado com sucesso!",
+    toast.promise(navigator.clipboard.writeText(window.location.href), {
+      error: "Não foi possível copiar o link da sala",
+      loading: "Copiando link da sala...",
+      success: "Link da sala copiado com sucesso!",
     });
   }
 
@@ -25,7 +25,7 @@ function RoomHeader() {
             {people?.isHost && <FaStar />} {people?.name}
           </span>
           <Button colorScheme="primary" onClick={copyRoomCode}>
-            Copiar código da sala
+            Copiar link da sala
           </Button>
           <Button colorScheme="danger">Sair</Button>
         </nav>
