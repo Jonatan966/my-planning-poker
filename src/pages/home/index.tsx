@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/ui/button";
@@ -35,13 +36,17 @@ function HomePage() {
       <h1>My Planning Poker</h1>
       <div className={styles.tabOptions}>
         <button
-          className={menu === "enter" ? styles.selected : ""}
+          className={classNames({
+            [styles.selected]: menu === "enter",
+          })}
           onClick={() => setMenu("enter")}
         >
           Entrar
         </button>
         <button
-          className={menu === "create" ? styles.selected : ""}
+          className={classNames({
+            [styles.selected]: menu === "create",
+          })}
           onClick={() => setMenu("create")}
         >
           Criar
