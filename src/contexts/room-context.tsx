@@ -320,6 +320,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
     peer.destroy();
 
     setIsReady(false);
+    setActiveRoom(undefined);
 
     const rebuildedPeer = new Peer();
     preparePeer(rebuildedPeer);
