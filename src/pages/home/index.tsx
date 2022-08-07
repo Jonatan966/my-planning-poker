@@ -55,12 +55,14 @@ function HomePage() {
             placeholder="Ex: John Doe"
             onChange={(e) => setPeopleName(e.target.value)}
             value={peopleName}
+            required
           />
           <TextInput
             title="Código da sala"
             placeholder="Ex: 4d71a4a3-f191-498d-a160-2de65febcb4e"
             onChange={(e) => setRoomCode(e.target.value)}
             value={roomCode}
+            required
           />
           <Button>Entrar na sala</Button>
         </form>
@@ -73,12 +75,14 @@ function HomePage() {
             placeholder="Ex: John Doe"
             onChange={(e) => setPeopleName(e.target.value)}
             value={peopleName}
+            required
           />
           <TextInput
             placeholder="Ex: Planejamento semanal"
             title="Nome da sala"
             onChange={(e) => setNewRoomName(e.target.value)}
             value={newRoomName}
+            required
           />
 
           <Button>Criar sala</Button>
