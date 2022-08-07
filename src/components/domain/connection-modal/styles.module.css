@@ -1,31 +1,3 @@
-.modalOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  backdrop-filter: blur(5px);
-}
-
-.modalContainer {
-  max-width: 500px;
-  width: 100%;
-  min-height: 429px;
-
-  padding: 32px;
-  border-radius: 20px;
-  border: 1rem solid #121214;
-  background: #202024;
-
-  display: flex;
-  flex-direction: column;
-}
-
 .modalContainer h1 {
   font-size: 24px;
 }

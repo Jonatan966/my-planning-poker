@@ -1,6 +1,7 @@
 import { FaSpinner } from "react-icons/fa";
 import Modal from "react-modal";
 import Button from "../../ui/button";
+import Dialog from "../../ui/dialog";
 
 import styles from "./styles.module.css";
 
@@ -11,13 +12,7 @@ interface ConnectionModalProps {
 
 function ConnectionModal(props: ConnectionModalProps) {
   return (
-    <Modal
-      {...props}
-      overlayClassName={styles.modalOverlay}
-      className={styles.modalContainer}
-      shouldCloseOnOverlayClick={false}
-      shouldCloseOnEsc={false}
-    >
+    <Dialog {...props} className={styles.modalContainer}>
       <h1>Preparando as coisas</h1>
 
       <div className={styles.message}>
@@ -28,7 +23,7 @@ function ConnectionModal(props: ConnectionModalProps) {
       <Button colorScheme="danger" onClick={props.onRequestClose}>
         Cancelar
       </Button>
-    </Modal>
+    </Dialog>
   );
 }
 
