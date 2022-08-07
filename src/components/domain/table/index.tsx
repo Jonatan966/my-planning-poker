@@ -18,12 +18,12 @@ function Table() {
 
   const clonePeoples = cloneDeep(activeRoom.peoples);
   let currentTableModule = 0;
-  let fullTableModuleCount = 0;
+  let hasFullTables = [false, false, false, false];
 
   const tableModules: People[][] = [[], [], [], []];
 
   while (clonePeoples.length) {
-    if (fullTableModuleCount === 4) {
+    if (hasFullTables.every((hasFullTable) => hasFullTable)) {
       break;
     }
 
@@ -50,7 +50,8 @@ function Table() {
     currentTableModule++;
 
     if (hasFullTableModule) {
-      fullTableModuleCount++;
+      hasFullTables[currentTableModule] = true;
+
       continue;
     }
   }
