@@ -7,7 +7,7 @@ import usePersistedState from "../../hooks/use-persisted-state";
 import styles from "./styles.module.css";
 
 function HomePage() {
-  const { createRoom, connectOnRoom } = useRoom();
+  const { createRoom } = useRoom();
   const [menu, setMenu] = useState("enter");
   const navigate = useNavigate();
 
@@ -27,9 +27,6 @@ function HomePage() {
 
   async function handleEnterOnRoom(event: FormEvent) {
     event.preventDefault();
-
-    await connectOnRoom(roomCode, peopleName);
-
     navigate(`/rooms/${roomCode}`);
   }
 

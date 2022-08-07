@@ -39,6 +39,8 @@ interface RoomContextParams {
   toggleRoomMode(): void;
   activeRoom?: Room;
   people?: People;
+  peer: Peer;
+  isReady: boolean;
 }
 
 interface RoomEvent {
@@ -112,6 +114,7 @@ function updateRoomMode(oldRoom: Room, newMode: RoomMode) {
 
 export function RoomContextProvider({ children }: RoomContextProviderProps) {
   const [peer] = useState(new Peer());
+  const [isReady, setIsReady] = useState(false);
   const [activeRoom, setActiveRoom] = useState<Room>();
 
   const people = activeRoom
@@ -210,10 +213,16 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       });
     }
 
+    function onReady() {
+      setIsReady(true);
+    }
+
     peer.on("connection", onPeopleConnect);
+    peer.on("open", onReady);
 
     return () => {
       peer.off("connection", onPeopleConnect);
+      peer.off("open", onReady);
     };
   }, []);
 
@@ -312,7 +321,9 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
         selectPoint,
         toggleRoomMode,
         activeRoom,
+        peer,
         people,
+        isReady,
       }}
     >
       {children}
