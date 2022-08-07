@@ -1,40 +1,49 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { DataConnection } from "peerjs";
 
 import PointsList from "../../components/domain/points-list";
 import RoomHeader from "../../components/domain/room-header";
 import styles from "./styles.module.css";
 import Table from "../../components/domain/table";
 import { useRoom } from "../../contexts/room-context";
-import { DataConnection } from "peerjs";
+import ConnectionModal from "../../components/domain/connection-modal";
 
 function RoomPage() {
   const { room_id = "" } = useParams();
-  const { connectOnRoom, peer, isReady } = useRoom();
+  const { connectOnRoom, leaveRoom, peer, isReady, activeRoom } = useRoom();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function handleConnectOnRoom() {
       const peopleName = localStorage.getItem("@planning:people-name") || "";
 
-      if (room_id !== peer.id) {
+      if (room_id !== peer.id && activeRoom?.id !== room_id) {
         await connectOnRoom(room_id, JSON.parse(peopleName));
       }
 
       setIsLoading(false);
     }
 
-    if (
-      isReady &&
-      !(peer.connections as Record<string, DataConnection[]>)[room_id]?.length
-    ) {
+    if (isReady) {
       handleConnectOnRoom();
     }
   }, [isReady]);
 
+  function onCancelRoomConnection() {
+    navigate("/");
+    leaveRoom();
+    setIsLoading(false);
+  }
+
   return (
     <>
-      {isLoading && <h1>Carregando...</h1>}
+      <ConnectionModal
+        isOpen={isLoading}
+        onRequestClose={onCancelRoomConnection}
+      />
+
       <RoomHeader />
 
       <main className={styles.mainConatainer}>
