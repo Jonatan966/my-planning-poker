@@ -8,7 +8,7 @@ import usePersistedState from "../../hooks/use-persisted-state";
 import styles from "./styles.module.css";
 
 function HomePage() {
-  const { createRoom } = useRoom();
+  const { createRoom, isReady } = useRoom();
   const [menu, setMenu] = useState("enter");
   const navigate = useNavigate();
 
@@ -69,7 +69,7 @@ function HomePage() {
             value={roomCode}
             required
           />
-          <Button>Entrar na sala</Button>
+          <Button disabled={!isReady}>Entrar na sala</Button>
         </form>
       )}
 
@@ -90,7 +90,7 @@ function HomePage() {
             required
           />
 
-          <Button>Criar sala</Button>
+          <Button disabled={!isReady}>Criar sala</Button>
         </form>
       )}
     </section>
