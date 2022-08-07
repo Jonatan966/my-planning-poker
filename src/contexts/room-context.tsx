@@ -37,6 +37,7 @@ interface RoomContextParams {
   createRoom(roomName: string, hostName: string): string;
   selectPoint(point: number): void;
   toggleRoomMode(): void;
+  leaveRoom(): void;
   activeRoom?: Room;
   people?: People;
   peer: Peer;
@@ -113,7 +114,7 @@ function updateRoomMode(oldRoom: Room, newMode: RoomMode) {
 }
 
 export function RoomContextProvider({ children }: RoomContextProviderProps) {
-  const [peer] = useState(new Peer());
+  const [peer, setPeer] = useState(new Peer());
   const [isReady, setIsReady] = useState(false);
   const [activeRoom, setActiveRoom] = useState<Room>();
 
@@ -152,7 +153,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
     });
   }
 
-  useEffect(() => {
+  function preparePeer(targetPeer: Peer) {
     async function onPeopleDisconnect(peopleId: string) {
       setActiveRoom((oldActiveRoom) => {
         const updatedActiveRoom = removePeopleFromRoom(
@@ -160,7 +161,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
           peopleId
         );
 
-        sendEventToAllPeoples(peer, {
+        sendEventToAllPeoples(targetPeer, {
           type: "people_leave",
           peopleId: peopleId,
         });
@@ -187,7 +188,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
         }
 
         connection.once("open", () => {
-          sendEventToAllPeoples(peer, {
+          sendEventToAllPeoples(targetPeer, {
             type: "people_enter",
             peopleId: connection.peer,
             room: updatedActiveRoom,
@@ -217,14 +218,16 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       setIsReady(true);
     }
 
-    peer.on("connection", onPeopleConnect);
-    peer.on("open", onReady);
+    targetPeer.on("connection", onPeopleConnect);
+    targetPeer.on("open", onReady);
 
     return () => {
-      peer.off("connection", onPeopleConnect);
-      peer.off("open", onReady);
+      targetPeer.off("connection", onPeopleConnect);
+      targetPeer.off("open", onReady);
     };
-  }, []);
+  }
+
+  useEffect(() => preparePeer(peer), []);
 
   function createRoom(roomName: string, hostName: string) {
     setActiveRoom({
@@ -313,6 +316,17 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
     syncRoomMode(activeRoom?.mode === "scoring" ? "count_average" : "scoring");
   }
 
+  function leaveRoom() {
+    peer.destroy();
+
+    setIsReady(false);
+
+    const rebuildedPeer = new Peer();
+    preparePeer(rebuildedPeer);
+
+    setPeer(rebuildedPeer);
+  }
+
   return (
     <RoomContext.Provider
       value={{
@@ -320,6 +334,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
         createRoom,
         selectPoint,
         toggleRoomMode,
+        leaveRoom,
         activeRoom,
         peer,
         people,
