@@ -1,9 +1,14 @@
-import { ForwardedRef, forwardRef, HTMLAttributes } from "react";
+import {
+  ComponentProps,
+  ForwardedRef,
+  forwardRef,
+  HTMLAttributes,
+} from "react";
 import className from "classnames";
 
 import styles from "./styles.module.css";
 
-type ButtonProps = HTMLAttributes<HTMLButtonElement> & {
+type ButtonProps = ComponentProps<"button"> & {
   colorScheme?: "primary" | "secondary" | "danger";
 };
 
