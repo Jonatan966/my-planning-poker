@@ -26,7 +26,7 @@ function PointsList() {
 
     const preAverage = activeRoom.peoples.reduce(
       (acc, people) => {
-        if (typeof people.points === "undefined" || people.points === -1) {
+        if (typeof people.points === "undefined" || people.points === 0) {
           return acc;
         }
 
