@@ -26,6 +26,7 @@ interface Room {
   name: string;
   mode: RoomMode;
   peoples: People[];
+  hasLostConnection?: boolean;
 }
 
 interface RoomContextProviderProps {
@@ -44,12 +45,14 @@ interface RoomContextParams {
   isReady: boolean;
 }
 
+type RoomEventType =
+  | "people_enter"
+  | "people_leave"
+  | "people_change_data"
+  | "room_mode_change";
+
 interface RoomEvent {
-  type:
-    | "people_enter"
-    | "people_leave"
-    | "people_change_data"
-    | "room_mode_change";
+  type: RoomEventType;
   people?: People;
   peopleId: string;
   room?: Room;
@@ -296,6 +299,20 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
             break;
         }
       });
+
+      connection.on("close", () =>
+        setActiveRoom((oldActiveRoom) => {
+          if (!oldActiveRoom) {
+            return oldActiveRoom;
+          }
+
+          const cloneActiveRoom = cloneDeep(oldActiveRoom);
+
+          cloneActiveRoom.hasLostConnection = true;
+
+          return cloneActiveRoom;
+        })
+      );
     });
   }
 

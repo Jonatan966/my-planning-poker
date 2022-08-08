@@ -2,6 +2,10 @@
   font-size: 24px;
 }
 
+.modalContainer p {
+  margin: 1rem 0;
+}
+
 .message {
   margin: auto;
   display: flex;
@@ -33,6 +37,10 @@
 
 .isLoading {
   min-height: 397px;
+}
+
+.hostText {
+  color: #1ef7d0;
 }
 
 @keyframes spin {

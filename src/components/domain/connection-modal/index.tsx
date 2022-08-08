@@ -43,7 +43,7 @@ function ConnectionModal({
       onRequestClose();
     }
 
-    if (isReady && isFillPeopleName) {
+    if (isReady && isFillPeopleName && !activeRoom?.hasLostConnection) {
       handleConnectOnRoom();
     }
   }, [isReady, isFillPeopleName, peopleName]);
@@ -55,6 +55,21 @@ function ConnectionModal({
   }
 
   function renderContent() {
+    if (activeRoom?.hasLostConnection) {
+      return (
+        <>
+          <h1>Ocorreu um erro</h1>
+          <p>
+            A conexão com o <b className={styles.hostText}>dono da sala</b> foi
+            perdida
+          </p>
+          <Button colorScheme="danger" onClick={onCancelRoomConnection}>
+            Retornar a home
+          </Button>
+        </>
+      );
+    }
+
     if (isFillPeopleName) {
       return (
         <>
@@ -105,7 +120,7 @@ function ConnectionModal({
       isOpen={isOpen}
       onRequestClose={onCancelRoomConnection}
       className={classNames(styles.modalContainer, {
-        [styles.isLoading]: isFillPeopleName,
+        [styles.isLoading]: isFillPeopleName && !activeRoom?.hasLostConnection,
       })}
     >
       {renderContent()}
