@@ -61,6 +61,7 @@ function HomePage() {
             onChange={(e) => setPeopleName(e.target.value)}
             value={peopleName}
             required
+            maxLength={20}
           />
           <TextInput
             title="Código da sala"
@@ -81,6 +82,7 @@ function HomePage() {
             onChange={(e) => setPeopleName(e.target.value)}
             value={peopleName}
             required
+            maxLength={20}
           />
           <TextInput
             placeholder="Ex: Planejamento semanal"
@@ -88,6 +90,7 @@ function HomePage() {
             onChange={(e) => setNewRoomName(e.target.value)}
             value={newRoomName}
             required
+            maxLength={32}
           />
 
           <Button disabled={!isReady}>Criar sala</Button>
