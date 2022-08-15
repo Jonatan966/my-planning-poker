@@ -1,5 +1,4 @@
-import cloneDeep from "lodash.clonedeep";
-import { People, useRoom } from "../../../contexts/room-context";
+// import cloneDeep from "lodash.clonedeep";
 import Button from "../../ui/button";
 import PointCard from "./point-card";
 
@@ -7,54 +6,18 @@ import styles from "./styles.module.css";
 
 const tableModuleNames = ["left", "right", "bottom", "top"];
 
-const TABLE_MODULE_LIMITS = [1, 1, 4, 4];
+// const TABLE_MODULE_LIMITS = [1, 1, 4, 4];
 
 function Table() {
-  const { activeRoom, toggleRoomMode, people: localPeople } = useRoom();
-
-  if (!activeRoom) {
-    return null;
-  }
-
-  const clonePeoples = cloneDeep(activeRoom.peoples);
-  let currentTableModule = 0;
-  let hasFullTables = [false, false, false, false];
-
-  const tableModules: People[][] = [[], [], [], []];
-
-  while (clonePeoples.length) {
-    if (hasFullTables.every((hasFullTable) => hasFullTable)) {
-      break;
-    }
-
-    if (currentTableModule > tableModuleNames.length - 1) {
-      currentTableModule = 0;
-    }
-
-    let hasFullTableModule =
-      tableModules[currentTableModule].length ===
-      TABLE_MODULE_LIMITS[currentTableModule];
-
-    if (!hasFullTableModule) {
-      const nextPeople = clonePeoples.shift();
-
-      if (nextPeople) {
-        tableModules[currentTableModule].push(nextPeople);
-      }
-
-      hasFullTableModule =
-        tableModules[currentTableModule].length ===
-        TABLE_MODULE_LIMITS[currentTableModule];
-    }
-
-    currentTableModule++;
-
-    if (hasFullTableModule) {
-      hasFullTables[currentTableModule] = true;
-
-      continue;
-    }
-  }
+  const fakePeople = {
+    id: "abc",
+    mode: "ready" as "ready",
+    name: "teste",
+    isHost: true,
+    points: 1,
+    isMe: true,
+  };
+  const tableModules = [[fakePeople], [], [], []];
 
   const renderedTableModules = tableModules
     .map((roomPeoples, moduleIndex) => (
@@ -64,7 +27,7 @@ function Table() {
       >
         {roomPeoples.map((roomPeople) => (
           <PointCard
-            people={{ ...roomPeople, isMe: roomPeople.id === localPeople?.id }}
+            people={fakePeople}
             mode={roomPeople.mode}
             points={roomPeople.points}
             key={roomPeople.id}
@@ -79,11 +42,7 @@ function Table() {
       {renderedTableModules}
 
       <div className={styles.tableCenter}>
-        <Button colorScheme="secondary" onClick={() => toggleRoomMode()}>
-          {activeRoom?.mode === "count_average"
-            ? "Nova partida"
-            : "Revelar cartas"}
-        </Button>
+        <Button colorScheme="secondary">Nova Partida</Button>
       </div>
     </div>
   );

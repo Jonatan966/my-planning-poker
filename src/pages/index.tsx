@@ -1,35 +1,19 @@
 import classNames from "classnames";
-import { FormEvent, useState } from "react";
-import { useRouter } from "next/router";
+import { useState } from "react";
 
 import Button from "../components/ui/button";
 import TextInput from "../components/ui/text-input";
-import { useRoom } from "../contexts/room-context";
 import usePersistedState from "../hooks/use-persisted-state";
 import styles from "../styles/pages/home.module.css";
 
 function HomePage() {
-  const { createRoom, isReady } = useRoom();
   const [menu, setMenu] = useState("enter");
-  const router = useRouter();
   const [peopleName, setPeopleName] = usePersistedState(
     "@planning:people-name",
     ""
   );
   const [newRoomName, setNewRoomName] = useState("");
   const [roomCode, setRoomCode] = useState("");
-
-  function handleCreateRoom(event: FormEvent) {
-    event.preventDefault();
-    const newRoomCode = createRoom(newRoomName, peopleName);
-
-    router.push(`/rooms/${newRoomCode}`);
-  }
-
-  async function handleEnterOnRoom(event: FormEvent) {
-    event.preventDefault();
-    router.push(`/rooms/${roomCode}`);
-  }
 
   return (
     <section className={styles.container}>
@@ -54,7 +38,7 @@ function HomePage() {
       </div>
 
       {menu === "enter" && (
-        <form className={styles.form} onSubmit={handleEnterOnRoom}>
+        <form className={styles.form}>
           <TextInput
             title="Seu nome"
             placeholder="Ex: John Doe"
@@ -70,12 +54,12 @@ function HomePage() {
             value={roomCode}
             required
           />
-          <Button disabled={!isReady}>Entrar na sala</Button>
+          <Button>Entrar na sala</Button>
         </form>
       )}
 
       {menu === "create" && (
-        <form className={styles.form} onSubmit={handleCreateRoom}>
+        <form className={styles.form}>
           <TextInput
             title="Seu nome"
             placeholder="Ex: John Doe"
@@ -93,7 +77,7 @@ function HomePage() {
             maxLength={32}
           />
 
-          <Button disabled={!isReady}>Criar sala</Button>
+          <Button>Criar sala</Button>
         </form>
       )}
     </section>

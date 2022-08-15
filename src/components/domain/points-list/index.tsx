@@ -1,24 +1,22 @@
-import { useRoom } from "../../../contexts/room-context";
 import PointButton from "../../ui/point-button";
 import styles from "./styles.module.css";
 
 const AVAILABLE_POINTS = [1, 2, 3, 5, 8, 13, 21, 0];
 
 function PointsList() {
-  const { selectPoint, people, activeRoom } = useRoom();
+  const activeRoom = {
+    mode: "scoring",
+    peoples: [],
+  };
+
+  const people = {
+    points: 2,
+  };
 
   function renderContent() {
-    if (!activeRoom) {
-      return null;
-    }
-
     if (activeRoom.mode === "scoring") {
       return AVAILABLE_POINTS.map((point) => (
-        <PointButton
-          key={`point-${point}`}
-          onClick={() => selectPoint(point)}
-          selected={people?.points === point}
-        >
+        <PointButton key={`point-${point}`} selected={people?.points === point}>
           {point === 0 ? "?" : point}
         </PointButton>
       ));
