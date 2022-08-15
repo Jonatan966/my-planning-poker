@@ -8,6 +8,10 @@
   align-items: center;
 }
 
+.headerContainer strong {
+  display: flex;
+}
+
 .headerContainer > div {
   max-width: 1336px;
   width: 100%;

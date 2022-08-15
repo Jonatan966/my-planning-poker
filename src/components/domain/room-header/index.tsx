@@ -1,6 +1,8 @@
 import classNames from "classnames";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { BsFillSuitClubFill } from "react-icons/bs";
+
 import { useRoom } from "../../../contexts/room-context";
 import Button from "../../ui/button";
 
@@ -8,7 +10,7 @@ import styles from "./styles.module.css";
 
 function RoomHeader() {
   const { activeRoom, people, leaveRoom } = useRoom();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   async function copyRoomCode() {
     toast.promise(navigator.clipboard.writeText(window.location.href), {
@@ -19,14 +21,16 @@ function RoomHeader() {
   }
 
   function handleLeaveRoom() {
-    navigate("/");
+    router.push("/");
     leaveRoom();
   }
 
   return (
     <header className={styles.headerContainer}>
       <div>
-        <strong>{activeRoom?.name}</strong>
+        <strong>
+          <BsFillSuitClubFill size={28} /> {activeRoom?.name}
+        </strong>
         <nav>
           <span
             className={classNames({

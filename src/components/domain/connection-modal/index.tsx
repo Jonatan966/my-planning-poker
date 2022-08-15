@@ -1,7 +1,8 @@
 import classNames from "classnames";
+import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import { FaSpinner } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+
 import { useRoom } from "../../../contexts/room-context";
 import { storageManager } from "../../../utils/storage-manager";
 import Button from "../../ui/button";
@@ -26,10 +27,10 @@ function ConnectionModal({
     storageManager.getItem<string>("@planning:people-name") || ""
   );
   const [isFillPeopleName, setIsFillPeopleName] = useState(!!peopleName);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   function onCancelRoomConnection() {
-    navigate("/");
+    router.push("/");
     leaveRoom();
     onRequestClose();
   }

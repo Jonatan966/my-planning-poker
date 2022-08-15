@@ -1,17 +1,17 @@
 import classNames from "classnames";
 import { FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Button from "../../components/ui/button";
-import TextInput from "../../components/ui/text-input";
-import { useRoom } from "../../contexts/room-context";
-import usePersistedState from "../../hooks/use-persisted-state";
-import styles from "./styles.module.css";
+import { useRouter } from "next/router";
+
+import Button from "../components/ui/button";
+import TextInput from "../components/ui/text-input";
+import { useRoom } from "../contexts/room-context";
+import usePersistedState from "../hooks/use-persisted-state";
+import styles from "../styles/pages/home.module.css";
 
 function HomePage() {
   const { createRoom, isReady } = useRoom();
   const [menu, setMenu] = useState("enter");
-  const navigate = useNavigate();
-
+  const router = useRouter();
   const [peopleName, setPeopleName] = usePersistedState(
     "@planning:people-name",
     ""
@@ -23,12 +23,12 @@ function HomePage() {
     event.preventDefault();
     const newRoomCode = createRoom(newRoomName, peopleName);
 
-    navigate(`/rooms/${newRoomCode}`);
+    router.push(`/rooms/${newRoomCode}`);
   }
 
   async function handleEnterOnRoom(event: FormEvent) {
     event.preventDefault();
-    navigate(`/rooms/${roomCode}`);
+    router.push(`/rooms/${roomCode}`);
   }
 
   return (

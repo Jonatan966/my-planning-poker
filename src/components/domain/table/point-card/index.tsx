@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { FaDice } from "react-icons/fa";
+import { BsFillSuitClubFill } from "react-icons/bs";
 
 import styles from "./styles.module.css";
 
@@ -18,7 +18,7 @@ interface PointCardProps {
 function parseMode(mode: PointCardModes, points?: number | string) {
   switch (mode) {
     case "ready":
-      return <FaDice />;
+      return <BsFillSuitClubFill />;
     case "show-points":
       return points;
   }
