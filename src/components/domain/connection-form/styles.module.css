@@ -1,0 +1,13 @@
+.form {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 0.5rem;
+}
+
+.form button {
+  margin-top: 1rem;
+}
+
+.form label ~ label {
+  margin-top: 0.5rem;
+}

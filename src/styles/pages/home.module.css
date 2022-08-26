@@ -9,38 +9,3 @@
   max-width: 500px;
   width: 100%;
 }
-
-.tabOptions {
-  margin: 1rem 0;
-  border-bottom: 2px solid #29292e;
-}
-
-.tabOptions button {
-  background: none;
-  border: none;
-
-  padding: 0.75rem 2rem;
-
-  font-size: 1rem;
-
-  transform: translateY(2px);
-}
-
-.tabOptions button.selected {
-  font-weight: bold;
-  border-bottom: 2px solid #eb8a1d;
-}
-
-.form {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 0.5rem;
-}
-
-.form button {
-  margin-top: 1rem;
-}
-
-.form label ~ label {
-  margin-top: 0.5rem;
-}
