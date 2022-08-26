@@ -1,23 +1,53 @@
-// import cloneDeep from "lodash.clonedeep";
+import { useState } from "react";
+import { People, useRoom } from "../../../contexts/room-context";
 import Button from "../../ui/button";
 import PointCard from "./point-card";
 
 import styles from "./styles.module.css";
 
-const tableModuleNames = ["left", "right", "bottom", "top"];
+const tableModuleNames = ["bottom", "top", "left", "right"];
 
-// const TABLE_MODULE_LIMITS = [1, 1, 4, 4];
+function buildTableModules(peoples: People[] = []) {
+  const tableModules = [[], [], [], []] as People[][];
+  let currentModule = 0;
+
+  for (const people of peoples) {
+    tableModules[currentModule].push(people);
+
+    if (tableModules[currentModule].length % 3 === 0) {
+      currentModule++;
+    }
+
+    if (currentModule > 3) {
+      currentModule = 0;
+    }
+  }
+
+  return tableModules;
+}
 
 function Table() {
-  const fakePeople = {
-    id: "abc",
-    mode: "ready" as "ready",
-    name: "teste",
-    isHost: true,
-    points: 1,
-    isMe: true,
-  };
-  const tableModules = [[fakePeople], [], [], []];
+  const { room, showPointsCountdown, me, setRoomPointsVisibility } = useRoom();
+  const [isChangingPointsVisibility, setIsChangingPointsVisibility] =
+    useState(false);
+
+  if (!room || !me) {
+    return <></>;
+  }
+
+  const isSomePeopleSelectPoint = room.peoples.some(
+    (people) => typeof people.points !== "undefined"
+  );
+
+  async function handleSetRoomPointsVisibility() {
+    setIsChangingPointsVisibility(true);
+
+    await setRoomPointsVisibility(!room.showPoints);
+
+    setIsChangingPointsVisibility(false);
+  }
+
+  const tableModules = buildTableModules(room.peoples);
 
   const renderedTableModules = tableModules
     .map((roomPeoples, moduleIndex) => (
@@ -27,11 +57,13 @@ function Table() {
       >
         {roomPeoples.map((roomPeople) => (
           <PointCard
-            people={fakePeople}
-            mode={roomPeople.mode}
             points={roomPeople.points}
             key={roomPeople.id}
-          />
+            showPoints={room.showPoints && showPointsCountdown === 0}
+            highlight={roomPeople.id === me.id}
+          >
+            {roomPeople.name}
+          </PointCard>
         ))}
       </div>
     ))
@@ -42,7 +74,17 @@ function Table() {
       {renderedTableModules}
 
       <div className={styles.tableCenter}>
-        <Button colorScheme="secondary">Nova Partida</Button>
+        {room?.showPoints && showPointsCountdown > 0 ? (
+          <h1>{showPointsCountdown}</h1>
+        ) : (
+          <Button
+            colorScheme="secondary"
+            onClick={handleSetRoomPointsVisibility}
+            disabled={isChangingPointsVisibility || !isSomePeopleSelectPoint}
+          >
+            {room?.showPoints ? "NOVA PARTIDA" : "REVELAR CARTAS"}
+          </Button>
+        )}
       </div>
     </div>
   );
