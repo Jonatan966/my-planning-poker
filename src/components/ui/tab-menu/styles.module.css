@@ -1,0 +1,20 @@
+.tabOptions {
+  margin: 1rem 0;
+  border-bottom: 2px solid #29292e;
+}
+
+.tabOptions button {
+  background: none;
+  border: none;
+
+  padding: 0.75rem 2rem;
+
+  font-size: 1rem;
+
+  transform: translateY(2px);
+}
+
+.tabOptions button.selected {
+  font-weight: bold;
+  border-bottom: 2px solid #eb8a1d;
+}
