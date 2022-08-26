@@ -4,28 +4,32 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
+    "@upstash/redis": "^1.12.0",
+    "axios": "^0.27.2",
     "classnames": "^2.3.1",
     "lodash.clonedeep": "^4.5.0",
+    "next": "^12.2.5",
     "peerjs": "^1.4.6",
+    "pusher": "^5.1.1-beta",
+    "pusher-js": "^7.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.3.0",
     "react-icons": "^4.4.0",
-    "react-modal": "^3.15.1",
-    "react-router-dom": "^6.3.0"
+    "react-modal": "^3.15.1"
   },
   "devDependencies": {
     "@types/lodash.clonedeep": "^4.5.7",
+    "@types/node": "^18.7.3",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@types/react-modal": "^3.13.1",
-    "@vitejs/plugin-react": "^2.0.0",
-    "typescript": "^4.6.4",
-    "vite": "^3.0.0"
+    "typescript": "^4.6.4"
   }
 }

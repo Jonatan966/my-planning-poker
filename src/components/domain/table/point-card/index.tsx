@@ -1,30 +1,23 @@
 import classNames from "classnames";
-import { FaDice } from "react-icons/fa";
+import { ReactNode } from "react";
+import { BsFillSuitClubFill } from "react-icons/bs";
 
 import styles from "./styles.module.css";
 
-export type PointCardModes = "unready" | "ready" | "show-points";
-
 interface PointCardProps {
   points?: number;
-  mode?: PointCardModes;
-  people: {
-    name: string;
-    isHost?: boolean;
-    isMe?: boolean;
-  };
+  showPoints?: boolean;
+  highlight?: boolean;
+  children?: ReactNode;
 }
 
-function parseMode(mode: PointCardModes, points?: number | string) {
-  switch (mode) {
-    case "ready":
-      return <FaDice />;
-    case "show-points":
-      return points;
-  }
-}
-
-function PointCard({ people, points, mode = "unready" }: PointCardProps) {
+function PointCard({
+  highlight,
+  points,
+  showPoints,
+  children,
+}: PointCardProps) {
+  const hasSelectedPoints = typeof points !== "undefined";
   const parsedPoints =
     typeof points !== "undefined" && points === 0 ? "?" : points;
 
@@ -32,18 +25,19 @@ function PointCard({ people, points, mode = "unready" }: PointCardProps) {
     <div className={styles.pointCardContainer}>
       <div
         className={classNames(styles.point, {
-          [styles.showPoints]: mode === "show-points",
+          [styles.showPoints]: showPoints,
         })}
       >
-        {parseMode(mode, parsedPoints)}
+        {showPoints
+          ? parsedPoints
+          : hasSelectedPoints && <BsFillSuitClubFill />}
       </div>
       <label
         className={classNames({
-          [styles.isMe]: people.isMe,
-          [styles.isHost]: people.isHost,
+          [styles.isMe]: highlight,
         })}
       >
-        {people.name}
+        {children}
       </label>
     </div>
   );

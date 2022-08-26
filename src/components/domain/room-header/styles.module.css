@@ -29,8 +29,12 @@
   display: flex;
   align-items: center;
   font-weight: bold;
+
+  color: #1ef7d0;
 }
 
-.isHost {
-  color: #1ef7d0;
+.room {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }

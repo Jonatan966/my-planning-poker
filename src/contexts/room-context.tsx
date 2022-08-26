@@ -1,348 +1,298 @@
-import Peer, { DataConnection } from "peerjs";
+import { Channel } from "pusher-js";
 import {
   createContext,
   ReactNode,
   useContext,
   useEffect,
+  useReducer,
   useState,
 } from "react";
-import cloneDeep from "lodash.clonedeep";
-
-import { PointCardModes } from "../components/domain/table/point-card";
-
-export interface People {
-  id: string;
-  connectionId?: string;
-  name: string;
-  isHost?: boolean;
-  points?: number;
-  mode: PointCardModes;
-}
-
-type RoomMode = "scoring" | "count_average";
-
-interface Room {
-  id: string;
-  name: string;
-  mode: RoomMode;
-  peoples: People[];
-  hasLostConnection?: boolean;
-}
+import { api } from "../lib/axios";
+import { connectOnPusherWeb } from "../lib/pusher";
+import { filterDistinctObjects } from "../utils/filter-distinct-objects";
 
 interface RoomContextProviderProps {
   children: ReactNode;
 }
 
-interface RoomContextParams {
-  connectOnRoom(id: string, peopleName: string): Promise<Room>;
-  createRoom(roomName: string, hostName: string): string;
-  selectPoint(point: number): void;
-  toggleRoomMode(): void;
-  leaveRoom(): void;
-  activeRoom?: Room;
-  people?: People;
-  peer: Peer;
-  isReady: boolean;
+export interface People {
+  id?: number;
+  name: string;
+  points?: number;
 }
 
-type RoomEventType =
-  | "people_enter"
-  | "people_leave"
-  | "people_change_data"
-  | "room_mode_change";
-
-interface RoomEvent {
-  type: RoomEventType;
-  people?: People;
-  peopleId: string;
-  room?: Room;
+interface RoomInfo {
+  name: string;
+  id: string;
+  showPoints?: boolean;
+  peoples?: People[];
 }
 
-const RoomContext = createContext({} as RoomContextParams);
+interface RoomReducerAction {
+  type:
+    | "create"
+    | "add_people"
+    | "remove_people"
+    | "update_people"
+    | "update_room_show_points";
+  payload?: {
+    id?: string;
+    name?: string;
+    showPoints?: boolean;
+    people?: Partial<People>;
+  };
+}
 
-function sendEventToAllPeoples(peer: Peer, event: RoomEvent) {
-  const peopleConnections = Object.values(
-    peer.connections
-  ) as DataConnection[][];
+interface RoomContextProps {
+  createRoom(roomName: string): Promise<RoomInfo>;
+  connectOnRoom(roomId: string, peopleName: string): Promise<() => void>;
+  disconnectOnRoom(): Promise<void>;
+  selectPoint(points: number): Promise<void>;
+  setRoomPointsVisibility(show?: boolean): Promise<void>;
+  room?: RoomInfo;
+  peerId: number;
+  me?: People;
+  showPointsCountdown: number;
+}
 
-  for (const connections of peopleConnections) {
-    if (!connections.length) {
-      continue;
-    }
+const RoomContext = createContext({} as RoomContextProps);
 
-    connections[0].send(event);
+function roomReducer(state: RoomInfo, action: RoomReducerAction) {
+  switch (action.type) {
+    case "create":
+      return {
+        id: action.payload.id,
+        name: action.payload.name,
+        peoples: [],
+      };
+    case "add_people":
+      const filteredPeoples = filterDistinctObjects(
+        [...state.peoples, action.payload.people],
+        "id"
+      );
+
+      return {
+        ...state,
+        peoples: filteredPeoples as People[],
+      };
+    case "remove_people":
+      return {
+        ...state,
+        peoples: state.peoples.filter(
+          (people) => people.id !== action.payload.people?.id
+        ),
+      };
+    case "update_people":
+      return {
+        ...state,
+        peoples: state.peoples.map((people) =>
+          people.id === action.payload.people.id
+            ? { ...people, ...action.payload.people }
+            : people
+        ),
+      };
+    case "update_room_show_points":
+      return {
+        ...state,
+        showPoints: action.payload.showPoints,
+        peoples: !action.payload.showPoints
+          ? (state.peoples.map((people) => ({
+              ...people,
+              points: undefined,
+            })) as People[])
+          : state.peoples,
+      };
   }
-}
-
-function updatePeopleInRoom(oldRoom: Room, people: People) {
-  const updatedRoom = cloneDeep(oldRoom);
-
-  const storagedPeopleIndex = updatedRoom.peoples.findIndex(
-    (storagedPeople) => storagedPeople.id === people.id
-  );
-
-  if (storagedPeopleIndex > -1) {
-    updatedRoom.peoples[storagedPeopleIndex] = cloneDeep(people);
-  }
-
-  return updatedRoom;
-}
-
-function removePeopleFromRoom(oldRoom: Room, peopleId: string) {
-  const updatedRoom = cloneDeep(oldRoom);
-
-  updatedRoom.peoples = updatedRoom.peoples.filter(
-    (people) => people.id !== peopleId
-  );
-
-  return updatedRoom;
-}
-
-function updateRoomMode(oldRoom: Room, newMode: RoomMode) {
-  const updatedActiveRoom = cloneDeep(oldRoom);
-
-  if (!updatedActiveRoom) {
-    return;
-  }
-
-  updatedActiveRoom.mode = newMode;
-
-  updatedActiveRoom.peoples = updatedActiveRoom.peoples.map((people) => ({
-    ...people,
-    mode: newMode === "count_average" ? "show-points" : "unready",
-    points: newMode === "count_average" ? people.points : undefined,
-  }));
-
-  return updatedActiveRoom;
 }
 
 export function RoomContextProvider({ children }: RoomContextProviderProps) {
-  const [peer, setPeer] = useState(new Peer());
-  const [isReady, setIsReady] = useState(false);
-  const [activeRoom, setActiveRoom] = useState<Room>();
+  const [room, updateRoom] = useReducer(roomReducer, undefined);
+  const [peerId, setPeerId] = useState(-1);
+  const [showPointsCountdown, setShowPointsCountdown] = useState(0);
 
-  const people = activeRoom
-    ? activeRoom.peoples.find((people) => people.id === peer.id)
-    : undefined;
+  const me = room?.peoples.find((people) => people.id === peerId);
 
-  function syncPeople(people: People) {
-    setActiveRoom((oldActiveRoom) => {
-      const updatedActiveRoom = updatePeopleInRoom(
-        oldActiveRoom as Room,
-        people
+  const [peer] = useState(() => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    const pusher = connectOnPusherWeb();
+
+    pusher.connection.bind("connected", () => setPeerId(pusher.sessionID));
+
+    return pusher;
+  });
+
+  useEffect(() => {
+    if (showPointsCountdown > 0) {
+      const timer = setInterval(
+        () => setShowPointsCountdown(showPointsCountdown - 1),
+        1000
       );
 
-      sendEventToAllPeoples(peer, {
-        type: "people_change_data",
-        peopleId: people.id,
-        people,
-      });
+      return () => clearInterval(timer);
+    }
+  }, [showPointsCountdown]);
 
-      return updatedActiveRoom;
+  function _prepareRoomConnection(channel: Channel, senderPeople: People) {
+    channel.bind(`LOAD_PEOPLE:${peer.sessionID}`, (people: People) => {
+      updateRoom({
+        type: "add_people",
+        payload: {
+          people,
+        },
+      });
     });
-  }
 
-  function syncRoomMode(newMode: RoomMode) {
-    setActiveRoom((oldActiveRoom) => {
-      const updatedActiveRoom = updateRoomMode(oldActiveRoom as Room, newMode);
-
-      sendEventToAllPeoples(peer, {
-        type: "room_mode_change",
-        peopleId: people?.id || "",
-        room: updatedActiveRoom,
+    channel.bind("PEOPLE_ENTER", async (people: People) => {
+      updateRoom({
+        type: "add_people",
+        payload: {
+          people,
+        },
       });
 
-      return updatedActiveRoom;
+      if (people.id !== peer.sessionID) {
+        await api.post("/events/load-people", {
+          recipient_id: people.id,
+          room_id: channel.name,
+          people: senderPeople,
+        });
+      }
     });
-  }
 
-  function preparePeer(targetPeer: Peer) {
-    async function onPeopleDisconnect(peopleId: string) {
-      setActiveRoom((oldActiveRoom) => {
-        const updatedActiveRoom = removePeopleFromRoom(
-          oldActiveRoom as Room,
-          peopleId
-        );
-
-        sendEventToAllPeoples(targetPeer, {
-          type: "people_leave",
-          peopleId: peopleId,
-        });
-
-        return updatedActiveRoom;
+    channel.bind("PEOPLE_LEAVE", (people: People) => {
+      updateRoom({
+        type: "remove_people",
+        payload: {
+          people,
+        },
       });
-    }
+    });
 
-    function onPeopleConnect(connection: DataConnection) {
-      setActiveRoom((oldActiveRoom) => {
-        const updatedActiveRoom = cloneDeep(oldActiveRoom as Room);
-
-        if (
-          !updatedActiveRoom.peoples.some(
-            (people) => people.id === connection.connectionId
-          )
-        ) {
-          updatedActiveRoom?.peoples.push({
-            id: connection.peer,
-            connectionId: connection.connectionId,
-            name: connection.label,
-            mode: "unready",
-          });
-        }
-
-        connection.once("open", () => {
-          sendEventToAllPeoples(targetPeer, {
-            type: "people_enter",
-            peopleId: connection.peer,
-            room: updatedActiveRoom,
-          });
+    channel.bind("SELECT_POINT", (people: People) => {
+      if (senderPeople.id !== people.id) {
+        updateRoom({
+          type: "update_people",
+          payload: {
+            people: {
+              id: people.id,
+              points: people.points,
+            },
+          },
         });
+      }
+    });
 
-        connection.on("data", (data) => {
-          const typedData = data as RoomEvent;
+    channel.bind("SHOW_POINTS", ({ show }) => {
+      if (show) {
+        setShowPointsCountdown(3);
+      }
 
-          switch (typedData.type) {
-            case "people_change_data":
-              syncPeople(typedData.people as People);
-              break;
-            case "room_mode_change":
-              syncRoomMode(typedData.room?.mode as RoomMode);
-              break;
-          }
-        });
-
-        connection.once("close", () => onPeopleDisconnect(connection.peer));
-
-        return updatedActiveRoom;
+      updateRoom({
+        type: "update_room_show_points",
+        payload: {
+          showPoints: show,
+        },
       });
-    }
-
-    function onReady() {
-      setIsReady(true);
-    }
-
-    targetPeer.on("connection", onPeopleConnect);
-    targetPeer.on("open", onReady);
+    });
 
     return () => {
-      targetPeer.off("connection", onPeopleConnect);
-      targetPeer.off("open", onReady);
+      channel.unbind_all();
     };
   }
 
-  useEffect(() => preparePeer(peer), []);
+  function _unsubscribeAll() {
+    const subscriptions = peer.allChannels();
 
-  function createRoom(roomName: string, hostName: string) {
-    setActiveRoom({
-      id: peer.id,
+    for (const subscription of subscriptions) {
+      subscription.unbind_all();
+      subscription.unsubscribe();
+    }
+
+    peer.unbind_all();
+  }
+
+  async function createRoom(roomName: string) {
+    const { data: roomInfo } = await api.post<RoomInfo>("/create-room", {
       name: roomName,
-      mode: "scoring",
-      peoples: [
-        {
-          id: peer.id,
-          mode: "unready",
-          name: hostName,
-          isHost: true,
-        },
-      ],
     });
 
-    return peer.id;
+    return roomInfo;
   }
 
-  async function connectOnRoom(id: string, peopleName: string) {
-    return new Promise<Room>((resolve) => {
-      const connection = peer.connect(id, {
-        label: peopleName,
-      });
+  async function connectOnRoom(roomId: string, peopleName: string) {
+    _unsubscribeAll();
 
-      connection.on("data", (event) => {
-        const parsedRoomEvent = event as RoomEvent;
-
-        switch (parsedRoomEvent.type) {
-          case "people_enter":
-            setActiveRoom(parsedRoomEvent.room);
-            resolve(parsedRoomEvent.room as Room);
-            break;
-
-          case "people_change_data":
-            setActiveRoom((oldActiveRoom) => {
-              const updatedActiveRoom = updatePeopleInRoom(
-                oldActiveRoom as Room,
-                parsedRoomEvent.people as People
-              );
-
-              return updatedActiveRoom;
-            });
-            break;
-
-          case "people_leave":
-            setActiveRoom((oldActiveRoom) => {
-              const updatedActiveRoom = removePeopleFromRoom(
-                oldActiveRoom as Room,
-                parsedRoomEvent.peopleId
-              );
-
-              return updatedActiveRoom;
-            });
-            break;
-
-          case "room_mode_change":
-            setActiveRoom((oldActiveRoom) => {
-              const updatedActiveRoom = updateRoomMode(
-                oldActiveRoom as Room,
-                parsedRoomEvent.room?.mode as RoomMode
-              );
-
-              return updatedActiveRoom;
-            });
-            break;
-        }
-      });
-
-      connection.on("close", () =>
-        setActiveRoom((oldActiveRoom) => {
-          if (!oldActiveRoom) {
-            return oldActiveRoom;
-          }
-
-          const cloneActiveRoom = cloneDeep(oldActiveRoom);
-
-          cloneActiveRoom.hasLostConnection = true;
-
-          return cloneActiveRoom;
-        })
-      );
+    const subscription = peer.subscribe(roomId);
+    const { data } = await api.get("/get-room-name", {
+      params: {
+        room_id: roomId,
+      },
     });
+
+    const senderPeople: People = {
+      id: peer.sessionID,
+      name: peopleName,
+    };
+
+    const preparedRoom = _prepareRoomConnection(subscription, senderPeople);
+
+    updateRoom({
+      type: "create",
+      payload: {
+        id: roomId,
+        name: data.name,
+      },
+    });
+
+    await api.post("/events/people-enter", {
+      people: senderPeople,
+      room_id: roomId,
+    });
+
+    return preparedRoom;
   }
 
-  function selectPoint(point: number) {
-    if (!people) {
+  async function disconnectOnRoom() {
+    _unsubscribeAll();
+
+    if (!room) {
       return;
     }
 
-    const peopleClone = cloneDeep(people);
-
-    peopleClone.points = point;
-    peopleClone.mode = "ready";
-
-    syncPeople(peopleClone);
+    await api.post("/events/people-leave", {
+      people_id: peer.sessionID,
+      room_id: room.id,
+    });
   }
 
-  function toggleRoomMode() {
-    syncRoomMode(activeRoom?.mode === "scoring" ? "count_average" : "scoring");
+  async function selectPoint(points: number) {
+    updateRoom({
+      type: "update_people",
+      payload: {
+        people: {
+          id: peerId,
+          points,
+        },
+      },
+    });
+
+    await api.post("/events/select-point", {
+      room_id: room.id,
+      people: {
+        id: peerId,
+        points,
+      },
+    });
   }
 
-  function leaveRoom() {
-    peer.destroy();
-
-    setIsReady(false);
-    setActiveRoom(undefined);
-
-    const rebuildedPeer = new Peer();
-    preparePeer(rebuildedPeer);
-
-    setPeer(rebuildedPeer);
+  async function setRoomPointsVisibility(show?: boolean) {
+    await api.post("/events/room-show-points", {
+      room_id: room.id,
+      show,
+    });
   }
 
   return (
@@ -350,13 +300,13 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       value={{
         connectOnRoom,
         createRoom,
+        disconnectOnRoom,
         selectPoint,
-        toggleRoomMode,
-        leaveRoom,
-        activeRoom,
-        peer,
-        people,
-        isReady,
+        setRoomPointsVisibility,
+        room,
+        peerId,
+        me,
+        showPointsCountdown,
       }}
     >
       {children}
@@ -364,4 +314,6 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
   );
 }
 
-export const useRoom = () => useContext(RoomContext);
+export function useRoom() {
+  return useContext(RoomContext);
+}

@@ -1,14 +1,15 @@
-import classNames from "classnames";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { BsFillSuitClubFill } from "react-icons/bs";
 import { useRoom } from "../../../contexts/room-context";
+
 import Button from "../../ui/button";
 
 import styles from "./styles.module.css";
 
 function RoomHeader() {
-  const { activeRoom, people, leaveRoom } = useRoom();
-  const navigate = useNavigate();
+  const { me, room, disconnectOnRoom } = useRoom();
+  const router = useRouter();
 
   async function copyRoomCode() {
     toast.promise(navigator.clipboard.writeText(window.location.href), {
@@ -18,27 +19,23 @@ function RoomHeader() {
     });
   }
 
-  function handleLeaveRoom() {
-    navigate("/");
-    leaveRoom();
+  function handleDisconnectOnRoom() {
+    disconnectOnRoom();
+    router.replace("/");
   }
 
   return (
     <header className={styles.headerContainer}>
       <div>
-        <strong>{activeRoom?.name}</strong>
+        <strong className={styles.room}>
+          <BsFillSuitClubFill size={28} /> {room?.name}
+        </strong>
         <nav>
-          <span
-            className={classNames({
-              [styles.isHost]: people?.isHost,
-            })}
-          >
-            {people?.name}
-          </span>
+          <span>{me?.name}</span>
           <Button colorScheme="primary" onClick={copyRoomCode}>
             Copiar link da sala
           </Button>
-          <Button colorScheme="danger" onClick={handleLeaveRoom}>
+          <Button colorScheme="danger" onClick={handleDisconnectOnRoom}>
             Sair
           </Button>
         </nav>

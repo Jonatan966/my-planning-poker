@@ -1,0 +1,11 @@
+.dialogContainer h1 {
+  font-size: 24px;
+}
+
+.dialogContainer p {
+  margin: 1rem 0;
+}
+
+.isLoading {
+  min-height: 397px;
+}

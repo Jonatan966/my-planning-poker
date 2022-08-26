@@ -13,8 +13,10 @@
 
   background: #202024;
 
-  padding: 3rem 5rem;
   border-radius: 5px;
+
+  min-height: 136px;
+  min-width: 352px;
 }
 
 .tableCenter button {
@@ -24,7 +26,8 @@
 .leftTableModule,
 .topTableModule,
 .rightTableModule,
-.bottomTableModule {
+.bottomTableModule,
+.tableCenter {
   display: flex;
   align-items: center;
   justify-content: center;

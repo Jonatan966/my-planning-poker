@@ -1,0 +1,11 @@
+.container {
+  margin: auto;
+  padding: 32px;
+
+  border-radius: 5px;
+
+  background: #202024;
+
+  max-width: 500px;
+  width: 100%;
+}

@@ -1,60 +1,53 @@
-import cloneDeep from "lodash.clonedeep";
+import { useState } from "react";
 import { People, useRoom } from "../../../contexts/room-context";
 import Button from "../../ui/button";
 import PointCard from "./point-card";
 
 import styles from "./styles.module.css";
 
-const tableModuleNames = ["left", "right", "bottom", "top"];
+const tableModuleNames = ["bottom", "top", "left", "right"];
 
-const TABLE_MODULE_LIMITS = [1, 1, 4, 4];
+function buildTableModules(peoples: People[] = []) {
+  const tableModules = [[], [], [], []] as People[][];
+  let currentModule = 0;
+
+  for (const people of peoples) {
+    tableModules[currentModule].push(people);
+
+    if (tableModules[currentModule].length % 3 === 0) {
+      currentModule++;
+    }
+
+    if (currentModule > 3) {
+      currentModule = 0;
+    }
+  }
+
+  return tableModules;
+}
 
 function Table() {
-  const { activeRoom, toggleRoomMode, people: localPeople } = useRoom();
+  const { room, showPointsCountdown, me, setRoomPointsVisibility } = useRoom();
+  const [isChangingPointsVisibility, setIsChangingPointsVisibility] =
+    useState(false);
 
-  if (!activeRoom) {
-    return null;
+  if (!room || !me) {
+    return <></>;
   }
 
-  const clonePeoples = cloneDeep(activeRoom.peoples);
-  let currentTableModule = 0;
-  let hasFullTables = [false, false, false, false];
+  const isSomePeopleSelectPoint = room.peoples.some(
+    (people) => typeof people.points !== "undefined"
+  );
 
-  const tableModules: People[][] = [[], [], [], []];
+  async function handleSetRoomPointsVisibility() {
+    setIsChangingPointsVisibility(true);
 
-  while (clonePeoples.length) {
-    if (hasFullTables.every((hasFullTable) => hasFullTable)) {
-      break;
-    }
+    await setRoomPointsVisibility(!room.showPoints);
 
-    if (currentTableModule > tableModuleNames.length - 1) {
-      currentTableModule = 0;
-    }
-
-    let hasFullTableModule =
-      tableModules[currentTableModule].length ===
-      TABLE_MODULE_LIMITS[currentTableModule];
-
-    if (!hasFullTableModule) {
-      const nextPeople = clonePeoples.shift();
-
-      if (nextPeople) {
-        tableModules[currentTableModule].push(nextPeople);
-      }
-
-      hasFullTableModule =
-        tableModules[currentTableModule].length ===
-        TABLE_MODULE_LIMITS[currentTableModule];
-    }
-
-    currentTableModule++;
-
-    if (hasFullTableModule) {
-      hasFullTables[currentTableModule] = true;
-
-      continue;
-    }
+    setIsChangingPointsVisibility(false);
   }
+
+  const tableModules = buildTableModules(room.peoples);
 
   const renderedTableModules = tableModules
     .map((roomPeoples, moduleIndex) => (
@@ -64,11 +57,13 @@ function Table() {
       >
         {roomPeoples.map((roomPeople) => (
           <PointCard
-            people={{ ...roomPeople, isMe: roomPeople.id === localPeople?.id }}
-            mode={roomPeople.mode}
             points={roomPeople.points}
             key={roomPeople.id}
-          />
+            showPoints={room.showPoints && showPointsCountdown === 0}
+            highlight={roomPeople.id === me.id}
+          >
+            {roomPeople.name}
+          </PointCard>
         ))}
       </div>
     ))
@@ -79,11 +74,17 @@ function Table() {
       {renderedTableModules}
 
       <div className={styles.tableCenter}>
-        <Button colorScheme="secondary" onClick={() => toggleRoomMode()}>
-          {activeRoom?.mode === "count_average"
-            ? "Nova partida"
-            : "Revelar cartas"}
-        </Button>
+        {room?.showPoints && showPointsCountdown > 0 ? (
+          <h1>{showPointsCountdown}</h1>
+        ) : (
+          <Button
+            colorScheme="secondary"
+            onClick={handleSetRoomPointsVisibility}
+            disabled={isChangingPointsVisibility || !isSomePeopleSelectPoint}
+          >
+            {room?.showPoints ? "NOVA PARTIDA" : "REVELAR CARTAS"}
+          </Button>
+        )}
       </div>
     </div>
   );

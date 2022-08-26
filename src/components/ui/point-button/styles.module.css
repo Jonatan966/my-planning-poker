@@ -13,11 +13,16 @@
   transition: transform 0.2s;
 }
 
-.pointButtonContainer:hover,
+.pointButtonContainer:not(:disabled):hover,
 .pointButtonContainer.selected {
   transform: translateY(-5px);
 }
 
 .pointButtonContainer.selected {
   background: #4863f7;
+}
+
+.pointButtonContainer:disabled {
+  cursor: not-allowed;
+  filter: brightness(0.75);
 }

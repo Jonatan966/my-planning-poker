@@ -1,4 +1,8 @@
 function getItem<V = string>(key: string): V | undefined {
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+
   const item = localStorage.getItem(key);
 
   try {
@@ -13,6 +17,10 @@ function getItem<V = string>(key: string): V | undefined {
 }
 
 function setItem<V = string>(key: string, value: V): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
   const preparedValue = JSON.stringify(value);
 
   try {

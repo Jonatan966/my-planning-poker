@@ -13,6 +13,11 @@ export interface DialogProps {
 }
 
 function Dialog(props: DialogProps) {
+  const inBrowser = typeof window !== "undefined";
+
+  const appElement =
+    (inBrowser && document.getElementById("__next")) || undefined;
+
   return (
     <ReactModal
       {...props}
@@ -23,7 +28,7 @@ function Dialog(props: DialogProps) {
       className={classNames(styles.dialogContainer, props.className)}
       shouldCloseOnOverlayClick={false}
       shouldCloseOnEsc={false}
-      appElement={document.getElementById("root") || undefined}
+      appElement={appElement}
     >
       {props.children}
     </ReactModal>
