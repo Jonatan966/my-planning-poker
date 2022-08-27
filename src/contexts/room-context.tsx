@@ -21,6 +21,13 @@ export interface People {
   points?: number;
 }
 
+export enum MainRoomEvents {
+  PEOPLE_ENTER = "PEOPLE_ENTER",
+  PEOPLE_LEAVE = "PEOPLE_LEAVE",
+  SELECT_POINT = "SELECT_POINT",
+  SHOW_POINTS = "SHOW_POINTS",
+}
+
 interface RoomInfo {
   name: string;
   id: string;
@@ -147,7 +154,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       });
     });
 
-    channel.bind("PEOPLE_ENTER", async (people: People) => {
+    channel.bind(MainRoomEvents.PEOPLE_ENTER, async (people: People) => {
       updateRoom({
         type: "add_people",
         payload: {
@@ -164,7 +171,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       }
     });
 
-    channel.bind("PEOPLE_LEAVE", (people: People) => {
+    channel.bind(MainRoomEvents.PEOPLE_LEAVE, (people: People) => {
       updateRoom({
         type: "remove_people",
         payload: {
@@ -173,7 +180,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       });
     });
 
-    channel.bind("SELECT_POINT", (people: People) => {
+    channel.bind(MainRoomEvents.SELECT_POINT, (people: People) => {
       if (senderPeople.id !== people.id) {
         updateRoom({
           type: "update_people",
@@ -187,7 +194,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       }
     });
 
-    channel.bind("SHOW_POINTS", ({ show }) => {
+    channel.bind(MainRoomEvents.SHOW_POINTS, ({ show }) => {
       if (show) {
         setShowPointsCountdown(3);
       }
