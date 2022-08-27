@@ -136,6 +136,8 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
   }, [showPointsCountdown]);
 
   function _prepareRoomConnection(channel: Channel, senderPeople: People) {
+    channel.bind_global((event) => console.log("[pusher events]", event));
+
     channel.bind(`LOAD_PEOPLE:${peer.sessionID}`, (people: People) => {
       updateRoom({
         type: "add_people",
