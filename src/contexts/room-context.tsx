@@ -21,9 +21,17 @@ export interface People {
   points?: number;
 }
 
+export enum MainRoomEvents {
+  PEOPLE_ENTER = "PEOPLE_ENTER",
+  PEOPLE_LEAVE = "PEOPLE_LEAVE",
+  SELECT_POINT = "SELECT_POINT",
+  SHOW_POINTS = "SHOW_POINTS",
+}
+
 interface RoomInfo {
   name: string;
   id: string;
+  subscription: Channel;
   showPoints?: boolean;
   peoples?: People[];
 }
@@ -38,6 +46,7 @@ interface RoomReducerAction {
   payload?: {
     id?: string;
     name?: string;
+    subscription?: Channel;
     showPoints?: boolean;
     people?: Partial<People>;
   };
@@ -63,6 +72,7 @@ function roomReducer(state: RoomInfo, action: RoomReducerAction) {
       return {
         id: action.payload.id,
         name: action.payload.name,
+        subscription: action.payload.subscription,
         peoples: [],
       };
     case "add_people":
@@ -136,6 +146,8 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
   }, [showPointsCountdown]);
 
   function _prepareRoomConnection(channel: Channel, senderPeople: People) {
+    channel.bind_global((event) => console.log("[pusher events]", event));
+
     channel.bind(`LOAD_PEOPLE:${peer.sessionID}`, (people: People) => {
       updateRoom({
         type: "add_people",
@@ -145,7 +157,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       });
     });
 
-    channel.bind("PEOPLE_ENTER", async (people: People) => {
+    channel.bind(MainRoomEvents.PEOPLE_ENTER, async (people: People) => {
       updateRoom({
         type: "add_people",
         payload: {
@@ -162,7 +174,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       }
     });
 
-    channel.bind("PEOPLE_LEAVE", (people: People) => {
+    channel.bind(MainRoomEvents.PEOPLE_LEAVE, (people: People) => {
       updateRoom({
         type: "remove_people",
         payload: {
@@ -171,7 +183,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       });
     });
 
-    channel.bind("SELECT_POINT", (people: People) => {
+    channel.bind(MainRoomEvents.SELECT_POINT, (people: People) => {
       if (senderPeople.id !== people.id) {
         updateRoom({
           type: "update_people",
@@ -185,7 +197,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       }
     });
 
-    channel.bind("SHOW_POINTS", ({ show }) => {
+    channel.bind(MainRoomEvents.SHOW_POINTS, ({ show }) => {
       if (show) {
         setShowPointsCountdown(3);
       }
@@ -226,6 +238,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
     _unsubscribeAll();
 
     const subscription = peer.subscribe(roomId);
+
     const { data } = await api.get("/get-room-name", {
       params: {
         room_id: roomId,
@@ -244,6 +257,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       payload: {
         id: roomId,
         name: data.name,
+        subscription,
       },
     });
 
