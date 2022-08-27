@@ -47,17 +47,17 @@ function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
   }
 
   function renderContent() {
-    if (isFillPeopleName || isConnectingIntoRoom) {
+    if (!isFillPeopleName) {
       return (
-        <ConnectingMessage onCancelRoomConnection={onCancelRoomConnection} />
+        <PeopleForm
+          onCancelRoomConnection={onCancelRoomConnection}
+          setIsFillPeopleName={setIsFillPeopleName}
+        />
       );
     }
 
     return (
-      <PeopleForm
-        onCancelRoomConnection={onCancelRoomConnection}
-        setIsFillPeopleName={setIsFillPeopleName}
-      />
+      <ConnectingMessage onCancelRoomConnection={onCancelRoomConnection} />
     );
   }
 
