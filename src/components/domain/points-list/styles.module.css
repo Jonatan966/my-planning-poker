@@ -20,4 +20,18 @@
   justify-content: center;
 
   height: 6.5rem;
+
+  position: relative;
+}
+
+.confetti {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  bottom: 0;
+}
+
+.isUnanimous strong {
+  color: #eb8a1d;
 }
