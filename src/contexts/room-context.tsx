@@ -31,6 +31,7 @@ export enum MainRoomEvents {
 interface RoomInfo {
   name: string;
   id: string;
+  subscription: Channel;
   showPoints?: boolean;
   peoples?: People[];
 }
@@ -45,6 +46,7 @@ interface RoomReducerAction {
   payload?: {
     id?: string;
     name?: string;
+    subscription?: Channel;
     showPoints?: boolean;
     people?: Partial<People>;
   };
@@ -70,6 +72,7 @@ function roomReducer(state: RoomInfo, action: RoomReducerAction) {
       return {
         id: action.payload.id,
         name: action.payload.name,
+        subscription: action.payload.subscription,
         peoples: [],
       };
     case "add_people":
@@ -235,6 +238,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
     _unsubscribeAll();
 
     const subscription = peer.subscribe(roomId);
+
     const { data } = await api.get("/get-room-name", {
       params: {
         room_id: roomId,
@@ -253,6 +257,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       payload: {
         id: roomId,
         name: data.name,
+        subscription,
       },
     });
 
