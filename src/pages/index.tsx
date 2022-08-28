@@ -9,7 +9,10 @@ function HomePage() {
 
   return (
     <section className={styles.container}>
-      <h1>My Planning Poker</h1>
+      <div className={styles.appName}>
+        <img src="favicon.svg" alt="Logotipo da aplicação" />
+        <h1>My Planning Poker</h1>
+      </div>
       <TabMenu
         menus={[
           {
