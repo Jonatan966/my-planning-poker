@@ -9,3 +9,14 @@
   max-width: 500px;
   width: 100%;
 }
+
+.appName img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.appName {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
