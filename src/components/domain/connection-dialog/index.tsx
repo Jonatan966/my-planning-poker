@@ -94,11 +94,18 @@ function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
       }
     }
 
+    const peopleID = room.subscription.pusher.sessionID;
+
     room.subscription.bind(MainRoomEvents.PEOPLE_ENTER, debounceConnectionLoad);
+    room.subscription.bind(`LOAD_PEOPLE:${peopleID}`, debounceConnectionLoad);
 
     return () => {
       room.subscription.unbind(
         MainRoomEvents.PEOPLE_ENTER,
+        debounceConnectionLoad
+      );
+      room.subscription.unbind(
+        `LOAD_PEOPLE:${peopleID}`,
         debounceConnectionLoad
       );
     };
