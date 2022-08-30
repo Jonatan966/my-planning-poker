@@ -87,18 +87,25 @@ function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
       clearTimeout(connectionDebounceTimer.current);
 
       if (connectionDebounceTimer.current > -1) {
-        window.setTimeout(() => {
+        connectionDebounceTimer.current = window.setTimeout(() => {
           setIsConnectingIntoRoom(false);
           connectionDebounceTimer.current = -1;
         }, 750);
       }
     }
 
+    const peopleID = room.subscription.pusher.sessionID;
+
     room.subscription.bind(MainRoomEvents.PEOPLE_ENTER, debounceConnectionLoad);
+    room.subscription.bind(`LOAD_PEOPLE:${peopleID}`, debounceConnectionLoad);
 
     return () => {
       room.subscription.unbind(
         MainRoomEvents.PEOPLE_ENTER,
+        debounceConnectionLoad
+      );
+      room.subscription.unbind(
+        `LOAD_PEOPLE:${peopleID}`,
         debounceConnectionLoad
       );
     };
