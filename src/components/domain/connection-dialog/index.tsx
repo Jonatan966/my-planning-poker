@@ -87,7 +87,7 @@ function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
       clearTimeout(connectionDebounceTimer.current);
 
       if (connectionDebounceTimer.current > -1) {
-        window.setTimeout(() => {
+        connectionDebounceTimer.current = window.setTimeout(() => {
           setIsConnectingIntoRoom(false);
           connectionDebounceTimer.current = -1;
         }, 750);
