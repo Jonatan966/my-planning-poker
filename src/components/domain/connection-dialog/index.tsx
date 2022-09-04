@@ -76,6 +76,7 @@ function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
       isInitialInteraction.current = false;
       return;
     }
+
     if (!isConnectingIntoRoom) {
       onRequestClose();
     }
@@ -97,6 +98,8 @@ function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
 
     room.subscription.bind(MainRoomEvents.PREPARE_ROOM, debounceConnectionLoad);
     room.subscription.bind(MainRoomEvents.LOAD_PEOPLE, debounceConnectionLoad);
+
+    debounceConnectionLoad();
 
     return () => {
       room.subscription.unbind(
