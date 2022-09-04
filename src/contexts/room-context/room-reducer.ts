@@ -1,7 +1,6 @@
 import { PresenceChannel } from "pusher-js";
 import { useReducer } from "react";
 import { People, RoomInfo } from "./types";
-import { filterDistinctObjects } from "../../utils/filter-distinct-objects";
 
 interface RoomReducerAction {
   type:
@@ -32,18 +31,15 @@ function roomReducer(state: RoomInfo, action: RoomReducerAction) {
       };
 
     case "add_people":
-      const filteredPeoples = filterDistinctObjects(
-        state.peoples.concat(
-          (action.payload?.people as People) ||
-            (action.payload?.peoples as People[]) ||
-            []
-        ),
-        "id"
+      const { people, peoples = [] } = action.payload;
+
+      const updatedPeoples = state.peoples.concat(
+        (people as People) || (peoples as People[])
       );
 
       return {
         ...state,
-        peoples: filteredPeoples as People[],
+        peoples: updatedPeoples,
       };
 
     case "remove_people":
