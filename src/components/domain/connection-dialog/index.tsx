@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useRoom } from "../../../contexts/room-context";
 import { MainRoomEvents } from "../../../contexts/room-context/types";
+import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 import { storageManager } from "../../../utils/storage-manager";
 import Dialog from "../../ui/dialog";
 import { ConnectingMessage } from "./connecting-message";
@@ -23,7 +24,7 @@ function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
   const [isConnectingIntoRoom, setIsConnectingIntoRoom] = useState(true);
 
   const [isFillPeopleName, setIsFillPeopleName] = useState(
-    () => !!storageManager.getItem("@planning:people-name")
+    () => !!cookieStorageManager.getItem("@planning:people-name")
   );
 
   const isInitialInteraction = useRef(true);

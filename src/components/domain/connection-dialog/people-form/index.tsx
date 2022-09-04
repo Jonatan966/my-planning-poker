@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { storageManager } from "../../../../utils/storage-manager";
+import { cookieStorageManager } from "../../../../utils/cookie-storage-manager";
 import Button from "../../../ui/button";
 import TextInput from "../../../ui/text-input";
 
@@ -17,7 +17,7 @@ function PeopleForm({
   const peopleNameInputRef = useRef<HTMLInputElement>();
 
   async function handleFillPeopleName() {
-    storageManager.setItem(
+    cookieStorageManager.setItem(
       "@planning:people-name",
       peopleNameInputRef.current.value
     );
