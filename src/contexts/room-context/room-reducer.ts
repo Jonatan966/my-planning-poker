@@ -6,6 +6,7 @@ import { filterDistinctObjects } from "../../utils/filter-distinct-objects";
 interface RoomReducerAction {
   type:
     | "create"
+    | "reset"
     | "add_people"
     | "remove_people"
     | "update_people"
@@ -31,10 +32,6 @@ function roomReducer(state: RoomInfo, action: RoomReducerAction) {
       };
 
     case "add_people":
-      if (!state.peoples) {
-        state.peoples = [];
-      }
-
       const filteredPeoples = filterDistinctObjects(
         state.peoples.concat(
           (action.payload?.people as People) ||
@@ -78,7 +75,21 @@ function roomReducer(state: RoomInfo, action: RoomReducerAction) {
             })) as People[])
           : state.peoples,
       };
+
+    case "reset":
+      return {
+        id: undefined,
+        name: undefined,
+        subscription: undefined,
+        peoples: [] as People[],
+      };
   }
 }
 
-export const useRoomReducer = () => useReducer(roomReducer, undefined);
+export const useRoomReducer = () =>
+  useReducer(roomReducer, {
+    id: undefined,
+    name: undefined,
+    subscription: undefined,
+    peoples: [] as People[],
+  });

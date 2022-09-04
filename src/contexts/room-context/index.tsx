@@ -23,17 +23,22 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
   } = useRoomEventManager();
 
   const me = room?.peoples.find(
-    (people) => people.id === room?.subscription.members.myID
+    (people) => people.id === room?.subscription?.members.myID
   );
 
   const connection = useRef<pusherJs>();
 
   function disconnectOnRoom() {
-    const subscriptions = connection.current.allChannels();
+    const subscriptions = connection.current.allChannels() as PresenceChannel[];
+
+    updateRoom({
+      type: "reset",
+    });
 
     for (const subscription of subscriptions) {
       subscription.unbind_all();
       subscription.unsubscribe();
+      subscription.disconnect();
     }
 
     connection.current.unbind_all();
