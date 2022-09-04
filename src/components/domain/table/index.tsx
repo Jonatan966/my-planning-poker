@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { People, useRoom } from "../../../contexts/room-context";
+import { useRoom } from "../../../contexts/room-context";
+import { People } from "../../../contexts/room-context/types";
 import Button from "../../ui/button";
 import PointCard from "./point-card";
 
@@ -31,7 +32,7 @@ function Table() {
   const [isChangingPointsVisibility, setIsChangingPointsVisibility] =
     useState(false);
 
-  if (!room || !me) {
+  if (!room) {
     return <></>;
   }
 
@@ -60,7 +61,7 @@ function Table() {
             points={roomPeople.points}
             key={roomPeople.id}
             showPoints={room.showPoints && showPointsCountdown === 0}
-            highlight={roomPeople.id === me.id}
+            highlight={roomPeople.id === me?.id}
           >
             {roomPeople.name}
           </PointCard>
