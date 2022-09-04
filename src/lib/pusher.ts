@@ -4,6 +4,10 @@ import PusherWeb from "pusher-js";
 export function connectOnPusherWeb() {
   const pusher = new PusherWeb(process.env.NEXT_PUBLIC_PUSHER_KEY, {
     cluster: "us2",
+    channelAuthorization: {
+      endpoint: "/api/auth/channel",
+      transport: "ajax",
+    },
   });
 
   return pusher;
