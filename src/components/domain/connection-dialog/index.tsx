@@ -2,7 +2,8 @@ import classNames from "classnames";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { MainRoomEvents, useRoom } from "../../../contexts/room-context";
+import { useRoom } from "../../../contexts/room-context";
+import { MainRoomEvents } from "../../../contexts/room-context/types";
 import { storageManager } from "../../../utils/storage-manager";
 import Dialog from "../../ui/dialog";
 import { ConnectingMessage } from "./connecting-message";
@@ -17,7 +18,7 @@ interface ConnectionDialogProps {
 
 function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
   const router = useRouter();
-  const { connectOnRoom, disconnectOnRoom, peerId, room } = useRoom();
+  const { connectOnRoom, disconnectOnRoom, room } = useRoom();
 
   const [isConnectingIntoRoom, setIsConnectingIntoRoom] = useState(true);
 
@@ -30,17 +31,17 @@ function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
 
   async function onCancelRoomConnection() {
     await router.replace("/");
-    await disconnectOnRoom();
+    disconnectOnRoom();
     onRequestClose();
   }
 
   async function handleConnectOnRoom() {
     const roomId = router.query.room_id as string;
-    const peopleName = storageManager.getItem("@planning:people-name");
 
     try {
-      await connectOnRoom(roomId, peopleName);
-    } catch {
+      await connectOnRoom(roomId);
+    } catch (e) {
+      console.log(e);
       toast.error("Não foi possível se conectar a essa sala");
       router.replace("/");
     }
@@ -62,19 +63,18 @@ function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
   }
 
   useEffect(() => {
-    if (!isFillPeopleName || !router.query.room_id || !peerId) {
+    if (!isFillPeopleName || !router.query.room_id) {
       return;
     }
 
     handleConnectOnRoom();
-  }, [isFillPeopleName, peerId]);
+  }, [isFillPeopleName, router.query]);
 
   useEffect(() => {
     if (isInitialInteraction.current) {
       isInitialInteraction.current = false;
       return;
     }
-
     if (!isConnectingIntoRoom) {
       onRequestClose();
     }
@@ -94,18 +94,16 @@ function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
       }
     }
 
-    const peopleID = room.subscription.pusher.sessionID;
-
-    room.subscription.bind(MainRoomEvents.PEOPLE_ENTER, debounceConnectionLoad);
-    room.subscription.bind(`LOAD_PEOPLE:${peopleID}`, debounceConnectionLoad);
+    room.subscription.bind(MainRoomEvents.PREPARE_ROOM, debounceConnectionLoad);
+    room.subscription.bind(MainRoomEvents.LOAD_PEOPLE, debounceConnectionLoad);
 
     return () => {
       room.subscription.unbind(
-        MainRoomEvents.PEOPLE_ENTER,
+        MainRoomEvents.PREPARE_ROOM,
         debounceConnectionLoad
       );
       room.subscription.unbind(
-        `LOAD_PEOPLE:${peopleID}`,
+        MainRoomEvents.LOAD_PEOPLE,
         debounceConnectionLoad
       );
     };

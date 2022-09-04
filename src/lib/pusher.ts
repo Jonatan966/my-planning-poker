@@ -1,4 +1,5 @@
 import PusherServer from "pusher";
+import pusherJs from "pusher-js";
 import PusherWeb from "pusher-js";
 
 export function connectOnPusherWeb() {
@@ -23,4 +24,18 @@ export function connectOnPusherServer() {
   });
 
   return pusher;
+}
+
+export async function createWebConnection() {
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+
+  return new Promise<pusherJs>((resolve) => {
+    const pusher = connectOnPusherWeb();
+
+    pusher.connection.bind("connected", () => {
+      resolve(pusher);
+    });
+  });
 }
