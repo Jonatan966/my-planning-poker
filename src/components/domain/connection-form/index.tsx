@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useRef } from "react";
 import { useRoom } from "../../../contexts/room-context";
-import usePersistedState from "../../../hooks/use-persisted-state";
+import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 import Button from "../../ui/button";
 import TextInput from "../../ui/text-input";
 
@@ -12,13 +12,13 @@ interface ConnectionFormProps {
 }
 
 function ConnectionForm({ menu }: ConnectionFormProps) {
-  const [peopleName, setPeopleName] = usePersistedState(
-    "@planning:people-name",
-    ""
-  );
-  const [newRoomName, setNewRoomName] = useState("");
-  const [roomCode, setRoomCode] = useState("");
+  const peopleName = cookieStorageManager.getItem("@planning:people-name");
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const peopleNameInputRef = useRef<HTMLInputElement>();
+  const roomNameInputRef = useRef<HTMLInputElement>();
+  const roomCodeInputRef = useRef<HTMLInputElement>();
 
   const router = useRouter();
   const { createRoom } = useRoom();
@@ -26,8 +26,13 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
   async function handleConnectOnRoom(event: FormEvent) {
     event.preventDefault();
 
+    cookieStorageManager.setItem(
+      "@planning:people-name",
+      peopleNameInputRef.current.value
+    );
+
     try {
-      await router.push(`/rooms/${roomCode}`);
+      await router.push(`/rooms/${roomCodeInputRef.current.value}`);
     } finally {
       setIsLoading(false);
     }
@@ -36,10 +41,15 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
   async function handleCreateRoom(event: FormEvent) {
     event.preventDefault();
 
+    cookieStorageManager.setItem(
+      "@planning:people-name",
+      peopleNameInputRef.current.value
+    );
+
     setIsLoading(true);
 
     try {
-      const roomInfo = await createRoom(newRoomName);
+      const roomInfo = await createRoom(roomNameInputRef.current.value);
 
       await router.push(`/rooms/${roomInfo.id}`);
     } finally {
@@ -54,16 +64,15 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
           <TextInput
             title="Seu nome"
             placeholder="Ex: John Doe"
-            onChange={(e) => setPeopleName(e.target.value)}
-            value={peopleName}
+            defaultValue={peopleName}
+            ref={peopleNameInputRef}
             required
             maxLength={20}
           />
           <TextInput
             placeholder="Ex: Planejamento semanal"
             title="Nome da sala"
-            onChange={(e) => setNewRoomName(e.target.value)}
-            value={newRoomName}
+            ref={roomNameInputRef}
             required
             maxLength={32}
           />
@@ -78,16 +87,15 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
           <TextInput
             title="Seu nome"
             placeholder="Ex: John Doe"
-            onChange={(e) => setPeopleName(e.target.value)}
-            value={peopleName}
+            defaultValue={peopleName}
+            ref={peopleNameInputRef}
             required
             maxLength={20}
           />
           <TextInput
             title="Código da sala"
             placeholder="Ex: 4d71a4a3-f191-498d-a160-2de65febcb4e"
-            onChange={(e) => setRoomCode(e.target.value)}
-            value={roomCode}
+            ref={roomCodeInputRef}
             required
           />
           <Button disabled={isLoading}>Entrar na sala</Button>
