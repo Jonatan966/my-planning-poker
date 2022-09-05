@@ -1,12 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { randomUUID } from "crypto";
 import { cookieStorageManager } from "../../utils/cookie-storage-manager";
+import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
 
-export default async (request: NextApiRequest, response: NextApiResponse) => {
+export default async (_: NextApiRequest, response: NextApiResponse) => {
   const userId = randomUUID();
 
   cookieStorageManager.setItem(
-    "@planning:user-id",
+    persistedCookieVars.PEOPLE_ID,
     userId,
     { res: response },
     {

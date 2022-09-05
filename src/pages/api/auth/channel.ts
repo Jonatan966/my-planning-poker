@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
 import { connectOnPusherServer } from "../../../lib/pusher";
 import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 
@@ -7,13 +8,16 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
 
   const pusher = connectOnPusherServer();
 
-  const userID = cookieStorageManager.getItem("@planning:user-id", {
+  const userID = cookieStorageManager.getItem(persistedCookieVars.PEOPLE_ID, {
     req: request,
   });
 
-  const userName = cookieStorageManager.getItem("@planning:people-name", {
-    req: request,
-  });
+  const userName = cookieStorageManager.getItem(
+    persistedCookieVars.PEOPLE_NAME,
+    {
+      req: request,
+    }
+  );
 
   let authResponse = pusher.authorizeChannel(
     socket_id as string,

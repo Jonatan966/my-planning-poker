@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { persistedCookieVars } from "../../../../configs/persistent-cookie-vars";
 import { cookieStorageManager } from "../../../../utils/cookie-storage-manager";
 import Button from "../../../ui/button";
 import TextInput from "../../../ui/text-input";
@@ -18,7 +19,7 @@ function PeopleForm({
 
   async function handleFillPeopleName() {
     cookieStorageManager.setItem(
-      "@planning:people-name",
+      persistedCookieVars.PEOPLE_NAME,
       peopleNameInputRef.current.value
     );
 

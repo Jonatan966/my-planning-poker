@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, FormEvent, useRef } from "react";
+import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
 import { useRoom } from "../../../contexts/room-context";
 import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 import Button from "../../ui/button";
@@ -12,7 +13,9 @@ interface ConnectionFormProps {
 }
 
 function ConnectionForm({ menu }: ConnectionFormProps) {
-  const peopleName = cookieStorageManager.getItem("@planning:people-name");
+  const peopleName = cookieStorageManager.getItem(
+    persistedCookieVars.PEOPLE_NAME
+  );
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,7 +30,7 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
     event.preventDefault();
 
     cookieStorageManager.setItem(
-      "@planning:people-name",
+      persistedCookieVars.PEOPLE_NAME,
       peopleNameInputRef.current.value
     );
 
@@ -42,7 +45,7 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
     event.preventDefault();
 
     cookieStorageManager.setItem(
-      "@planning:people-name",
+      persistedCookieVars.PEOPLE_NAME,
       peopleNameInputRef.current.value
     );
 
