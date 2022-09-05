@@ -96,11 +96,13 @@ function ConnectionDialog({
     function debounceConnectionLoad() {
       clearTimeout(connectionDebounceTimer.current);
 
+      const DEBOUNCE_DELAY = 500; // Half second (1/2 second)
+
       if (connectionDebounceTimer.current > -1) {
         connectionDebounceTimer.current = window.setTimeout(() => {
           setIsConnectingIntoRoom(false);
           connectionDebounceTimer.current = -1;
-        }, 750);
+        }, DEBOUNCE_DELAY);
       }
     }
 
