@@ -1,3 +1,4 @@
+import { CookieSerializeOptions } from "cookie";
 import { NextPageContext, NextApiRequest, NextApiResponse } from "next";
 import { parseCookies, setCookie, destroyCookie } from "nookies";
 
@@ -28,7 +29,8 @@ function getItem<V = string>(
 function setItem<V = string>(
   key: string,
   value: V,
-  context?: ServerContext<"res">
+  context?: ServerContext<"res">,
+  config?: CookieSerializeOptions
 ): boolean {
   const preparedValue = JSON.stringify(value);
 
@@ -43,6 +45,7 @@ function setItem<V = string>(
     currentDate.setFullYear(currentDate.getFullYear() + 1);
 
     setCookie(context, key, preparedValue, {
+      ...config,
       path: "/",
       expires: currentDate,
     });

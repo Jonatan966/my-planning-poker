@@ -3,7 +3,7 @@ import { connectOnPusherServer } from "../../../lib/pusher";
 import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
-  const { socket_id, channel_name } = request.body;
+  const { socket_id } = request.body;
 
   const pusher = connectOnPusherServer();
 
@@ -15,16 +15,12 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     req: request,
   });
 
-  let authResponse = pusher.authorizeChannel(
-    socket_id as string,
-    channel_name as string,
-    {
-      user_id: userID,
-      user_info: {
-        name: userName,
-      },
-    }
-  );
+  let authResponse = pusher.authenticateUser(socket_id as string, {
+    id: userID,
+    user_info: {
+      name: userName,
+    },
+  });
 
   return response.send(JSON.stringify(authResponse));
 };

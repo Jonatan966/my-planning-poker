@@ -9,6 +9,10 @@ export function connectOnPusherWeb() {
       endpoint: "/api/auth/channel",
       transport: "ajax",
     },
+    userAuthentication: {
+      endpoint: "/api/auth/user",
+      transport: "ajax",
+    },
   });
 
   return pusher;

@@ -59,6 +59,10 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
       connection.current = await createWebConnection();
     }
 
+    await api.get("/generate-user-id");
+
+    connection.current.signin();
+
     const subscription = connection.current.subscribe(
       `presence-${roomId}`
     ) as PresenceChannel;
