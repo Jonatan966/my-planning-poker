@@ -55,9 +55,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   );
   const peopleID = randomUUID();
 
-  cookieStorageManager.setItem(persistedCookieVars.PEOPLE_ID, peopleID, ctx, {
-    httpOnly: true,
-  });
+  if (!cookieStorageManager.getItem(persistedCookieVars.PEOPLE_ID)) {
+    cookieStorageManager.setItem(persistedCookieVars.PEOPLE_ID, peopleID, ctx, {
+      httpOnly: true,
+    });
+  }
 
   const { room_id } = ctx.query;
 
