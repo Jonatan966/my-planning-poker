@@ -27,9 +27,11 @@ export interface RoomInfo {
   peoples?: People[];
 }
 
+export type BasicRoomInfo = Pick<RoomInfo, "name" | "id">;
+
 export interface RoomContextProps {
   createRoom(roomName: string): Promise<RoomInfo>;
-  connectOnRoom(roomId: string): Promise<() => void>;
+  connectOnRoom(basicRoomInfo: BasicRoomInfo): Promise<() => void>;
   disconnectOnRoom(): void;
   selectPoint(points: number): Promise<void>;
   setRoomPointsVisibility(show?: boolean): Promise<void>;

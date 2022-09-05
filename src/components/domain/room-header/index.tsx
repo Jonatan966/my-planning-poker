@@ -12,10 +12,14 @@ interface RoomHeaderProps {
     id: string;
     name?: string;
   };
+  basicRoomInfo: {
+    id: string;
+    name: string;
+  };
 }
 
-function RoomHeader({ basicMe }: RoomHeaderProps) {
-  const { me, room, disconnectOnRoom } = useRoom();
+function RoomHeader({ basicMe, basicRoomInfo }: RoomHeaderProps) {
+  const { me, disconnectOnRoom } = useRoom();
   const router = useRouter();
 
   async function copyRoomCode() {
@@ -35,7 +39,7 @@ function RoomHeader({ basicMe }: RoomHeaderProps) {
     <header className={styles.headerContainer}>
       <div>
         <strong className={styles.room}>
-          <BsFillSuitClubFill size={28} /> {room?.name}
+          <BsFillSuitClubFill size={28} /> {basicRoomInfo.name}
         </strong>
         <nav>
           <span>{basicMe?.name || me?.name}</span>

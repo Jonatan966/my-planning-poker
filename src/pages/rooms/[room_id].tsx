@@ -10,24 +10,30 @@ import ConnectionDialog from "../../components/domain/connection-dialog";
 import { cookieStorageManager } from "../../utils/cookie-storage-manager";
 import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
 import styles from "../../styles/pages/room.module.css";
+import { redis } from "../../lib/redis";
 
 interface RoomPageProps {
   basicMe: {
     id: string;
     name?: string;
   };
+  basicRoomInfo: {
+    id: string;
+    name: string;
+  };
 }
 
-function RoomPage({ basicMe }: RoomPageProps) {
+function RoomPage({ basicMe, basicRoomInfo }: RoomPageProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
     <>
-      <RoomHeader basicMe={basicMe} />
+      <RoomHeader basicMe={basicMe} basicRoomInfo={basicRoomInfo} />
       <ConnectionDialog
         isOpen={isLoading}
         onRequestClose={() => setIsLoading(false)}
         basicMe={basicMe}
+        basicRoomInfo={basicRoomInfo}
       />
       {!isLoading && (
         <>
@@ -53,12 +59,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     httpOnly: true,
   });
 
+  const { room_id } = ctx.query;
+
+  const roomName = await redis.get<string>(String(room_id));
+
+  const basicRoomInfo = {
+    id: String(room_id),
+    name: roomName,
+  };
+
   return {
     props: {
       basicMe: {
         id: peopleID,
         name: peopleName || null,
       },
+      basicRoomInfo,
     },
   };
 };

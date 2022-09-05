@@ -9,6 +9,7 @@ import {
   RoomContextProviderProps,
   RoomInfo,
   MainRoomEvents,
+  BasicRoomInfo,
 } from "./types";
 
 const RoomContext = createContext({} as RoomContextProps);
@@ -52,7 +53,7 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
     return roomInfo;
   }
 
-  async function connectOnRoom(roomId: string) {
+  async function connectOnRoom(roomBasicInfo: BasicRoomInfo) {
     if (connection.current) {
       disconnectOnRoom();
     } else {
@@ -62,20 +63,13 @@ export function RoomContextProvider({ children }: RoomContextProviderProps) {
     connection.current.signin();
 
     const subscription = connection.current.subscribe(
-      `presence-${roomId}`
+      `presence-${roomBasicInfo.id}`
     ) as PresenceChannel;
 
     const preparedRoom = prepareRoomConnection(subscription);
 
-    const { data } = await api.get("/get-room-name", {
-      params: {
-        room_id: roomId,
-      },
-    });
-
     const roomInfo: RoomInfo = {
-      id: roomId,
-      name: data.name,
+      ...roomBasicInfo,
       subscription,
     };
 
