@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useRoom } from "../../../contexts/room-context";
 import { MainRoomEvents } from "../../../contexts/room-context/types";
-import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
-import { storageManager } from "../../../utils/storage-manager";
 import Dialog from "../../ui/dialog";
 import { ConnectingMessage } from "./connecting-message";
 import { PeopleForm } from "./people-form";
@@ -15,16 +13,23 @@ import styles from "./styles.module.css";
 interface ConnectionDialogProps {
   isOpen?: boolean;
   onRequestClose: () => void;
+  basicMe: {
+    name?: string;
+  };
 }
 
-function ConnectionDialog({ onRequestClose, isOpen }: ConnectionDialogProps) {
+function ConnectionDialog({
+  onRequestClose,
+  isOpen,
+  basicMe,
+}: ConnectionDialogProps) {
   const router = useRouter();
   const { connectOnRoom, disconnectOnRoom, room } = useRoom();
 
   const [isConnectingIntoRoom, setIsConnectingIntoRoom] = useState(true);
 
   const [isFillPeopleName, setIsFillPeopleName] = useState(
-    () => !!cookieStorageManager.getItem("@planning:people-name")
+    () => !!basicMe?.name
   );
 
   const isInitialInteraction = useRef(true);

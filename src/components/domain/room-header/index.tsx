@@ -7,7 +7,14 @@ import Button from "../../ui/button";
 
 import styles from "./styles.module.css";
 
-function RoomHeader() {
+interface RoomHeaderProps {
+  basicMe: {
+    id: string;
+    name?: string;
+  };
+}
+
+function RoomHeader({ basicMe }: RoomHeaderProps) {
   const { me, room, disconnectOnRoom } = useRoom();
   const router = useRouter();
 
@@ -19,9 +26,9 @@ function RoomHeader() {
     });
   }
 
-  function handleDisconnectOnRoom() {
+  async function handleDisconnectOnRoom() {
+    await router.replace("/");
     disconnectOnRoom();
-    router.replace("/");
   }
 
   return (
@@ -31,7 +38,7 @@ function RoomHeader() {
           <BsFillSuitClubFill size={28} /> {room?.name}
         </strong>
         <nav>
-          <span>{me?.name}</span>
+          <span>{basicMe?.name || me?.name}</span>
           <Button colorScheme="primary" onClick={copyRoomCode}>
             Copiar link da sala
           </Button>
