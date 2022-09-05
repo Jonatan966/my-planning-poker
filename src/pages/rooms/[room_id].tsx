@@ -55,7 +55,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   );
   const peopleID = randomUUID();
 
-  if (!cookieStorageManager.getItem(persistedCookieVars.PEOPLE_ID)) {
+  if (!cookieStorageManager.getItem(persistedCookieVars.PEOPLE_ID, ctx)) {
     cookieStorageManager.setItem(persistedCookieVars.PEOPLE_ID, peopleID, ctx, {
       httpOnly: true,
     });
