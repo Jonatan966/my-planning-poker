@@ -10,7 +10,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     <RoomContextProvider>
       <Head>
         <title>My Planning Poker</title>
-        <link rel="icon" href="favicon.svg" sizes="any" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
       </Head>
       <Toaster />
       <Component {...pageProps} />

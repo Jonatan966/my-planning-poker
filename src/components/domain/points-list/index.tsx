@@ -2,9 +2,10 @@ import classNames from "classnames";
 import confetti from "canvas-confetti";
 import ReactConfetti from "react-canvas-confetti";
 
-import { People, useRoom } from "../../../contexts/room-context";
+import { useRoom } from "../../../contexts/room-context";
 import PointButton from "../../ui/point-button";
 import styles from "./styles.module.css";
+import { People } from "../../../contexts/room-context/types";
 
 const AVAILABLE_POINTS = [1, 2, 3, 5, 8, 13, 21, 0];
 const CONFETTI_SETTINGS: confetti.Options = {

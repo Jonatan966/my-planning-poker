@@ -7,8 +7,19 @@ import Button from "../../ui/button";
 
 import styles from "./styles.module.css";
 
-function RoomHeader() {
-  const { me, room, disconnectOnRoom } = useRoom();
+interface RoomHeaderProps {
+  basicMe: {
+    id: string;
+    name?: string;
+  };
+  basicRoomInfo: {
+    id: string;
+    name: string;
+  };
+}
+
+function RoomHeader({ basicMe, basicRoomInfo }: RoomHeaderProps) {
+  const { me, disconnectOnRoom } = useRoom();
   const router = useRouter();
 
   async function copyRoomCode() {
@@ -19,19 +30,19 @@ function RoomHeader() {
     });
   }
 
-  function handleDisconnectOnRoom() {
+  async function handleDisconnectOnRoom() {
+    await router.replace("/");
     disconnectOnRoom();
-    router.replace("/");
   }
 
   return (
     <header className={styles.headerContainer}>
       <div>
         <strong className={styles.room}>
-          <BsFillSuitClubFill size={28} /> {room?.name}
+          <BsFillSuitClubFill size={28} /> {basicRoomInfo.name}
         </strong>
         <nav>
-          <span>{me?.name}</span>
+          <span>{basicMe?.name || me?.name}</span>
           <Button colorScheme="primary" onClick={copyRoomCode}>
             Copiar link da sala
           </Button>

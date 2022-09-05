@@ -1,49 +1,39 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useState } from "react";
+import { randomUUID } from "crypto";
+import { GetServerSideProps } from "next";
 
 import PointsList from "../../components/domain/points-list";
 import RoomHeader from "../../components/domain/room-header";
 import Table from "../../components/domain/table";
-
-import styles from "../../styles/pages/room.module.css";
-import { useRoom } from "../../contexts/room-context";
-import { api } from "../../lib/axios";
 import ConnectionDialog from "../../components/domain/connection-dialog";
 
-function RoomPage() {
-  const router = useRouter();
+import { cookieStorageManager } from "../../utils/cookie-storage-manager";
+import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
+import styles from "../../styles/pages/room.module.css";
+import { redis } from "../../lib/redis";
+
+interface RoomPageProps {
+  basicMe: {
+    id: string;
+    name?: string;
+  };
+  basicRoomInfo: {
+    id: string;
+    name: string;
+  };
+}
+
+function RoomPage({ basicMe, basicRoomInfo }: RoomPageProps) {
   const [isLoading, setIsLoading] = useState(true);
-
-  const { peerId } = useRoom();
-
-  useEffect(() => {
-    const roomId = router.query.room_id as string;
-
-    function onWindowClose() {
-      navigator.sendBeacon(
-        `${api.defaults.baseURL}/events/people-leave`,
-        JSON.stringify({
-          room_id: roomId,
-          people_id: peerId,
-        })
-      );
-    }
-
-    window.addEventListener("beforeunload", onWindowClose);
-    window.addEventListener("popstate", onWindowClose);
-
-    return () => {
-      window.removeEventListener("beforeunload", onWindowClose);
-      window.removeEventListener("popstate", onWindowClose);
-    };
-  }, [router, peerId]);
 
   return (
     <>
-      <RoomHeader />
+      <RoomHeader basicMe={basicMe} basicRoomInfo={basicRoomInfo} />
       <ConnectionDialog
         isOpen={isLoading}
         onRequestClose={() => setIsLoading(false)}
+        basicMe={basicMe}
+        basicRoomInfo={basicRoomInfo}
       />
       {!isLoading && (
         <>
@@ -57,5 +47,38 @@ function RoomPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const peopleName = cookieStorageManager.getItem(
+    persistedCookieVars.PEOPLE_NAME,
+    ctx
+  );
+  const peopleID = randomUUID();
+
+  if (!cookieStorageManager.getItem(persistedCookieVars.PEOPLE_ID, ctx)) {
+    cookieStorageManager.setItem(persistedCookieVars.PEOPLE_ID, peopleID, ctx, {
+      httpOnly: true,
+    });
+  }
+
+  const { room_id } = ctx.query;
+
+  const roomName = await redis.get<string>(String(room_id));
+
+  const basicRoomInfo = {
+    id: String(room_id),
+    name: roomName,
+  };
+
+  return {
+    props: {
+      basicMe: {
+        id: peopleID,
+        name: peopleName || null,
+      },
+      basicRoomInfo,
+    },
+  };
+};
 
 export default RoomPage;
