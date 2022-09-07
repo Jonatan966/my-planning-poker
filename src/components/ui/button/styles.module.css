@@ -45,3 +45,17 @@
   --border: #f75a68;
   --color: #f75a68;
 }
+
+.spinner {
+  animation: 1.5s linear 0s normal none infinite spin;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

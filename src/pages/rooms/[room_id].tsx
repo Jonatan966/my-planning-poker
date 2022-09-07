@@ -11,6 +11,7 @@ import { cookieStorageManager } from "../../utils/cookie-storage-manager";
 import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
 import styles from "../../styles/pages/room.module.css";
 import { redis } from "../../lib/redis";
+import { errorCodes } from "../../configs/error-codes";
 
 interface RoomPageProps {
   basicMe: {
@@ -49,6 +50,24 @@ function RoomPage({ basicMe, basicRoomInfo }: RoomPageProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { room_id } = ctx.query;
+
+  const roomName = await redis.get<string>(String(room_id));
+
+  if (!roomName) {
+    return {
+      redirect: {
+        destination: `/?error=${errorCodes.ROOM_NOT_EXISTS}`,
+        permanent: false,
+      },
+    };
+  }
+
+  const basicRoomInfo = {
+    id: String(room_id),
+    name: roomName,
+  };
+
   const peopleName = cookieStorageManager.getItem(
     persistedCookieVars.PEOPLE_NAME,
     ctx
@@ -60,15 +79,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       httpOnly: true,
     });
   }
-
-  const { room_id } = ctx.query;
-
-  const roomName = await redis.get<string>(String(room_id));
-
-  const basicRoomInfo = {
-    id: String(room_id),
-    name: roomName,
-  };
 
   return {
     props: {

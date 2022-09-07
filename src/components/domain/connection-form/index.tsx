@@ -10,14 +10,18 @@ import styles from "./styles.module.css";
 
 interface ConnectionFormProps {
   menu: string;
+  isLoading: boolean;
+  setIsLoading: (value: boolean) => void;
 }
 
-function ConnectionForm({ menu }: ConnectionFormProps) {
+function ConnectionForm({
+  menu,
+  isLoading,
+  setIsLoading,
+}: ConnectionFormProps) {
   const peopleName = cookieStorageManager.getItem(
     persistedCookieVars.PEOPLE_NAME
   );
-
-  const [isLoading, setIsLoading] = useState(false);
 
   const peopleNameInputRef = useRef<HTMLInputElement>();
 
@@ -29,6 +33,10 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
 
   async function handleConnectOnRoom(event: FormEvent) {
     event.preventDefault();
+
+    setIsLoading(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 250));
 
     cookieStorageManager.setItem(
       persistedCookieVars.PEOPLE_NAME,
@@ -45,12 +53,12 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
   async function handleCreateRoom(event: FormEvent) {
     event.preventDefault();
 
+    setIsLoading(true);
+
     cookieStorageManager.setItem(
       persistedCookieVars.PEOPLE_NAME,
       peopleNameInputRef.current.value
     );
-
-    setIsLoading(true);
 
     try {
       const roomInfo = await createRoom(roomName);
@@ -72,6 +80,7 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
             ref={peopleNameInputRef}
             required
             maxLength={20}
+            disabled={isLoading}
           />
           <TextInput
             placeholder="Ex: Planejamento semanal"
@@ -80,9 +89,10 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
             onChange={(e) => setRoomName(e.target.value)}
             required
             maxLength={32}
+            disabled={isLoading}
           />
 
-          <Button disabled={isLoading}>Criar sala</Button>
+          <Button isLoading={isLoading}>Criar sala</Button>
         </form>
       );
 
@@ -96,6 +106,7 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
             ref={peopleNameInputRef}
             required
             maxLength={20}
+            disabled={isLoading}
           />
           <TextInput
             title="Código da sala"
@@ -103,8 +114,9 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
             value={roomCode}
             onChange={(e) => setRoomCode(e.target.value)}
             required
+            disabled={isLoading}
           />
-          <Button disabled={isLoading}>Entrar na sala</Button>
+          <Button isLoading={isLoading}>Entrar na sala</Button>
         </form>
       );
   }

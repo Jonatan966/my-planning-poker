@@ -9,7 +9,7 @@
 
   font-size: 1rem;
 
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, filter 0.2s;
 }
 
 .textInputContainer:focus {
@@ -20,4 +20,9 @@
 .textInputLabel {
   font-size: 14px;
   color: #87868b;
+}
+
+.textInputContainer:disabled {
+  filter: brightness(0.6);
+  cursor: not-allowed;
 }
