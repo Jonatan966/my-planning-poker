@@ -12,7 +12,7 @@ function HomePage() {
       <section className={styles.contentBox}>
         <div className={styles.appName}>
           <img src="/favicon.png" alt="Logotipo da aplicação" />
-          <h1>My Planning Poker</h1>
+          <h1 translate="no">My Planning Poker</h1>
         </div>
         <TabMenu
           menus={[
