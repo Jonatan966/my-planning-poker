@@ -8,28 +8,30 @@ function HomePage() {
   const [menu, setMenu] = useState("enter");
 
   return (
-    <section className={styles.container}>
-      <div className={styles.appName}>
-        <img src="favicon.svg" alt="Logotipo da aplicação" />
-        <h1>My Planning Poker</h1>
-      </div>
-      <TabMenu
-        menus={[
-          {
-            id: "enter",
-            name: "Entrar",
-          },
-          {
-            id: "create",
-            name: "Criar",
-          },
-        ]}
-        selectedMenu={menu}
-        setSelectedMenu={setMenu}
-      />
+    <div className={styles.container}>
+      <section className={styles.contentBox}>
+        <div className={styles.appName}>
+          <img src="favicon.svg" alt="Logotipo da aplicação" />
+          <h1>My Planning Poker</h1>
+        </div>
+        <TabMenu
+          menus={[
+            {
+              id: "enter",
+              name: "Entrar",
+            },
+            {
+              id: "create",
+              name: "Criar",
+            },
+          ]}
+          selectedMenu={menu}
+          setSelectedMenu={setMenu}
+        />
 
-      <ConnectionForm menu={menu} />
-    </section>
+        <ConnectionForm menu={menu} />
+      </section>
+    </div>
   );
 }
 

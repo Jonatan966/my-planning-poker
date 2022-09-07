@@ -1,11 +1,16 @@
 .headerContainer {
   background: #202024;
-  height: 72px;
+  min-height: 72px;
   width: 100%;
+
+  position: sticky;
+  top: 0;
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  box-shadow: 0 4px 8px #121214;
 }
 
 .headerContainer > div {

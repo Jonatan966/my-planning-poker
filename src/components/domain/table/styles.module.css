@@ -50,3 +50,20 @@
 .bottomTableModule {
   grid-area: bottom;
 }
+
+@media (max-width: 720px) {
+  .table {
+    max-width: 100%;
+    min-height: 34rem;
+    width: 44rem;
+  }
+
+  .tableCenter {
+    min-width: auto;
+    min-height: auto;
+  }
+
+  .tableCenter button {
+    margin: 0.75rem;
+  }
+}

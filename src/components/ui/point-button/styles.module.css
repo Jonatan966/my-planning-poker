@@ -11,6 +11,8 @@
   border-radius: 5px;
 
   transition: transform 0.2s;
+
+  flex-shrink: 0;
 }
 
 .pointButtonContainer:not(:disabled):hover,
