@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { BsFillSuitClubFill } from "react-icons/bs";
+import { FaLink } from "react-icons/fa";
 import { useRoom } from "../../../contexts/room-context";
 
 import Button from "../../ui/button";
@@ -42,9 +43,15 @@ function RoomHeader({ basicMe, basicRoomInfo }: RoomHeaderProps) {
           <BsFillSuitClubFill size={28} /> {basicRoomInfo.name}
         </strong>
         <nav>
-          <span>{basicMe?.name || me?.name}</span>
-          <Button colorScheme="primary" onClick={copyRoomCode}>
-            Copiar link da sala
+          <span className={styles.myName}>{basicMe?.name || me?.name}</span>
+          <Button
+            colorScheme="primary"
+            onClick={copyRoomCode}
+            className={styles.copyRoomCode}
+            title="Copiar link da sala"
+          >
+            <p>Copiar link da sala</p>
+            <FaLink />
           </Button>
           <Button colorScheme="danger" onClick={handleDisconnectOnRoom}>
             Sair

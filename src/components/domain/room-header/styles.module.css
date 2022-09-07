@@ -30,7 +30,7 @@
   gap: 1rem;
 }
 
-.headerContainer nav span {
+.myName {
   display: flex;
   align-items: center;
   font-weight: bold;
@@ -38,8 +38,21 @@
   color: #1ef7d0;
 }
 
+.copyRoomCode {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .room {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+@media (max-width: 720px) {
+  .copyRoomCode p,
+  .myName {
+    display: none;
+  }
 }
