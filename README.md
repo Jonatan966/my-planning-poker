@@ -95,6 +95,14 @@ Inicie a aplicação
 yarn dev
 ```
 
+## :compass: Roadmap
+
+É possível acompanhar o progresso da aplicação por meio [dessas milestones](https://github.com/Jonatan966/my-planning-poker/milestones)
+
 ## 📞 Contato
 
 Jonatan Frederico - [Perfil do Linkedin](https://www.linkedin.com/in/jonatan-frederico/) - [jonatanfrederico@gmail.com](mailto:jonatanfrederico@gmail.com)
+
+## 🔑 Licença
+
+Consulte o arquivo [LICENSE.md](./LICENSE.md) para mais informações.
