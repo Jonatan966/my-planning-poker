@@ -20,8 +20,9 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const peopleNameInputRef = useRef<HTMLInputElement>();
-  const roomNameInputRef = useRef<HTMLInputElement>();
-  const roomCodeInputRef = useRef<HTMLInputElement>();
+
+  const [roomName, setRoomName] = useState("");
+  const [roomCode, setRoomCode] = useState("");
 
   const router = useRouter();
   const { createRoom } = useRoom();
@@ -35,7 +36,7 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
     );
 
     try {
-      await router.push(`/rooms/${roomCodeInputRef.current.value}`);
+      await router.push(`/rooms/${roomCode}`);
     } finally {
       setIsLoading(false);
     }
@@ -52,7 +53,7 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
     setIsLoading(true);
 
     try {
-      const roomInfo = await createRoom(roomNameInputRef.current.value);
+      const roomInfo = await createRoom(roomName);
 
       await router.push(`/rooms/${roomInfo.id}`);
     } finally {
@@ -75,7 +76,8 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
           <TextInput
             placeholder="Ex: Planejamento semanal"
             title="Nome da sala"
-            ref={roomNameInputRef}
+            value={roomName}
+            onChange={(e) => setRoomName(e.target.value)}
             required
             maxLength={32}
           />
@@ -98,7 +100,8 @@ function ConnectionForm({ menu }: ConnectionFormProps) {
           <TextInput
             title="Código da sala"
             placeholder="Ex: 4d71a4a3-f191-498d-a160-2de65febcb4e"
-            ref={roomCodeInputRef}
+            value={roomCode}
+            onChange={(e) => setRoomCode(e.target.value)}
             required
           />
           <Button disabled={isLoading}>Entrar na sala</Button>

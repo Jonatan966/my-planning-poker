@@ -1,4 +1,6 @@
-import { useState } from "react";
+import cloneDeep from "lodash.clonedeep";
+import { useMemo, useState } from "react";
+import useDimensions from "react-cool-dimensions";
 import { useRoom } from "../../../contexts/room-context";
 import { People } from "../../../contexts/room-context/types";
 import Button from "../../ui/button";
@@ -6,16 +8,60 @@ import PointCard from "./point-card";
 
 import styles from "./styles.module.css";
 
+type Dimensions = "XS" | "default";
+
+type TableResponsiveConfigs = Record<
+  Dimensions,
+  {
+    limits: number[];
+    newMatchButton: string;
+    revealCardsButton: string;
+  }
+>;
+
 const tableModuleNames = ["bottom", "top", "left", "right"];
 
-function buildTableModules(peoples: People[] = []) {
+const tableResponsiveConfigs: TableResponsiveConfigs = {
+  XS: {
+    limits: [2, 2, -1, -1],
+    newMatchButton: "RESETAR",
+    revealCardsButton: "REVELAR",
+  },
+  default: {
+    limits: [-1, -1, -1, -1],
+    newMatchButton: "NOVA PARTIDA",
+    revealCardsButton: "REVELAR CARTAS",
+  },
+};
+
+function isReachedTheLimit(
+  limits: number[],
+  modules: People[][],
+  currentModule: number
+) {
+  const hasLimit = limits?.[currentModule] > -1;
+
+  return hasLimit && modules[currentModule].length >= limits?.[currentModule];
+}
+
+function buildTableModules(
+  peoples: People[] = [],
+  limits = tableResponsiveConfigs.default.limits
+) {
   const tableModules = [[], [], [], []] as People[][];
   let currentModule = 0;
 
-  for (const people of peoples) {
-    tableModules[currentModule].push(people);
+  const peoplesQueue = cloneDeep(peoples);
 
-    if (tableModules[currentModule].length % 3 === 0) {
+  while (peoplesQueue.length) {
+    if (!isReachedTheLimit(limits, tableModules, currentModule)) {
+      tableModules[currentModule].push(peoplesQueue.shift());
+    }
+
+    if (
+      isReachedTheLimit(limits, tableModules, currentModule) ||
+      tableModules[currentModule].length % 3 === 0
+    ) {
       currentModule++;
     }
 
@@ -32,9 +78,18 @@ function Table() {
   const [isChangingPointsVisibility, setIsChangingPointsVisibility] =
     useState(false);
 
+  const { observe, currentBreakpoint } = useDimensions({
+    breakpoints: { XS: 0, SM: 500 },
+    updateOnBreakpointChange: true,
+  });
+
   if (!room) {
     return <></>;
   }
+
+  const tableConfig =
+    tableResponsiveConfigs?.[currentBreakpoint as Dimensions] ||
+    tableResponsiveConfigs.default;
 
   const isSomePeopleSelectPoint = room.peoples.some(
     (people) => typeof people.points !== "undefined"
@@ -48,30 +103,38 @@ function Table() {
     setIsChangingPointsVisibility(false);
   }
 
-  const tableModules = buildTableModules(room.peoples);
+  const renderedTableModules = useMemo(() => {
+    if (!currentBreakpoint) {
+      return [];
+    }
 
-  const renderedTableModules = tableModules
-    .map((roomPeoples, moduleIndex) => (
-      <div
-        className={styles[`${tableModuleNames[moduleIndex]}TableModule`]}
-        key={`module-${moduleIndex}`}
-      >
-        {roomPeoples.map((roomPeople) => (
-          <PointCard
-            points={roomPeople.points}
-            key={roomPeople.id}
-            showPoints={room.showPoints && showPointsCountdown === 0}
-            highlight={roomPeople.id === me?.id}
-          >
-            {roomPeople.name}
-          </PointCard>
-        ))}
-      </div>
-    ))
-    .flat();
+    const tableModules = buildTableModules(room.peoples, tableConfig.limits);
+
+    const renderedTableModules = tableModules
+      .map((roomPeoples, moduleIndex) => (
+        <div
+          className={styles[`${tableModuleNames[moduleIndex]}TableModule`]}
+          key={`module-${moduleIndex}`}
+        >
+          {roomPeoples.map((roomPeople) => (
+            <PointCard
+              points={roomPeople.points}
+              key={roomPeople.id}
+              showPoints={room.showPoints && showPointsCountdown === 0}
+              highlight={roomPeople.id === me?.id}
+            >
+              {roomPeople.name}
+            </PointCard>
+          ))}
+        </div>
+      ))
+      .flat();
+
+    return renderedTableModules;
+  }, [room.peoples, showPointsCountdown, currentBreakpoint]);
 
   return (
-    <div className={styles.table}>
+    <div className={styles.table} ref={observe}>
       {renderedTableModules}
 
       <div className={styles.tableCenter}>
@@ -83,7 +146,11 @@ function Table() {
             onClick={handleSetRoomPointsVisibility}
             disabled={isChangingPointsVisibility || !isSomePeopleSelectPoint}
           >
-            {room?.showPoints ? "NOVA PARTIDA" : "REVELAR CARTAS"}
+            {
+              tableConfig[
+                room?.showPoints ? "newMatchButton" : "revealCardsButton"
+              ]
+            }
           </Button>
         )}
       </div>

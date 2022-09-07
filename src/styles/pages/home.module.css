@@ -1,6 +1,13 @@
 .container {
-  margin: auto;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contentBox {
   padding: 32px;
+  margin: 0.75rem;
 
   border-radius: 5px;
 
@@ -19,4 +26,10 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .contentBox {
+    padding: 20px;
+  }
 }
