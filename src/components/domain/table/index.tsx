@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRoom } from "../../../contexts/room-context";
 import { People } from "../../../contexts/room-context/types";
 import Button from "../../ui/button";
@@ -48,27 +48,31 @@ function Table() {
     setIsChangingPointsVisibility(false);
   }
 
-  const tableModules = buildTableModules(room.peoples);
+  const renderedTableModules = useMemo(() => {
+    const tableModules = buildTableModules(room.peoples);
 
-  const renderedTableModules = tableModules
-    .map((roomPeoples, moduleIndex) => (
-      <div
-        className={styles[`${tableModuleNames[moduleIndex]}TableModule`]}
-        key={`module-${moduleIndex}`}
-      >
-        {roomPeoples.map((roomPeople) => (
-          <PointCard
-            points={roomPeople.points}
-            key={roomPeople.id}
-            showPoints={room.showPoints && showPointsCountdown === 0}
-            highlight={roomPeople.id === me?.id}
-          >
-            {roomPeople.name}
-          </PointCard>
-        ))}
-      </div>
-    ))
-    .flat();
+    const renderedTableModules = tableModules
+      .map((roomPeoples, moduleIndex) => (
+        <div
+          className={styles[`${tableModuleNames[moduleIndex]}TableModule`]}
+          key={`module-${moduleIndex}`}
+        >
+          {roomPeoples.map((roomPeople) => (
+            <PointCard
+              points={roomPeople.points}
+              key={roomPeople.id}
+              showPoints={room.showPoints && showPointsCountdown === 0}
+              highlight={roomPeople.id === me?.id}
+            >
+              {roomPeople.name}
+            </PointCard>
+          ))}
+        </div>
+      ))
+      .flat();
+
+    return renderedTableModules;
+  }, [room.peoples, showPointsCountdown]);
 
   return (
     <div className={styles.table}>
