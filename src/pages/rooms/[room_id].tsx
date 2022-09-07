@@ -49,6 +49,24 @@ function RoomPage({ basicMe, basicRoomInfo }: RoomPageProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { room_id } = ctx.query;
+
+  const roomName = await redis.get<string>(String(room_id));
+
+  if (!roomName) {
+    return {
+      redirect: {
+        destination: "/?error=room_not_exists",
+        permanent: false,
+      },
+    };
+  }
+
+  const basicRoomInfo = {
+    id: String(room_id),
+    name: roomName,
+  };
+
   const peopleName = cookieStorageManager.getItem(
     persistedCookieVars.PEOPLE_NAME,
     ctx
@@ -60,15 +78,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       httpOnly: true,
     });
   }
-
-  const { room_id } = ctx.query;
-
-  const roomName = await redis.get<string>(String(room_id));
-
-  const basicRoomInfo = {
-    id: String(room_id),
-    name: roomName,
-  };
 
   return {
     props: {
