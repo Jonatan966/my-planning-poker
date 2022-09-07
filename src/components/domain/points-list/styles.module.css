@@ -3,12 +3,9 @@
 
   display: flex;
   flex-direction: column;
+  justify-content: center;
 
-  margin: 16px 0;
-}
-
-.average span {
-  font-size: 18px;
+  height: inherit;
 }
 
 .average strong {
@@ -16,17 +13,29 @@
 }
 
 .pointsListContainer {
-  display: flex;
-  justify-content: center;
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+
+  overflow-y: hidden;
 
   height: 6.5rem;
 
   position: relative;
   overflow-x: auto;
+
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background: #09090a;
+
+  box-shadow: 0 0px 8px #121214;
 }
 
 .confetti {
-  position: absolute;
+  position: fixed;
   width: 100vw;
   height: 100vh;
   pointer-events: none;
@@ -35,29 +44,4 @@
 
 .isUnanimous strong {
   color: #eb8a1d;
-}
-
-@media (max-width: 720px) {
-  .pointsListContainer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    background: #09090a;
-
-    display: inline-block;
-    text-align: center;
-    white-space: nowrap;
-
-    overflow-y: hidden;
-  }
-
-  .average span {
-    font-size: 14px;
-  }
-
-  .average {
-    margin: 8px 0;
-  }
 }
