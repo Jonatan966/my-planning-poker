@@ -6,6 +6,7 @@ import { useRoom } from "../../../contexts/room-context";
 import PointButton from "../../ui/point-button";
 import styles from "./styles.module.css";
 import { People } from "../../../contexts/room-context/types";
+import Portal from "../../ui/portal";
 
 const AVAILABLE_POINTS = [1, 2, 3, 5, 8, 13, 21, 0];
 const CONFETTI_SETTINGS: confetti.Options = {
@@ -80,14 +81,16 @@ function PointsList() {
 
     return (
       <>
-        <ReactConfetti
-          refConfetti={(fireConfetti) => {
-            if (isUnanimous && fireConfetti) {
-              fireConfetti(CONFETTI_SETTINGS);
-            }
-          }}
-          className={styles.confetti}
-        />
+        <Portal>
+          <ReactConfetti
+            refConfetti={(fireConfetti) => {
+              if (isUnanimous && fireConfetti) {
+                fireConfetti(CONFETTI_SETTINGS);
+              }
+            }}
+            className={styles.confetti}
+          />
+        </Portal>
         <div
           className={classNames(styles.average, {
             [styles.isUnanimous]: isUnanimous,
