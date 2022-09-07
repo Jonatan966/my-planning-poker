@@ -36,6 +36,8 @@ function ConnectionForm({
 
     setIsLoading(true);
 
+    await new Promise((resolve) => setTimeout(resolve, 250));
+
     cookieStorageManager.setItem(
       persistedCookieVars.PEOPLE_NAME,
       peopleNameInputRef.current.value
@@ -90,7 +92,7 @@ function ConnectionForm({
             disabled={isLoading}
           />
 
-          <Button disabled={isLoading}>Criar sala</Button>
+          <Button isLoading={isLoading}>Criar sala</Button>
         </form>
       );
 
@@ -114,7 +116,7 @@ function ConnectionForm({
             required
             disabled={isLoading}
           />
-          <Button disabled={isLoading}>Entrar na sala</Button>
+          <Button isLoading={isLoading}>Entrar na sala</Button>
         </form>
       );
   }
