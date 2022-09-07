@@ -10,10 +10,16 @@ interface Menu {
 interface TabMenuProps {
   selectedMenu: string;
   menus: Menu[];
+  disabled?: boolean;
   setSelectedMenu(menu: string): void;
 }
 
-function TabMenu({ selectedMenu, menus, setSelectedMenu }: TabMenuProps) {
+function TabMenu({
+  selectedMenu,
+  menus,
+  disabled,
+  setSelectedMenu,
+}: TabMenuProps) {
   return (
     <div className={styles.tabOptions}>
       {menus.map((menu) => (
@@ -23,6 +29,7 @@ function TabMenu({ selectedMenu, menus, setSelectedMenu }: TabMenuProps) {
             [styles.selected]: selectedMenu === menu.id,
           })}
           onClick={() => setSelectedMenu(menu.id)}
+          disabled={disabled}
         >
           {menu.name}
         </button>

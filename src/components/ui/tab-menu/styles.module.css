@@ -12,9 +12,15 @@
   font-size: 1rem;
 
   transform: translateY(2px);
+  transition: filter 0.2s;
 }
 
 .tabOptions button.selected {
   font-weight: bold;
   border-bottom: 2px solid #eb8a1d;
+}
+
+.tabOptions button:disabled {
+  cursor: not-allowed;
+  filter: brightness(0.5);
 }
