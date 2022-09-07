@@ -11,7 +11,7 @@ function HomePage() {
     <div className={styles.container}>
       <section className={styles.contentBox}>
         <div className={styles.appName}>
-          <img src="favicon.svg" alt="Logotipo da aplicação" />
+          <img src="/favicon.png" alt="Logotipo da aplicação" />
           <h1>My Planning Poker</h1>
         </div>
         <TabMenu
