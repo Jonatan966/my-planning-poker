@@ -10,7 +10,7 @@
   border: none;
   border-radius: 5px;
 
-  transition: transform 0.2s;
+  transition: all 0.2s;
 
   flex-shrink: 0;
 }
