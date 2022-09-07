@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { ConnectionForm } from "../components/domain/connection-form";
 
 import { TabMenu } from "../components/ui/tab-menu";
+import { errorCodes } from "../configs/error-codes";
 import styles from "../styles/pages/home.module.css";
 
 function HomePage() {
@@ -12,7 +13,7 @@ function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (router.query?.error === "room_not_exists") {
+    if (router.query?.error === errorCodes.ROOM_NOT_EXISTS) {
       toast.error("Não existe uma sala com esse código");
     }
   }, [router.query]);

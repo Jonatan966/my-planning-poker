@@ -11,6 +11,7 @@ import { cookieStorageManager } from "../../utils/cookie-storage-manager";
 import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
 import styles from "../../styles/pages/room.module.css";
 import { redis } from "../../lib/redis";
+import { errorCodes } from "../../configs/error-codes";
 
 interface RoomPageProps {
   basicMe: {
@@ -56,7 +57,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!roomName) {
     return {
       redirect: {
-        destination: "/?error=room_not_exists",
+        destination: `/?error=${errorCodes.ROOM_NOT_EXISTS}`,
         permanent: false,
       },
     };
