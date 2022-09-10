@@ -79,9 +79,6 @@ function Table() {
     setRoomPointsVisibility: state.setRoomPointsVisibility,
   }));
 
-  const [isChangingPointsVisibility, setIsChangingPointsVisibility] =
-    useState(false);
-
   const { observe, currentBreakpoint } = useDimensions({
     breakpoints: { XS: 0, SM: 500 },
     updateOnBreakpointChange: true,
@@ -102,11 +99,7 @@ function Table() {
   );
 
   async function handleSetRoomPointsVisibility() {
-    setIsChangingPointsVisibility(true);
-
     await setRoomPointsVisibility(!room.showPoints);
-
-    setIsChangingPointsVisibility(false);
   }
 
   const renderedTableModules = useMemo(() => {
@@ -150,7 +143,7 @@ function Table() {
           <Button
             colorScheme="secondary"
             onClick={handleSetRoomPointsVisibility}
-            disabled={isChangingPointsVisibility || !isSomePeopleSelectPoint}
+            disabled={!room.showPoints && !isSomePeopleSelectPoint}
           >
             {
               tableConfig[
