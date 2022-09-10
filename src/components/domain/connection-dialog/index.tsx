@@ -28,11 +28,14 @@ function ConnectionDialog({
   basicRoomInfo,
 }: ConnectionDialogProps) {
   const router = useRouter();
-  const { connectOnRoom, disconnectOnRoom, room } = useRoomStore((state) => ({
-    connectOnRoom: state.connectOnRoom,
-    disconnectOnRoom: state.disconnectOnRoom,
-    room: state.basicInfo,
-  }));
+  const { connectOnRoom, disconnectOnRoom, room, connection } = useRoomStore(
+    (state) => ({
+      connectOnRoom: state.connectOnRoom,
+      disconnectOnRoom: state.disconnectOnRoom,
+      room: state.basicInfo,
+      connection: state.connection,
+    })
+  );
 
   const [isConnectingIntoRoom, setIsConnectingIntoRoom] = useState(true);
 
@@ -117,6 +120,7 @@ function ConnectionDialog({
 
     room.subscription.bind(MainRoomEvents.PREPARE_ROOM, debounceConnectionLoad);
     room.subscription.bind(MainRoomEvents.LOAD_PEOPLE, debounceConnectionLoad);
+    connection.bind(MainRoomEvents.SYNC_PEOPLE_POINTS, debounceConnectionLoad);
 
     debounceConnectionLoad();
 
@@ -127,6 +131,10 @@ function ConnectionDialog({
       );
       room.subscription.unbind(
         MainRoomEvents.LOAD_PEOPLE,
+        debounceConnectionLoad
+      );
+      connection.unbind(
+        MainRoomEvents.SYNC_PEOPLE_POINTS,
         debounceConnectionLoad
       );
     };
