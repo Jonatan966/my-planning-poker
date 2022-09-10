@@ -1,12 +1,13 @@
+import { useMemo } from "react";
 import classNames from "classnames";
 import confetti from "canvas-confetti";
 import ReactConfetti from "react-canvas-confetti";
 
-import { useRoom } from "../../../contexts/room-context";
 import PointButton from "../../ui/point-button";
 import styles from "./styles.module.css";
 import { People } from "../../../contexts/room-context/types";
 import Portal from "../../ui/portal";
+import { useRoomStore } from "../../../contexts/room-context/room-store";
 
 const AVAILABLE_POINTS = [1, 2, 3, 5, 8, 13, 21, 0];
 const CONFETTI_SETTINGS: confetti.Options = {
@@ -61,23 +62,37 @@ function calculatePointsAverage(peoples: People[] = []) {
 }
 
 function PointsList() {
-  const { selectPoint, room, me, showPointsCountdown } = useRoom();
+  const { room, peoples, selectPoint } = useRoomStore((state) => ({
+    selectPoint: state.selectPoint,
+    room: state.basicInfo,
+    peoples: state.peoples,
+  }));
+
+  const me = useMemo(() => {
+    if (!room || !room.subscription?.members) {
+      return;
+    }
+
+    return peoples.find(
+      (people) => people.id === room.subscription.members.myID
+    );
+  }, [peoples, room]);
 
   function renderContent() {
-    if (!room?.showPoints || showPointsCountdown > 0) {
+    if (!room?.showPoints || room.showPointsCountdown > 0) {
       return AVAILABLE_POINTS.map((point) => (
         <PointButton
           key={`point-${point}`}
           selected={me?.points === point}
           onClick={() => selectPoint(point)}
-          disabled={showPointsCountdown > 0}
+          disabled={room.showPointsCountdown > 0}
         >
           {point === 0 ? "?" : point}
         </PointButton>
       ));
     }
 
-    const { average, isUnanimous } = calculatePointsAverage(room?.peoples);
+    const { average, isUnanimous } = calculatePointsAverage(peoples);
 
     return (
       <>

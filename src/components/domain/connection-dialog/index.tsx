@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useRoom } from "../../../contexts/room-context";
+import { useRoomStore } from "../../../contexts/room-context/room-store";
 import { MainRoomEvents } from "../../../contexts/room-context/types";
 import Dialog from "../../ui/dialog";
 import { ConnectingMessage } from "./connecting-message";
@@ -29,7 +29,11 @@ function ConnectionDialog({
   basicRoomInfo,
 }: ConnectionDialogProps) {
   const router = useRouter();
-  const { connectOnRoom, disconnectOnRoom, room } = useRoom();
+  const { connectOnRoom, disconnectOnRoom, room } = useRoomStore((state) => ({
+    connectOnRoom: state.connectOnRoom,
+    disconnectOnRoom: state.disconnectOnRoom,
+    room: state.basicInfo,
+  }));
 
   const [isConnectingIntoRoom, setIsConnectingIntoRoom] = useState(true);
 
@@ -48,7 +52,7 @@ function ConnectionDialog({
 
   async function handleConnectOnRoom() {
     try {
-      await connectOnRoom(basicRoomInfo);
+      return await connectOnRoom(basicRoomInfo);
     } catch (e) {
       console.log(e);
       toast.error("Não foi possível se conectar a essa sala");
@@ -76,7 +80,13 @@ function ConnectionDialog({
       return;
     }
 
-    handleConnectOnRoom();
+    let disconnect: () => void;
+
+    handleConnectOnRoom().then((onDisconnect) => (disconnect = onDisconnect));
+
+    return () => {
+      setTimeout(disconnect, 1);
+    };
   }, [isFillPeopleName, router.query]);
 
   useEffect(() => {

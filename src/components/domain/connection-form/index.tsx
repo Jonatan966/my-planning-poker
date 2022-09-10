@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { useState, FormEvent, useRef } from "react";
 import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
-import { useRoom } from "../../../contexts/room-context";
 import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 import Button from "../../ui/button";
 import TextInput from "../../ui/text-input";
+import { useRoomStore } from "../../../contexts/room-context/room-store";
 
 import styles from "./styles.module.css";
 
@@ -29,7 +29,10 @@ function ConnectionForm({
   const [roomCode, setRoomCode] = useState("");
 
   const router = useRouter();
-  const { createRoom } = useRoom();
+
+  const { createRoom } = useRoomStore((state) => ({
+    createRoom: state.createRoom,
+  }));
 
   async function handleConnectOnRoom(event: FormEvent) {
     event.preventDefault();
