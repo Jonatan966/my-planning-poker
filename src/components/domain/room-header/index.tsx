@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { BsFillSuitClubFill } from "react-icons/bs";
 import { FaLink } from "react-icons/fa";
-import { useRoom } from "../../../contexts/room-context";
+import { useRoomStore } from "../../../stores/room-store";
 
 import Button from "../../ui/button";
 
@@ -20,8 +20,13 @@ interface RoomHeaderProps {
 }
 
 function RoomHeader({ basicMe, basicRoomInfo }: RoomHeaderProps) {
-  const { me, disconnectOnRoom } = useRoom();
+  const { disconnectOnRoom, room } = useRoomStore((state) => ({
+    disconnectOnRoom: state.disconnectOnRoom,
+    room: state.basicInfo,
+  }));
   const router = useRouter();
+
+  const myName = basicMe?.name || room?.subscription?.members?.me?.info.name;
 
   async function copyRoomCode() {
     toast.promise(navigator.clipboard.writeText(window.location.href), {
@@ -43,7 +48,7 @@ function RoomHeader({ basicMe, basicRoomInfo }: RoomHeaderProps) {
           <BsFillSuitClubFill size={28} /> {basicRoomInfo.name}
         </strong>
         <nav>
-          <span className={styles.myName}>{basicMe?.name || me?.name}</span>
+          <span className={styles.myName}>{myName}</span>
           <Button
             colorScheme="primary"
             onClick={copyRoomCode}
