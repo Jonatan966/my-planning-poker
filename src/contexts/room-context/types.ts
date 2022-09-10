@@ -1,9 +1,4 @@
 import { PresenceChannel } from "pusher-js";
-import { ReactNode } from "react";
-
-export interface RoomContextProviderProps {
-  children: ReactNode;
-}
 
 export interface People {
   id?: string;
