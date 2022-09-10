@@ -5,9 +5,8 @@ import ReactConfetti from "react-canvas-confetti";
 
 import PointButton from "../../ui/point-button";
 import styles from "./styles.module.css";
-import { People } from "../../../contexts/room-context/types";
 import Portal from "../../ui/portal";
-import { useRoomStore } from "../../../contexts/room-context/room-store";
+import { useRoomStore, People } from "../../../stores/room-store";
 
 const AVAILABLE_POINTS = [1, 2, 3, 5, 8, 13, 21, 0];
 const CONFETTI_SETTINGS: confetti.Options = {

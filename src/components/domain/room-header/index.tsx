@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { BsFillSuitClubFill } from "react-icons/bs";
 import { FaLink } from "react-icons/fa";
-import { useRoomStore } from "../../../contexts/room-context/room-store";
+import { useRoomStore } from "../../../stores/room-store";
 
 import Button from "../../ui/button";
 

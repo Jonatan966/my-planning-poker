@@ -1,8 +1,7 @@
 import cloneDeep from "lodash.clonedeep";
 import { useMemo, useState } from "react";
 import useDimensions from "react-cool-dimensions";
-import { useRoomStore } from "../../../contexts/room-context/room-store";
-import { People } from "../../../contexts/room-context/types";
+import { useRoomStore, People } from "../../../stores/room-store";
 import Button from "../../ui/button";
 import PointCard from "./point-card";
 

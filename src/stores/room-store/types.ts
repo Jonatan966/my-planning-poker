@@ -34,3 +34,19 @@ export interface RoomContextProps {
   me?: People;
   showPointsCountdown: number;
 }
+
+export interface RoomStoreProps {
+  basicInfo: {
+    id?: string;
+    name?: string;
+    showPoints: boolean;
+    showPointsCountdown?: number;
+    subscription?: PresenceChannel;
+  };
+  peoples: People[];
+  createRoom(roomName: string): Promise<RoomInfo>;
+  connectOnRoom(roomBasicInfo: BasicRoomInfo): Promise<() => void>;
+  disconnectOnRoom(): void;
+  selectPoint(points: number): Promise<void>;
+  setRoomPointsVisibility(show?: boolean): Promise<void>;
+}

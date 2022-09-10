@@ -4,7 +4,7 @@ import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
 import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 import Button from "../../ui/button";
 import TextInput from "../../ui/text-input";
-import { useRoomStore } from "../../../contexts/room-context/room-store";
+import { useRoomStore } from "../../../stores/room-store";
 
 import styles from "./styles.module.css";
 

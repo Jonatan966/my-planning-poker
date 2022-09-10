@@ -3,27 +3,20 @@ import createStore, { StateCreator } from "zustand";
 import { produce } from "immer";
 import { api } from "../../lib/axios";
 import { createWebConnection } from "../../lib/pusher";
-import { BasicRoomInfo, MainRoomEvents, People, RoomInfo } from "./types";
-
-interface RoomStore {
-  basicInfo: {
-    id?: string;
-    name?: string;
-    showPoints: boolean;
-    showPointsCountdown?: number;
-    subscription?: PresenceChannel;
-  };
-  peoples: People[];
-  createRoom(roomName: string): Promise<RoomInfo>;
-  connectOnRoom(roomBasicInfo: BasicRoomInfo): Promise<() => void>;
-  disconnectOnRoom(): void;
-  selectPoint(points: number): Promise<void>;
-  setRoomPointsVisibility(show?: boolean): Promise<void>;
-}
+import {
+  BasicRoomInfo,
+  MainRoomEvents,
+  People,
+  RoomInfo,
+  RoomStoreProps,
+} from "./types";
 
 let connection: pusherJs;
 
-const roomStore: StateCreator<RoomStore, [], [], RoomStore> = (set, get) => {
+const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
+  set,
+  get
+) => {
   const roomEvents = {
     onLoadPeople(people: { id: string; info: { name: string } }) {
       set((state) => ({
@@ -71,14 +64,14 @@ const roomStore: StateCreator<RoomStore, [], [], RoomStore> = (set, get) => {
     onShowPoints({ show }: { show: boolean }) {
       if (show) {
         set(
-          produce((state: RoomStore) => {
+          produce((state: RoomStoreProps) => {
             state.basicInfo.showPointsCountdown = 3;
           })
         );
 
         const intervalID = setInterval(() => {
           set(
-            produce((state: RoomStore) => {
+            produce((state: RoomStoreProps) => {
               if (state.basicInfo.showPointsCountdown === 0) {
                 clearInterval(intervalID);
                 return;
@@ -91,7 +84,7 @@ const roomStore: StateCreator<RoomStore, [], [], RoomStore> = (set, get) => {
       }
 
       set(
-        produce((state: RoomStore) => {
+        produce((state: RoomStoreProps) => {
           state.basicInfo.showPoints = show;
 
           if (!show) {
@@ -105,7 +98,7 @@ const roomStore: StateCreator<RoomStore, [], [], RoomStore> = (set, get) => {
     },
   };
 
-  const INITIAL_STORE_VALUE: RoomStore = {
+  const INITIAL_STORE_VALUE: RoomStoreProps = {
     basicInfo: {
       id: undefined,
       name: undefined,
@@ -228,4 +221,5 @@ const roomStore: StateCreator<RoomStore, [], [], RoomStore> = (set, get) => {
   return INITIAL_STORE_VALUE;
 };
 
-export const useRoomStore = createStore<RoomStore>(roomStore);
+export const useRoomStore = createStore<RoomStoreProps>(roomStore);
+export * from "./types";
