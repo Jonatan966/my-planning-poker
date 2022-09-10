@@ -1,4 +1,4 @@
-import { PresenceChannel } from "pusher-js";
+import pusherJs, { PresenceChannel } from "pusher-js";
 
 export interface People {
   id?: string;
@@ -11,6 +11,7 @@ export enum MainRoomEvents {
   PEOPLE_LEAVE = "pusher:member_removed",
   SELECT_POINT = "client-SELECT_POINT",
   SHOW_POINTS = "client-SHOW_POINTS",
+  SYNC_PEOPLE_POINTS = "people-SYNC_PEOPLE_POINTS",
   LOAD_PEOPLE = "pusher:member_added",
 }
 
@@ -44,6 +45,7 @@ export interface RoomStoreProps {
     subscription?: PresenceChannel;
   };
   peoples: People[];
+  connection?: pusherJs;
   createRoom(roomName: string): Promise<RoomInfo>;
   connectOnRoom(roomBasicInfo: BasicRoomInfo): Promise<() => void>;
   disconnectOnRoom(): void;

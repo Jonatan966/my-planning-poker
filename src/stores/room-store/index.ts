@@ -18,13 +18,29 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   get
 ) => {
   const roomEvents = {
-    onLoadPeople(people: { id: string; info: { name: string } }) {
+    async onLoadPeople(people: { id: string; info: { name: string } }) {
+      const state = get();
+
       set((state) => ({
         peoples: state.peoples.concat({
           id: people.id,
           name: people.info.name,
         }),
       }));
+
+      const me = state.peoples.find(
+        (people) => people.id === state.basicInfo.subscription.members.myID
+      );
+
+      if (me.points !== undefined) {
+        await api.post("sync-people-points", {
+          senderPeople: {
+            id: me.id,
+            points: me.points,
+          },
+          targetPeopleID: people.id,
+        });
+      }
     },
 
     onPrepareRoom(roomPeoples: Members) {
@@ -96,6 +112,19 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
         })
       );
     },
+
+    onSyncPeoplePoints(senderPeople: { id: string; points: number }) {
+      set((state) => ({
+        peoples: state.peoples.map((people) =>
+          people.id === senderPeople.id
+            ? {
+                ...people,
+                points: senderPeople.points,
+              }
+            : people
+        ),
+      }));
+    },
   };
 
   const INITIAL_STORE_VALUE: RoomStoreProps = {
@@ -138,10 +167,12 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     subscription.bind(MainRoomEvents.SELECT_POINT, roomEvents.onSelectPoint);
     subscription.bind(MainRoomEvents.SHOW_POINTS, roomEvents.onShowPoints);
 
-    return () => {
-      subscription.unbind_all();
-      subscription.unbind_global();
-    };
+    connection.user.bind(
+      MainRoomEvents.SYNC_PEOPLE_POINTS,
+      roomEvents.onSyncPeoplePoints
+    );
+
+    return disconnectOnRoom;
   }
 
   function disconnectOnRoom() {
@@ -151,18 +182,17 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
     const subscriptions = connection.allChannels() as PresenceChannel[];
 
-    _reset();
-
     for (const subscription of subscriptions) {
       subscription.unbind_all();
       subscription.unbind_global();
-      subscription.unsubscribe();
-      subscription.disconnect();
     }
 
+    connection.user.unbind_all();
     connection.unbind_all();
     connection.unbind_global();
     connection.disconnect();
+
+    _reset();
   }
 
   async function createRoom(roomName: string) {
@@ -175,6 +205,9 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
   async function connectOnRoom(roomBasicInfo: BasicRoomInfo) {
     connection = await createWebConnection();
+    set({ connection });
+
+    connection.user.signin();
 
     const subscription = connection.subscribe(
       `presence-${roomBasicInfo.id}`
