@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { ReactNode } from "react";
-import { BsFillSuitClubFill } from "react-icons/bs";
+import { BsFillSuitClubFill, BsPiggyBankFill } from "react-icons/bs";
+import { useEasterEggStore } from "../../../../stores/easter-egg-store";
 
 import styles from "./styles.module.css";
 
@@ -17,9 +18,18 @@ function PointCard({
   showPoints,
   children,
 }: PointCardProps) {
+  const { easterEggCountdown } = useEasterEggStore();
   const hasSelectedPoints = typeof points !== "undefined";
   const parsedPoints =
     typeof points !== "undefined" && points === 0 ? "?" : points;
+
+  function decideIconToShow() {
+    if (easterEggCountdown <= 0) {
+      return <BsPiggyBankFill />;
+    }
+
+    return <BsFillSuitClubFill />;
+  }
 
   return (
     <div className={styles.pointCardContainer}>
@@ -28,9 +38,7 @@ function PointCard({
           [styles.showPoints]: showPoints,
         })}
       >
-        {showPoints
-          ? parsedPoints
-          : hasSelectedPoints && <BsFillSuitClubFill />}
+        {showPoints ? parsedPoints : hasSelectedPoints && decideIconToShow()}
       </div>
       <label
         className={classNames({
