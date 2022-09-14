@@ -4,6 +4,8 @@ import { BsFillSuitClubFill, BsPiggyBankFill } from "react-icons/bs";
 import { useConfetti } from "../../../../contexts/confetti-context";
 import { useRoomStore } from "../../../../stores/room-store";
 
+import styles from "./styles.module.css";
+
 function RoomLogo() {
   const { showConfetti } = useConfetti();
   const { showEasterEgg, setEasterEggVisibility } = useRoomStore((state) => ({
@@ -50,10 +52,22 @@ function RoomLogo() {
   }
 
   if (showEasterEgg) {
-    return <BsPiggyBankFill size={28} color="#00B7AB" />;
+    return (
+      <BsPiggyBankFill
+        size={28}
+        color="#00B7AB"
+        className={styles.easterIcon}
+      />
+    );
   }
 
-  return <BsFillSuitClubFill size={28} onClick={callEasterEgg} />;
+  return (
+    <BsFillSuitClubFill
+      size={28}
+      className={styles.normalIcon}
+      onClick={callEasterEgg}
+    />
+  );
 }
 
 export { RoomLogo };
