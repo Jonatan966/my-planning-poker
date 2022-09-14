@@ -136,6 +136,8 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       subscription: undefined,
     },
     peoples: [],
+    showEasterEgg: false,
+    setEasterEggVisibility,
     connectOnRoom,
     createRoom,
     disconnectOnRoom,
@@ -249,6 +251,10 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     });
 
     roomEvents.onShowPoints({ show });
+  }
+
+  function setEasterEggVisibility(show: boolean) {
+    set({ showEasterEgg: show });
   }
 
   return INITIAL_STORE_VALUE;

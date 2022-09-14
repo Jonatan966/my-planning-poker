@@ -46,6 +46,8 @@ export interface RoomStoreProps {
   };
   peoples: People[];
   connection?: pusherJs;
+  showEasterEgg?: boolean;
+  setEasterEggVisibility(visible: boolean): void;
   createRoom(roomName: string): Promise<RoomInfo>;
   connectOnRoom(roomBasicInfo: BasicRoomInfo): Promise<() => void>;
   disconnectOnRoom(): void;
