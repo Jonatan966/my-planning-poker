@@ -1,0 +1,9 @@
+.confetti {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  bottom: 0;
+
+  z-index: 99;
+}
