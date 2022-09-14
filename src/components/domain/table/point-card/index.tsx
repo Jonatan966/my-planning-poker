@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { ReactNode } from "react";
 import { BsFillSuitClubFill, BsPiggyBankFill } from "react-icons/bs";
-import { useEasterEggStore } from "../../../../stores/easter-egg-store";
+import { useRoomStore } from "../../../../stores/room-store";
 
 import styles from "./styles.module.css";
 
@@ -18,13 +18,16 @@ function PointCard({
   showPoints,
   children,
 }: PointCardProps) {
-  const { easterEggCountdown } = useEasterEggStore();
+  const { showEasterEgg } = useRoomStore((state) => ({
+    showEasterEgg: state.showEasterEgg,
+  }));
+
   const hasSelectedPoints = typeof points !== "undefined";
   const parsedPoints =
     typeof points !== "undefined" && points === 0 ? "?" : points;
 
   function decideIconToShow() {
-    if (easterEggCountdown <= 0) {
+    if (showEasterEgg) {
       return <BsPiggyBankFill />;
     }
 

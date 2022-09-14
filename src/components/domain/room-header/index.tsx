@@ -1,11 +1,10 @@
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { BsFillSuitClubFill, BsPiggyBankFill } from "react-icons/bs";
 import { FaLink } from "react-icons/fa";
-import { useEasterEggStore } from "../../../stores/easter-egg-store";
 import { useRoomStore } from "../../../stores/room-store";
 
 import Button from "../../ui/button";
+import { RoomLogo } from "./room-logo";
 
 import styles from "./styles.module.css";
 
@@ -21,7 +20,6 @@ interface RoomHeaderProps {
 }
 
 function RoomHeader({ basicMe, basicRoomInfo }: RoomHeaderProps) {
-  const { callEasterEgg, easterEggCountdown } = useEasterEggStore();
   const { disconnectOnRoom, room } = useRoomStore((state) => ({
     disconnectOnRoom: state.disconnectOnRoom,
     room: state.basicInfo,
@@ -47,11 +45,7 @@ function RoomHeader({ basicMe, basicRoomInfo }: RoomHeaderProps) {
     <header className={styles.headerContainer}>
       <div>
         <strong className={styles.room}>
-          {easterEggCountdown > 0 ? (
-            <BsFillSuitClubFill size={28} onClick={callEasterEgg} />
-          ) : (
-            <BsPiggyBankFill size={28} color="#00B7AB" />
-          )}{" "}
+          <RoomLogo />
           {basicRoomInfo.name}
         </strong>
         <nav>

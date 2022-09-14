@@ -9,9 +9,11 @@ import ConnectionDialog from "../../components/domain/connection-dialog";
 
 import { cookieStorageManager } from "../../utils/cookie-storage-manager";
 import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
-import styles from "../../styles/pages/room.module.css";
 import { redis } from "../../lib/redis";
 import { errorCodes } from "../../configs/error-codes";
+import { ConfettiProvider } from "../../contexts/confetti-context";
+
+import styles from "../../styles/pages/room.module.css";
 
 interface RoomPageProps {
   basicMe: {
@@ -28,7 +30,7 @@ function RoomPage({ basicMe, basicRoomInfo }: RoomPageProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <>
+    <ConfettiProvider>
       <RoomHeader basicMe={basicMe} basicRoomInfo={basicRoomInfo} />
       <ConnectionDialog
         isOpen={isLoading}
@@ -45,7 +47,7 @@ function RoomPage({ basicMe, basicRoomInfo }: RoomPageProps) {
           <PointsList />
         </>
       )}
-    </>
+    </ConfettiProvider>
   );
 }
 
