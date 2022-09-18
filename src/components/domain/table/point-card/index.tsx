@@ -8,14 +8,16 @@ import styles from "./styles.module.css";
 interface PointCardProps {
   points?: number;
   showPoints?: boolean;
+  isMe?: boolean;
   highlight?: boolean;
   children?: ReactNode;
 }
 
 function PointCard({
-  highlight,
+  isMe,
   points,
   showPoints,
+  highlight,
   children,
 }: PointCardProps) {
   const { showEasterEgg } = useRoomStore((state) => ({
@@ -35,17 +37,21 @@ function PointCard({
   }
 
   return (
-    <div className={styles.pointCardContainer}>
+    <div
+      className={styles.pointCardContainer}
+      title={highlight && "Confetes!!"}
+    >
       <div
         className={classNames(styles.point, {
           [styles.showPoints]: showPoints,
+          [styles.highlight]: highlight,
         })}
       >
         {showPoints ? parsedPoints : hasSelectedPoints && decideIconToShow()}
       </div>
       <label
         className={classNames({
-          [styles.isMe]: highlight,
+          [styles.isMe]: isMe,
         })}
       >
         {children}

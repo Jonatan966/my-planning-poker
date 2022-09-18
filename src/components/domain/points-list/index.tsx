@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import classNames from "classnames";
 import confetti from "canvas-confetti";
 
@@ -68,6 +68,7 @@ function PointsList() {
   }));
 
   const { showConfetti } = useConfetti();
+  const hasFiredConfetti = useRef(false);
 
   const me = useMemo(() => {
     if (!room || !room.subscription?.members) {
@@ -79,8 +80,19 @@ function PointsList() {
     );
   }, [peoples, room]);
 
+  function fireUnanimousConfetti() {
+    if (hasFiredConfetti.current) {
+      return;
+    }
+
+    showConfetti.current(CONFETTI_SETTINGS);
+    hasFiredConfetti.current = true;
+  }
+
   function renderContent() {
     if (!room?.showPoints || room.showPointsCountdown > 0) {
+      hasFiredConfetti.current = false;
+
       return AVAILABLE_POINTS.map((point) => (
         <PointButton
           key={`point-${point}`}
@@ -95,7 +107,7 @@ function PointsList() {
 
     const { average, isUnanimous } = calculatePointsAverage(peoples);
 
-    showConfetti.current(CONFETTI_SETTINGS);
+    fireUnanimousConfetti();
 
     return (
       <div

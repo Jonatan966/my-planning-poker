@@ -4,6 +4,7 @@ export interface People {
   id?: string;
   name: string;
   points?: number;
+  highlight?: boolean;
 }
 
 export enum MainRoomEvents {
@@ -54,4 +55,6 @@ export interface RoomStoreProps {
   disconnectOnRoom(): void;
   selectPoint(points: number): Promise<void>;
   setRoomPointsVisibility(show?: boolean): Promise<void>;
+  broadcastConfetti(): void;
+  setPeopleHighlight(people_id: string, highlight?: boolean): void;
 }

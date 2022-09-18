@@ -14,12 +14,19 @@ enum EasterEggMode {
 
 function RoomLogo() {
   const { showConfetti } = useConfetti();
-  const { showEasterEgg, roomSubscription, setEasterEggVisibility } =
-    useRoomStore((state) => ({
-      showEasterEgg: state.showEasterEgg,
-      setEasterEggVisibility: state.setEasterEggVisibility,
-      roomSubscription: state.basicInfo.subscription,
-    }));
+  const {
+    showEasterEgg,
+    roomSubscription,
+    setEasterEggVisibility,
+    broadcastConfetti,
+    setPeopleHighlight,
+  } = useRoomStore((state) => ({
+    showEasterEgg: state.showEasterEgg,
+    roomSubscription: state.basicInfo.subscription,
+    setEasterEggVisibility: state.setEasterEggVisibility,
+    broadcastConfetti: state.broadcastConfetti,
+    setPeopleHighlight: state.setPeopleHighlight,
+  }));
 
   const [confettiIsFiring, setConfettiIsFiring] = useState(false);
 
@@ -30,8 +37,10 @@ function RoomLogo() {
       return;
     }
 
-    roomSubscription.bind(MainRoomEvents.FIRE_CONFETTI, () =>
-      showEasterEggConfettis(EasterEggMode.PRIVATE)
+    roomSubscription.bind(
+      MainRoomEvents.FIRE_CONFETTI,
+      ({ sender_id }: { sender_id: string }) =>
+        showEasterEggConfettis(EasterEggMode.PRIVATE, sender_id)
     );
 
     return () => {
@@ -40,7 +49,8 @@ function RoomLogo() {
   }, [roomSubscription]);
 
   async function showEasterEggConfettis(
-    mode: EasterEggMode = EasterEggMode.PUBLIC
+    mode: EasterEggMode = EasterEggMode.PUBLIC,
+    sender_id = roomSubscription?.members.myID
   ) {
     if (confettiIsFiring) {
       return;
@@ -49,8 +59,10 @@ function RoomLogo() {
     setConfettiIsFiring(true);
 
     if (mode === EasterEggMode.PUBLIC && showEasterEgg && roomSubscription) {
-      roomSubscription.trigger(MainRoomEvents.FIRE_CONFETTI, {});
+      broadcastConfetti();
     }
+
+    setPeopleHighlight(sender_id, true);
 
     for (let confettiCount = 12; confettiCount > 0; confettiCount--) {
       showConfetti.current({
@@ -68,6 +80,8 @@ function RoomLogo() {
     }
 
     setConfettiIsFiring(false);
+
+    setPeopleHighlight(sender_id, false);
   }
 
   function callEasterEgg() {
