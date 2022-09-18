@@ -125,6 +125,25 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
         ),
       }));
     },
+
+    onHighlightPeople({
+      sender_id: targetPeopleID,
+      highlight = true,
+    }: {
+      sender_id: string;
+      highlight?: boolean;
+    }) {
+      set((state) => ({
+        peoples: state.peoples.map((people) =>
+          people.id === targetPeopleID
+            ? {
+                ...people,
+                highlight,
+              }
+            : people
+        ),
+      }));
+    },
   };
 
   const INITIAL_STORE_VALUE: RoomStoreProps = {
@@ -136,11 +155,15 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       subscription: undefined,
     },
     peoples: [],
+    showEasterEgg: false,
+    setEasterEggVisibility,
     connectOnRoom,
     createRoom,
     disconnectOnRoom,
     selectPoint,
     setRoomPointsVisibility,
+    broadcastConfetti,
+    setPeopleHighlight,
   };
 
   function _reset() {
@@ -166,6 +189,10 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     subscription.bind(MainRoomEvents.PEOPLE_LEAVE, roomEvents.onPeopleLeave);
     subscription.bind(MainRoomEvents.SELECT_POINT, roomEvents.onSelectPoint);
     subscription.bind(MainRoomEvents.SHOW_POINTS, roomEvents.onShowPoints);
+    subscription.bind(
+      MainRoomEvents.FIRE_CONFETTI,
+      roomEvents.onHighlightPeople
+    );
 
     connection.user.bind(
       MainRoomEvents.SYNC_PEOPLE_POINTS,
@@ -249,6 +276,25 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     });
 
     roomEvents.onShowPoints({ show });
+  }
+
+  function setEasterEggVisibility(show: boolean) {
+    set({ showEasterEgg: show });
+  }
+
+  function broadcastConfetti() {
+    const { basicInfo } = get();
+
+    basicInfo.subscription.trigger(MainRoomEvents.FIRE_CONFETTI, {
+      sender_id: basicInfo.subscription.members.myID,
+    });
+  }
+
+  function setPeopleHighlight(people_id: string, highlight?: boolean) {
+    roomEvents.onHighlightPeople({
+      sender_id: people_id,
+      highlight,
+    });
   }
 
   return INITIAL_STORE_VALUE;

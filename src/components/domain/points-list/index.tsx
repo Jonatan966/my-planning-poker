@@ -1,12 +1,12 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import classNames from "classnames";
 import confetti from "canvas-confetti";
-import ReactConfetti from "react-canvas-confetti";
 
 import PointButton from "../../ui/point-button";
-import styles from "./styles.module.css";
-import Portal from "../../ui/portal";
 import { useRoomStore, People } from "../../../stores/room-store";
+import { useConfetti } from "../../../contexts/confetti-context";
+
+import styles from "./styles.module.css";
 
 const AVAILABLE_POINTS = [1, 2, 3, 5, 8, 13, 21, 0];
 const CONFETTI_SETTINGS: confetti.Options = {
@@ -67,6 +67,9 @@ function PointsList() {
     peoples: state.peoples,
   }));
 
+  const { showConfetti } = useConfetti();
+  const hasFiredConfetti = useRef(false);
+
   const me = useMemo(() => {
     if (!room || !room.subscription?.members) {
       return;
@@ -77,8 +80,19 @@ function PointsList() {
     );
   }, [peoples, room]);
 
+  function fireUnanimousConfetti() {
+    if (hasFiredConfetti.current) {
+      return;
+    }
+
+    showConfetti.current(CONFETTI_SETTINGS);
+    hasFiredConfetti.current = true;
+  }
+
   function renderContent() {
     if (!room?.showPoints || room.showPointsCountdown > 0) {
+      hasFiredConfetti.current = false;
+
       return AVAILABLE_POINTS.map((point) => (
         <PointButton
           key={`point-${point}`}
@@ -93,27 +107,17 @@ function PointsList() {
 
     const { average, isUnanimous } = calculatePointsAverage(peoples);
 
+    fireUnanimousConfetti();
+
     return (
-      <>
-        <Portal>
-          <ReactConfetti
-            refConfetti={(fireConfetti) => {
-              if (isUnanimous && fireConfetti) {
-                fireConfetti(CONFETTI_SETTINGS);
-              }
-            }}
-            className={styles.confetti}
-          />
-        </Portal>
-        <div
-          className={classNames(styles.average, {
-            [styles.isUnanimous]: isUnanimous,
-          })}
-        >
-          <span>{isUnanimous ? "Temos um acordo!" : "Média"}</span>
-          <strong>{average}</strong>
-        </div>
-      </>
+      <div
+        className={classNames(styles.average, {
+          [styles.isUnanimous]: isUnanimous,
+        })}
+      >
+        <span>{isUnanimous ? "Temos um acordo!" : "Média"}</span>
+        <strong>{average}</strong>
+      </div>
     );
   }
 

@@ -120,7 +120,8 @@ function Table() {
               points={roomPeople.points}
               key={roomPeople.id}
               showPoints={room.showPoints && room.showPointsCountdown === 0}
-              highlight={roomPeople.id === myID}
+              isMe={roomPeople.id === myID}
+              highlight={roomPeople.highlight}
             >
               {roomPeople.name}
             </PointCard>

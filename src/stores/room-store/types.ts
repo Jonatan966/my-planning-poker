@@ -4,6 +4,7 @@ export interface People {
   id?: string;
   name: string;
   points?: number;
+  highlight?: boolean;
 }
 
 export enum MainRoomEvents {
@@ -13,6 +14,7 @@ export enum MainRoomEvents {
   SHOW_POINTS = "client-SHOW_POINTS",
   SYNC_PEOPLE_POINTS = "people-SYNC_PEOPLE_POINTS",
   LOAD_PEOPLE = "pusher:member_added",
+  FIRE_CONFETTI = "client-FIRE_CONFETTI",
 }
 
 export interface RoomInfo {
@@ -46,9 +48,13 @@ export interface RoomStoreProps {
   };
   peoples: People[];
   connection?: pusherJs;
+  showEasterEgg?: boolean;
+  setEasterEggVisibility(visible: boolean): void;
   createRoom(roomName: string): Promise<RoomInfo>;
   connectOnRoom(roomBasicInfo: BasicRoomInfo): Promise<() => void>;
   disconnectOnRoom(): void;
   selectPoint(points: number): Promise<void>;
   setRoomPointsVisibility(show?: boolean): Promise<void>;
+  broadcastConfetti(): void;
+  setPeopleHighlight(people_id: string, highlight?: boolean): void;
 }
