@@ -4,4 +4,10 @@
 
 .easterIcon {
   cursor: cell;
+  transition: all 0.2s;
+}
+
+.easterFiring {
+  opacity: 0.25;
+  cursor: wait;
 }

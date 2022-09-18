@@ -13,6 +13,7 @@ export enum MainRoomEvents {
   SHOW_POINTS = "client-SHOW_POINTS",
   SYNC_PEOPLE_POINTS = "people-SYNC_PEOPLE_POINTS",
   LOAD_PEOPLE = "pusher:member_added",
+  FIRE_CONFETTI = "client-FIRE_CONFETTI",
 }
 
 export interface RoomInfo {
