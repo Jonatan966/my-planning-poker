@@ -84,7 +84,7 @@ function RoomLogo() {
     setPeopleHighlight(sender_id, false);
   }
 
-  function callEasterEgg() {
+  function enableEasterEgg() {
     const currentCountdown = easterEggCountdown.current;
 
     if (currentCountdown <= 0) {
@@ -118,8 +118,10 @@ function RoomLogo() {
   return (
     <BsFillSuitClubFill
       size={28}
-      className={styles.normalIcon}
-      onClick={callEasterEgg}
+      className={classNames(styles.normalIcon, {
+        [styles.easterFiring]: confettiIsFiring,
+      })}
+      onClick={enableEasterEgg}
     />
   );
 }
