@@ -47,14 +47,5 @@
 }
 
 .highlight {
-  animation: borderPulse 0.75s ease infinite alternate;
-}
-
-@keyframes borderPulse {
-  from {
-    border-color: #163840;
-  }
-  to {
-    border-color: #1ef7d0;
-  }
+  border-color: #1ef7d0;
 }
