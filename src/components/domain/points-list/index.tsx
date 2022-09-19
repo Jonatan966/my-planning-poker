@@ -107,7 +107,9 @@ function PointsList() {
 
     const { average, isUnanimous } = calculatePointsAverage(peoples);
 
-    fireUnanimousConfetti();
+    if (isUnanimous) {
+      fireUnanimousConfetti();
+    }
 
     return (
       <div
