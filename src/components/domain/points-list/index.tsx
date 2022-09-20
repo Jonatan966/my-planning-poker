@@ -1,25 +1,14 @@
+import { useMemo, useRef } from "react";
 import classNames from "classnames";
 import confetti from "canvas-confetti";
-import ReactConfetti from "react-canvas-confetti";
 
-import { useRoom } from "../../../contexts/room-context";
 import PointButton from "../../ui/point-button";
+import { useRoomStore, People } from "../../../stores/room-store";
+import { useConfetti } from "../../../contexts/confetti-context";
+
 import styles from "./styles.module.css";
-import { People } from "../../../contexts/room-context/types";
-import Portal from "../../ui/portal";
 
 const AVAILABLE_POINTS = [1, 2, 3, 5, 8, 13, 21, 0];
-const CONFETTI_SETTINGS: confetti.Options = {
-  startVelocity: 30,
-  spread: 125,
-  ticks: 60,
-  zIndex: 0,
-  particleCount: 100,
-  origin: {
-    x: 0.5,
-    y: 1,
-  },
-};
 
 function calculatePointsAverage(peoples: People[] = []) {
   const preAverage = peoples.reduce(
@@ -61,45 +50,65 @@ function calculatePointsAverage(peoples: People[] = []) {
 }
 
 function PointsList() {
-  const { selectPoint, room, me, showPointsCountdown } = useRoom();
+  const { room, peoples, selectPoint } = useRoomStore((state) => ({
+    selectPoint: state.selectPoint,
+    room: state.basicInfo,
+    peoples: state.peoples,
+  }));
+
+  const { fireFocusedConfetti } = useConfetti();
+  const hasFiredConfetti = useRef(false);
+
+  const me = useMemo(() => {
+    if (!room || !room.subscription?.members) {
+      return;
+    }
+
+    return peoples.find(
+      (people) => people.id === room.subscription.members.myID
+    );
+  }, [peoples, room]);
+
+  function fireUnanimousConfetti() {
+    if (hasFiredConfetti.current) {
+      return;
+    }
+
+    fireFocusedConfetti();
+    hasFiredConfetti.current = true;
+  }
 
   function renderContent() {
-    if (!room?.showPoints || showPointsCountdown > 0) {
+    if (!room?.showPoints || room.showPointsCountdown > 0) {
+      hasFiredConfetti.current = false;
+
       return AVAILABLE_POINTS.map((point) => (
         <PointButton
           key={`point-${point}`}
           selected={me?.points === point}
           onClick={() => selectPoint(point)}
-          disabled={showPointsCountdown > 0}
+          disabled={room.showPointsCountdown > 0}
         >
           {point === 0 ? "?" : point}
         </PointButton>
       ));
     }
 
-    const { average, isUnanimous } = calculatePointsAverage(room?.peoples);
+    const { average, isUnanimous } = calculatePointsAverage(peoples);
+
+    if (isUnanimous) {
+      fireUnanimousConfetti();
+    }
 
     return (
-      <>
-        <Portal>
-          <ReactConfetti
-            refConfetti={(fireConfetti) => {
-              if (isUnanimous && fireConfetti) {
-                fireConfetti(CONFETTI_SETTINGS);
-              }
-            }}
-            className={styles.confetti}
-          />
-        </Portal>
-        <div
-          className={classNames(styles.average, {
-            [styles.isUnanimous]: isUnanimous,
-          })}
-        >
-          <span>{isUnanimous ? "Temos um acordo!" : "Média"}</span>
-          <strong>{average}</strong>
-        </div>
-      </>
+      <div
+        className={classNames(styles.average, {
+          [styles.isUnanimous]: isUnanimous,
+        })}
+      >
+        <span>{isUnanimous ? "Temos um acordo!" : "Média"}</span>
+        <strong>{average}</strong>
+      </div>
     );
   }
 

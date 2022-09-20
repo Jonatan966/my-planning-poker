@@ -2,8 +2,7 @@ import classNames from "classnames";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useRoom } from "../../../contexts/room-context";
-import { MainRoomEvents } from "../../../contexts/room-context/types";
+import { useRoomStore, MainRoomEvents } from "../../../stores/room-store";
 import Dialog from "../../ui/dialog";
 import { ConnectingMessage } from "./connecting-message";
 import { PeopleForm } from "./people-form";
@@ -29,7 +28,14 @@ function ConnectionDialog({
   basicRoomInfo,
 }: ConnectionDialogProps) {
   const router = useRouter();
-  const { connectOnRoom, disconnectOnRoom, room } = useRoom();
+  const { connectOnRoom, disconnectOnRoom, room, connection } = useRoomStore(
+    (state) => ({
+      connectOnRoom: state.connectOnRoom,
+      disconnectOnRoom: state.disconnectOnRoom,
+      room: state.basicInfo,
+      connection: state.connection,
+    })
+  );
 
   const [isConnectingIntoRoom, setIsConnectingIntoRoom] = useState(true);
 
@@ -48,7 +54,7 @@ function ConnectionDialog({
 
   async function handleConnectOnRoom() {
     try {
-      await connectOnRoom(basicRoomInfo);
+      return await connectOnRoom(basicRoomInfo);
     } catch (e) {
       console.log(e);
       toast.error("Não foi possível se conectar a essa sala");
@@ -76,7 +82,13 @@ function ConnectionDialog({
       return;
     }
 
-    handleConnectOnRoom();
+    let disconnect: () => void;
+
+    handleConnectOnRoom().then((onDisconnect) => (disconnect = onDisconnect));
+
+    return () => {
+      setTimeout(disconnect, 1);
+    };
   }, [isFillPeopleName, router.query]);
 
   useEffect(() => {
@@ -108,6 +120,7 @@ function ConnectionDialog({
 
     room.subscription.bind(MainRoomEvents.PREPARE_ROOM, debounceConnectionLoad);
     room.subscription.bind(MainRoomEvents.LOAD_PEOPLE, debounceConnectionLoad);
+    connection.bind(MainRoomEvents.SYNC_PEOPLE_POINTS, debounceConnectionLoad);
 
     debounceConnectionLoad();
 
@@ -118,6 +131,10 @@ function ConnectionDialog({
       );
       room.subscription.unbind(
         MainRoomEvents.LOAD_PEOPLE,
+        debounceConnectionLoad
+      );
+      connection.unbind(
+        MainRoomEvents.SYNC_PEOPLE_POINTS,
         debounceConnectionLoad
       );
     };

@@ -1,8 +1,7 @@
 import cloneDeep from "lodash.clonedeep";
 import { useMemo, useState } from "react";
 import useDimensions from "react-cool-dimensions";
-import { useRoom } from "../../../contexts/room-context";
-import { People } from "../../../contexts/room-context/types";
+import { useRoomStore, People } from "../../../stores/room-store";
 import Button from "../../ui/button";
 import PointCard from "./point-card";
 
@@ -74,9 +73,11 @@ function buildTableModules(
 }
 
 function Table() {
-  const { room, showPointsCountdown, me, setRoomPointsVisibility } = useRoom();
-  const [isChangingPointsVisibility, setIsChangingPointsVisibility] =
-    useState(false);
+  const { room, peoples, setRoomPointsVisibility } = useRoomStore((state) => ({
+    room: state.basicInfo,
+    peoples: state.peoples,
+    setRoomPointsVisibility: state.setRoomPointsVisibility,
+  }));
 
   const { observe, currentBreakpoint } = useDimensions({
     breakpoints: { XS: 0, SM: 500 },
@@ -87,20 +88,18 @@ function Table() {
     return <></>;
   }
 
+  const myID = room?.subscription?.members?.myID;
+
   const tableConfig =
     tableResponsiveConfigs?.[currentBreakpoint as Dimensions] ||
     tableResponsiveConfigs.default;
 
-  const isSomePeopleSelectPoint = room.peoples.some(
+  const isSomePeopleSelectPoint = peoples.some(
     (people) => typeof people.points !== "undefined"
   );
 
   async function handleSetRoomPointsVisibility() {
-    setIsChangingPointsVisibility(true);
-
     await setRoomPointsVisibility(!room.showPoints);
-
-    setIsChangingPointsVisibility(false);
   }
 
   const renderedTableModules = useMemo(() => {
@@ -108,7 +107,7 @@ function Table() {
       return [];
     }
 
-    const tableModules = buildTableModules(room.peoples, tableConfig.limits);
+    const tableModules = buildTableModules(peoples, tableConfig.limits);
 
     const renderedTableModules = tableModules
       .map((roomPeoples, moduleIndex) => (
@@ -120,8 +119,9 @@ function Table() {
             <PointCard
               points={roomPeople.points}
               key={roomPeople.id}
-              showPoints={room.showPoints && showPointsCountdown === 0}
-              highlight={roomPeople.id === me?.id}
+              showPoints={room.showPoints && room.showPointsCountdown === 0}
+              isMe={roomPeople.id === myID}
+              highlight={roomPeople.highlight}
             >
               {roomPeople.name}
             </PointCard>
@@ -131,20 +131,20 @@ function Table() {
       .flat();
 
     return renderedTableModules;
-  }, [room.peoples, showPointsCountdown, currentBreakpoint]);
+  }, [peoples, room.showPointsCountdown, currentBreakpoint]);
 
   return (
     <div className={styles.table} ref={observe}>
       {renderedTableModules}
 
       <div className={styles.tableCenter}>
-        {room?.showPoints && showPointsCountdown > 0 ? (
-          <h1>{showPointsCountdown}</h1>
+        {room?.showPoints && room.showPointsCountdown > 0 ? (
+          <h1>{room.showPointsCountdown}</h1>
         ) : (
           <Button
             colorScheme="secondary"
             onClick={handleSetRoomPointsVisibility}
-            disabled={isChangingPointsVisibility || !isSomePeopleSelectPoint}
+            disabled={!room.showPoints && !isSomePeopleSelectPoint}
           >
             {
               tableConfig[

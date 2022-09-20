@@ -26,10 +26,8 @@
   color: #fff;
   background: #29292e;
 
-  border: none;
+  border: 3px solid #29292e;
   border-radius: 5px;
-
-  transition: transform 0.2s;
 
   display: flex;
   align-items: center;
@@ -40,9 +38,14 @@
 
 .showPoints {
   background: #4863f7;
+  border-color: #4863f7;
 }
 
 .isMe {
   font-weight: bold;
-  color: #1ef7d0;
+  color: #996dff;
+}
+
+.highlight {
+  border-color: #1ef7d0;
 }
