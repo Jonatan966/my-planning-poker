@@ -1,7 +1,8 @@
 import classNames from "classnames";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { BsFillSuitClubFill, BsPiggyBankFill } from "react-icons/bs";
+
 import { useConfetti } from "../../../../contexts/confetti-context";
 import { MainRoomEvents, useRoomStore } from "../../../../stores/room-store";
 
@@ -13,7 +14,7 @@ enum EasterEggMode {
 }
 
 function RoomLogo() {
-  const { showConfetti } = useConfetti();
+  const { confettiIsFiring, fireScatteredConfetti } = useConfetti();
   const {
     showEasterEgg,
     roomSubscription,
@@ -27,8 +28,6 @@ function RoomLogo() {
     broadcastConfetti: state.broadcastConfetti,
     setPeopleHighlight: state.setPeopleHighlight,
   }));
-
-  const [confettiIsFiring, setConfettiIsFiring] = useState(false);
 
   const easterEggCountdown = useRef(5);
 
@@ -52,11 +51,11 @@ function RoomLogo() {
     mode: EasterEggMode = EasterEggMode.PUBLIC,
     sender_id = roomSubscription?.members.myID
   ) {
-    if (confettiIsFiring) {
+    if (confettiIsFiring.current) {
+      setPeopleHighlight(sender_id, false);
+
       return;
     }
-
-    setConfettiIsFiring(true);
 
     if (mode === EasterEggMode.PUBLIC && showEasterEgg && roomSubscription) {
       broadcastConfetti();
@@ -64,27 +63,16 @@ function RoomLogo() {
 
     setPeopleHighlight(sender_id, true);
 
-    for (let confettiCount = 12; confettiCount > 0; confettiCount--) {
-      showConfetti.current({
-        origin: {
-          x: Math.random(),
-          y: Math.random() + 0.1,
-        },
-        particleCount: 250,
-        spread: 100,
-        colors: ["#00B7AB"],
-      });
-
-      const randomDelay = 450 + Math.random() * 250;
-      await new Promise((resolve) => setTimeout(resolve, randomDelay));
-    }
-
-    setConfettiIsFiring(false);
+    await fireScatteredConfetti();
 
     setPeopleHighlight(sender_id, false);
   }
 
-  function callEasterEgg() {
+  function enableEasterEgg() {
+    if (confettiIsFiring.current) {
+      return;
+    }
+
     const currentCountdown = easterEggCountdown.current;
 
     if (currentCountdown <= 0) {
@@ -108,7 +96,7 @@ function RoomLogo() {
         size={28}
         color="#00B7AB"
         className={classNames(styles.easterIcon, {
-          [styles.easterFiring]: confettiIsFiring,
+          [styles.easterFiring]: confettiIsFiring.current,
         })}
         onClick={() => showEasterEggConfettis()}
       />
@@ -118,8 +106,10 @@ function RoomLogo() {
   return (
     <BsFillSuitClubFill
       size={28}
-      className={styles.normalIcon}
-      onClick={callEasterEgg}
+      className={classNames(styles.normalIcon, {
+        [styles.easterFiring]: confettiIsFiring.current,
+      })}
+      onClick={enableEasterEgg}
     />
   );
 }

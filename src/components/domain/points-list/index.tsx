@@ -9,17 +9,6 @@ import { useConfetti } from "../../../contexts/confetti-context";
 import styles from "./styles.module.css";
 
 const AVAILABLE_POINTS = [1, 2, 3, 5, 8, 13, 21, 0];
-const CONFETTI_SETTINGS: confetti.Options = {
-  startVelocity: 30,
-  spread: 125,
-  ticks: 60,
-  zIndex: 0,
-  particleCount: 100,
-  origin: {
-    x: 0.5,
-    y: 1,
-  },
-};
 
 function calculatePointsAverage(peoples: People[] = []) {
   const preAverage = peoples.reduce(
@@ -67,7 +56,7 @@ function PointsList() {
     peoples: state.peoples,
   }));
 
-  const { showConfetti } = useConfetti();
+  const { fireFocusedConfetti } = useConfetti();
   const hasFiredConfetti = useRef(false);
 
   const me = useMemo(() => {
@@ -85,7 +74,7 @@ function PointsList() {
       return;
     }
 
-    showConfetti.current(CONFETTI_SETTINGS);
+    fireFocusedConfetti();
     hasFiredConfetti.current = true;
   }
 
@@ -107,7 +96,9 @@ function PointsList() {
 
     const { average, isUnanimous } = calculatePointsAverage(peoples);
 
-    fireUnanimousConfetti();
+    if (isUnanimous) {
+      fireUnanimousConfetti();
+    }
 
     return (
       <div
