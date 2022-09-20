@@ -39,7 +39,7 @@ function PointCard({
   return (
     <div
       className={styles.pointCardContainer}
-      title={highlight && "Confetes!!"}
+      title={highlight ? "Confetes!!" : ""}
     >
       <div
         className={classNames(styles.point, {
