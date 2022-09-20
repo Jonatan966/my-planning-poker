@@ -30,6 +30,10 @@ export function ConfettiProvider({ children }: ConfettiProviderProps) {
   const confettiStopDebounceId = useRef(-1);
 
   const getInstance = useCallback((instance: confetti.CreateTypes) => {
+    if (!instance) {
+      return undefined;
+    }
+
     let injectedInstance = async (options: confetti.Options) => {
       confettiIsFiring.current = true;
 
