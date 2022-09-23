@@ -1,0 +1,37 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Room {
+  id         String   @id @default(uuid())
+  name       String
+  created_at DateTime @default(now())
+  entered_at DateTime @default(now())
+
+  features RoomFeature[]
+}
+
+model FeatureFlag {
+  id          String   @id
+  description String
+  created_at  DateTime @default(now())
+
+  rooms RoomFeature[]
+}
+
+model RoomFeature {
+  roomId    String
+  featureId String
+
+  room    Room        @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  feature FeatureFlag @relation(fields: [featureId], references: [id], onDelete: Cascade)
+
+  @@id([roomId, featureId])
+}
