@@ -5,6 +5,7 @@ import { api } from "../../lib/axios";
 import { createWebConnection } from "../../lib/pusher";
 import {
   BasicRoomInfo,
+  EventMode,
   MainRoomEvents,
   People,
   RoomInfo,
@@ -268,12 +269,17 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     });
   }
 
-  async function setRoomPointsVisibility(show?: boolean) {
+  async function setRoomPointsVisibility(
+    show?: boolean,
+    mode: EventMode = EventMode.PUBLIC
+  ) {
     const { basicInfo } = get();
 
-    basicInfo.subscription.trigger(MainRoomEvents.SHOW_POINTS, {
-      show,
-    });
+    if (mode === EventMode.PUBLIC) {
+      basicInfo.subscription.trigger(MainRoomEvents.SHOW_POINTS, {
+        show,
+      });
+    }
 
     roomEvents.onShowPoints({ show });
   }

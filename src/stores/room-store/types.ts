@@ -1,5 +1,10 @@
 import pusherJs, { PresenceChannel } from "pusher-js";
 
+export enum EventMode {
+  PUBLIC,
+  PRIVATE,
+}
+
 export interface People {
   id?: string;
   name: string;
