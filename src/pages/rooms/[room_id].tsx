@@ -23,7 +23,6 @@ interface RoomPageProps {
   roomInfo: {
     id: string;
     name: string;
-    show_points: boolean;
   };
 }
 
@@ -42,7 +41,7 @@ function RoomPage({ basicMe, roomInfo }: RoomPageProps) {
       {!isLoading && (
         <>
           <main className={styles.mainConatainer}>
-            <Table initialShowPoints={roomInfo.show_points} />
+            <Table />
           </main>
 
           <PointsList />
@@ -91,7 +90,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       roomInfo: {
         id: room.id,
         name: room.name,
-        show_points: room.show_points,
       },
     },
   };

@@ -1,7 +1,7 @@
 import cloneDeep from "lodash.clonedeep";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import useDimensions from "react-cool-dimensions";
-import { useRoomStore, People, EventMode } from "../../../stores/room-store";
+import { useRoomStore, People } from "../../../stores/room-store";
 import Button from "../../ui/button";
 import PointCard from "./point-card";
 
@@ -17,10 +17,6 @@ type TableResponsiveConfigs = Record<
     revealCardsButton: string;
   }
 >;
-
-interface TableProps {
-  initialShowPoints?: boolean;
-}
 
 const tableModuleNames = ["bottom", "top", "left", "right"];
 
@@ -76,7 +72,7 @@ function buildTableModules(
   return tableModules;
 }
 
-function Table({ initialShowPoints }: TableProps) {
+function Table() {
   const { room, peoples, setRoomPointsVisibility } = useRoomStore((state) => ({
     room: state.basicInfo,
     peoples: state.peoples,
@@ -136,12 +132,6 @@ function Table({ initialShowPoints }: TableProps) {
 
     return renderedTableModules;
   }, [peoples, room.showPointsCountdown, currentBreakpoint]);
-
-  useEffect(() => {
-    if (initialShowPoints) {
-      setRoomPointsVisibility(true, EventMode.PRIVATE);
-    }
-  }, [initialShowPoints]);
 
   return (
     <div className={styles.table} ref={observe}>

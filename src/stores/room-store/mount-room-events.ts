@@ -34,129 +34,137 @@ export function mountRoomEvents(
   set: MountRoomEventsProps[0],
   get: MountRoomEventsProps[1]
 ) {
-  return {
-    async onLoadPeople(people: OnLoadPeopleProps) {
-      const state = get();
+  async function onLoadPeople(people: OnLoadPeopleProps) {
+    const state = get();
 
-      set((state) => ({
-        peoples: state.peoples.concat({
-          id: people.id,
-          name: people.info.name,
-        }),
-      }));
+    set((state) => ({
+      peoples: state.peoples.concat({
+        id: people.id,
+        name: people.info.name,
+      }),
+    }));
 
-      const me = state.peoples.find(
-        (people) => people.id === state.basicInfo.subscription.members.myID
-      );
+    const me = state.peoples.find(
+      (people) => people.id === state.basicInfo.subscription.members.myID
+    );
 
-      if (me.points !== undefined) {
-        await api.post("sync-people-points", {
-          senderPeople: {
-            id: me.id,
-            points: me.points,
-          },
-          targetPeopleID: people.id,
-        });
-      }
-    },
-
-    onPrepareRoom(roomPeoples: Members) {
-      const parsedMembers = Object.entries<People>(
-        roomPeoples.members
-      ).map<People>(([id, people]) => ({
-        id,
-        name: people.name,
-      }));
-
-      set({
-        peoples: parsedMembers,
+    if (me.points !== undefined) {
+      await api.post("sync-people-points", {
+        senderPeople: {
+          id: me.id,
+          points: me.points,
+        },
+        targetPeopleID: people.id,
       });
-    },
+    }
+  }
 
-    onPeopleLeave(people: People) {
-      set((state) => ({
-        peoples: state.peoples.filter(
-          (statePeople) => statePeople.id !== people.id
-        ),
-      }));
-    },
+  function onPrepareRoom(roomPeoples: Members) {
+    const parsedMembers = Object.entries<People>(
+      roomPeoples.members
+    ).map<People>(([id, people]) => ({
+      id,
+      name: people.name,
+    }));
 
-    onSelectPoint(people: Pick<People, "id" | "points">) {
-      set((state) => ({
-        peoples: state.peoples.map((statePeople) =>
-          statePeople.id === people.id
-            ? {
-                ...statePeople,
-                points: people.points,
-              }
-            : statePeople
-        ),
-      }));
-    },
+    set({
+      peoples: parsedMembers,
+    });
+  }
 
-    onShowPoints({ show }: OnShowPointsProps) {
-      if (show) {
-        set(
-          produce((state: RoomStoreProps) => {
-            state.basicInfo.showPointsCountdown = 3;
-          })
-        );
+  function onPeopleLeave(people: People) {
+    set((state) => ({
+      peoples: state.peoples.filter(
+        (statePeople) => statePeople.id !== people.id
+      ),
+    }));
+  }
 
-        const intervalID = setInterval(() => {
-          set(
-            produce((state: RoomStoreProps) => {
-              if (state.basicInfo.showPointsCountdown === 0) {
-                clearInterval(intervalID);
-                return;
-              }
+  function onSelectPoint(people: Pick<People, "id" | "points">) {
+    set((state) => ({
+      peoples: state.peoples.map((statePeople) =>
+        statePeople.id === people.id
+          ? {
+              ...statePeople,
+              points: people.points,
+            }
+          : statePeople
+      ),
+    }));
+  }
 
-              state.basicInfo.showPointsCountdown--;
-            })
-          );
-        }, 1000);
-      }
-
+  function onShowPoints({ show }: OnShowPointsProps) {
+    if (show) {
       set(
         produce((state: RoomStoreProps) => {
-          state.basicInfo.showPoints = show;
-
-          if (!show) {
-            state.peoples = state.peoples.map((people) => ({
-              ...people,
-              points: undefined,
-            }));
-          }
+          state.basicInfo.showPointsCountdown = 3;
         })
       );
-    },
 
-    onSyncPeoplePoints(senderPeople: OnSyncPeoplePointsProps) {
-      set((state) => ({
-        peoples: state.peoples.map((people) =>
-          people.id === senderPeople.id
-            ? {
-                ...people,
-                points: senderPeople.points,
-              }
-            : people
-        ),
-      }));
-    },
+      const intervalID = setInterval(() => {
+        set(
+          produce((state: RoomStoreProps) => {
+            if (state.basicInfo.showPointsCountdown === 0) {
+              clearInterval(intervalID);
+              return;
+            }
 
-    onHighlightPeople({
-      sender_id: targetPeopleID,
-      highlight = true,
-    }: OnHighlightPeopleProps) {
-      set((state) => ({
-        peoples: state.peoples.map((people) =>
-          people.id === targetPeopleID
-            ? {
-                ...people,
-                highlight,
-              }
-            : people
-        ),
-      }));
-    },
+            state.basicInfo.showPointsCountdown--;
+          })
+        );
+      }, 1000);
+    }
+
+    set(
+      produce((state: RoomStoreProps) => {
+        state.basicInfo.showPoints = show;
+
+        if (!show) {
+          state.peoples = state.peoples.map((people) => ({
+            ...people,
+            points: undefined,
+          }));
+        }
+      })
+    );
+  }
+
+  function onSyncPeoplePoints(senderPeople: OnSyncPeoplePointsProps) {
+    set((state) => ({
+      peoples: state.peoples.map((people) =>
+        people.id === senderPeople.id
+          ? {
+              ...people,
+              points: senderPeople.points,
+            }
+          : people
+      ),
+    }));
+  }
+
+  function onHighlightPeople({
+    sender_id: targetPeopleID,
+    highlight = true,
+  }: OnHighlightPeopleProps) {
+    set((state) => ({
+      peoples: state.peoples.map((people) =>
+        people.id === targetPeopleID
+          ? {
+              ...people,
+              highlight,
+            }
+          : people
+      ),
+    }));
+  }
+
+  return {
+    onLoadPeople,
+    onPrepareRoom,
+    onPeopleLeave,
+    onSelectPoint,
+    onShowPoints,
+    onSyncPeoplePoints,
+    onHighlightPeople,
   };
 }
