@@ -59,7 +59,7 @@ export interface RoomStoreProps {
   connectOnRoom(roomBasicInfo: BasicRoomInfo): Promise<() => void>;
   disconnectOnRoom(): void;
   selectPoint(points: number): Promise<void>;
-  setRoomPointsVisibility(show?: boolean): Promise<void>;
+  setRoomPointsVisibility(show?: boolean, mode?: EventMode): Promise<void>;
   broadcastConfetti(): void;
   setPeopleHighlight(people_id: string, highlight?: boolean): void;
 }
