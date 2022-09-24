@@ -20,23 +20,23 @@ interface RoomPageProps {
     id: string;
     name?: string;
   };
-  basicRoomInfo: {
+  roomInfo: {
     id: string;
     name: string;
   };
 }
 
-function RoomPage({ basicMe, basicRoomInfo }: RoomPageProps) {
+function RoomPage({ basicMe, roomInfo }: RoomPageProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
     <ConfettiProvider>
-      <RoomHeader basicMe={basicMe} basicRoomInfo={basicRoomInfo} />
+      <RoomHeader basicMe={basicMe} roomInfo={roomInfo} />
       <ConnectionDialog
         isOpen={isLoading}
         onRequestClose={() => setIsLoading(false)}
         basicMe={basicMe}
-        basicRoomInfo={basicRoomInfo}
+        roomInfo={roomInfo}
       />
       {!isLoading && (
         <>
@@ -87,7 +87,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         id: peopleID,
         name: peopleName || null,
       },
-      basicRoomInfo: {
+      roomInfo: {
         id: room.id,
         name: room.name,
       },

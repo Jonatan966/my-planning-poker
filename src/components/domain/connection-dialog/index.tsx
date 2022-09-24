@@ -15,7 +15,7 @@ interface ConnectionDialogProps {
   basicMe: {
     name?: string;
   };
-  basicRoomInfo: {
+  roomInfo: {
     id: string;
     name: string;
   };
@@ -25,7 +25,7 @@ function ConnectionDialog({
   onRequestClose,
   isOpen,
   basicMe,
-  basicRoomInfo,
+  roomInfo,
 }: ConnectionDialogProps) {
   const router = useRouter();
   const { connectOnRoom, disconnectOnRoom, room, connection } = useRoomStore(
@@ -54,7 +54,7 @@ function ConnectionDialog({
 
   async function handleConnectOnRoom() {
     try {
-      return await connectOnRoom(basicRoomInfo);
+      return await connectOnRoom(roomInfo);
     } catch (e) {
       console.log(e);
       toast.error("Não foi possível se conectar a essa sala");
