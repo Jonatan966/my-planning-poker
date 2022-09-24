@@ -10,10 +10,11 @@ datasource db {
 }
 
 model Room {
-  id         String   @id @default(uuid())
-  name       String
-  created_at DateTime @default(now())
-  entered_at DateTime @default(now())
+  id          String   @id @default(uuid())
+  name        String
+  show_points Boolean?
+  created_at  DateTime @default(now())
+  entered_at  DateTime @default(now())
 
   features RoomFeature[]
 }
