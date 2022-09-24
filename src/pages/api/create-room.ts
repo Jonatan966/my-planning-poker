@@ -1,6 +1,5 @@
-import { randomUUID } from "crypto";
 import { NextApiRequest, NextApiResponse } from "next";
-import { redis } from "../../lib/redis";
+import { database } from "../../lib/database";
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
   const { name } = request.body;
@@ -12,12 +11,11 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     });
   }
 
-  const roomId = randomUUID();
-
-  await redis.set(roomId, name);
-
-  return response.status(201).json({
-    name,
-    id: roomId,
+  const newRoom = await database.room.create({
+    data: {
+      name,
+    },
   });
+
+  return response.status(201).json(newRoom);
 };
