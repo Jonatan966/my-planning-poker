@@ -1,19 +1,21 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { redis } from "../../lib/redis";
+import { database } from "../../lib/database";
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
   const { room_id } = request.query;
 
-  const roomName = await redis.get(room_id as string);
+  const foundedRoom = await database.room.findUnique({
+    where: {
+      id: String(room_id),
+    },
+  });
 
-  if (!roomName) {
+  if (!foundedRoom) {
     return response.status(400).json({
       error: true,
       message: "Room not found",
     });
   }
 
-  return response.json({
-    name: roomName,
-  });
+  return response.json(foundedRoom);
 };

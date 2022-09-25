@@ -1,5 +1,10 @@
 import pusherJs, { PresenceChannel } from "pusher-js";
 
+export enum EventMode {
+  PUBLIC,
+  PRIVATE,
+}
+
 export interface People {
   id?: string;
   name: string;
@@ -54,7 +59,7 @@ export interface RoomStoreProps {
   connectOnRoom(roomBasicInfo: BasicRoomInfo): Promise<() => void>;
   disconnectOnRoom(): void;
   selectPoint(points: number): Promise<void>;
-  setRoomPointsVisibility(show?: boolean): Promise<void>;
+  setRoomPointsVisibility(show?: boolean, mode?: EventMode): Promise<void>;
   broadcastConfetti(): void;
   setPeopleHighlight(people_id: string, highlight?: boolean): void;
 }

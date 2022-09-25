@@ -7,9 +7,9 @@ import RoomHeader from "../../components/domain/room-header";
 import Table from "../../components/domain/table";
 import ConnectionDialog from "../../components/domain/connection-dialog";
 
+import { database } from "../../lib/database";
 import { cookieStorageManager } from "../../utils/cookie-storage-manager";
 import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
-import { redis } from "../../lib/redis";
 import { errorCodes } from "../../configs/error-codes";
 import { ConfettiProvider } from "../../contexts/confetti-context";
 
@@ -20,23 +20,23 @@ interface RoomPageProps {
     id: string;
     name?: string;
   };
-  basicRoomInfo: {
+  roomInfo: {
     id: string;
     name: string;
   };
 }
 
-function RoomPage({ basicMe, basicRoomInfo }: RoomPageProps) {
+function RoomPage({ basicMe, roomInfo }: RoomPageProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
     <ConfettiProvider>
-      <RoomHeader basicMe={basicMe} basicRoomInfo={basicRoomInfo} />
+      <RoomHeader basicMe={basicMe} roomInfo={roomInfo} />
       <ConnectionDialog
         isOpen={isLoading}
         onRequestClose={() => setIsLoading(false)}
         basicMe={basicMe}
-        basicRoomInfo={basicRoomInfo}
+        roomInfo={roomInfo}
       />
       {!isLoading && (
         <>
@@ -54,9 +54,13 @@ function RoomPage({ basicMe, basicRoomInfo }: RoomPageProps) {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { room_id } = ctx.query;
 
-  const roomName = await redis.get<string>(String(room_id));
+  const room = await database.room.findUnique({
+    where: {
+      id: String(room_id),
+    },
+  });
 
-  if (!roomName) {
+  if (!room) {
     return {
       redirect: {
         destination: `/?error=${errorCodes.ROOM_NOT_EXISTS}`,
@@ -64,11 +68,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-
-  const basicRoomInfo = {
-    id: String(room_id),
-    name: roomName,
-  };
 
   const peopleName = cookieStorageManager.getItem(
     persistedCookieVars.PEOPLE_NAME,
@@ -88,7 +87,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         id: peopleID,
         name: peopleName || null,
       },
-      basicRoomInfo,
+      roomInfo: {
+        id: room.id,
+        name: room.name,
+      },
     },
   };
 };
