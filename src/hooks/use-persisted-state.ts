@@ -1,5 +1,5 @@
 import { Dispatch, useEffect, useState } from "react";
-import { cookieStorageManager } from "../utils/cookie-storage-manager";
+import { localStorageManager } from "../utils/local-storage-manager";
 
 function usePersistedState<V = string>(
   key: string,
@@ -10,7 +10,7 @@ function usePersistedState<V = string>(
       return initialValue;
     }
 
-    const storagedValue = cookieStorageManager.getItem<V>(key);
+    const storagedValue = localStorageManager.getItem<V>(key);
 
     if (!storagedValue) {
       return initialValue;
@@ -20,7 +20,7 @@ function usePersistedState<V = string>(
   });
 
   useEffect(() => {
-    cookieStorageManager.setItem(key, value);
+    localStorageManager.setItem(key, value);
   }, [value]);
 
   return [value, setValue];
