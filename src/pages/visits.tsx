@@ -71,7 +71,7 @@ function VisitsPage() {
         </div>
       </section>
 
-      {isVisitingRoom && <BackdropLoader>Entrando na sala...</BackdropLoader>}
+      {isVisitingRoom && <BackdropLoader>Encontrando a sala...</BackdropLoader>}
     </div>
   );
 }
