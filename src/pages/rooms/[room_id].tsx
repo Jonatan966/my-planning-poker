@@ -23,6 +23,7 @@ interface RoomPageProps {
   roomInfo: {
     id: string;
     name: string;
+    created_at: Date;
   };
 }
 
@@ -90,6 +91,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       roomInfo: {
         id: room.id,
         name: room.name,
+        created_at: room.created_at.toISOString(),
       },
     },
   };
