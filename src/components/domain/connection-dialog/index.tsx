@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useRoomStore, MainRoomEvents } from "../../../stores/room-store";
+import { useVisitsStore } from "../../../stores/visits-store";
 import Dialog from "../../ui/dialog";
 import { ConnectingMessage } from "./connecting-message";
 import { PeopleForm } from "./people-form";
@@ -18,6 +19,7 @@ interface ConnectionDialogProps {
   roomInfo: {
     id: string;
     name: string;
+    created_at: Date;
   };
 }
 
@@ -36,6 +38,10 @@ function ConnectionDialog({
       connection: state.connection,
     })
   );
+
+  const { addVisit } = useVisitsStore((state) => ({
+    addVisit: state.addVisit,
+  }));
 
   const [isConnectingIntoRoom, setIsConnectingIntoRoom] = useState(true);
 
@@ -84,6 +90,7 @@ function ConnectionDialog({
 
     let disconnect: () => void;
 
+    addVisit(roomInfo);
     handleConnectOnRoom().then((onDisconnect) => (disconnect = onDisconnect));
 
     return () => {
