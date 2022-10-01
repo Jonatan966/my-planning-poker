@@ -3,28 +3,23 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaHistory } from "react-icons/fa";
-import dynamic from "next/dynamic";
 
 import Button from "../components/ui/button";
 import { useVisitsStore } from "../stores/visits-store";
 import styles from "../styles/pages/home.module.css";
 import BackdropLoader from "../components/ui/backdrop-loader";
-
-const RoomCard = dynamic(() => import("../components/domain/room-card"), {
-  ssr: false,
-});
+import ClientOnly from "../components/engine/client-only";
+import RoomCard from "../components/domain/room-card";
 
 function VisitsPage() {
   const router = useRouter();
 
   const { visits, removeVisit } = useVisitsStore((state) => ({
-    visits: state.visits,
+    visits: Object.values(state.visits),
     removeVisit: state.removeVisit,
   }));
 
   const [isVisitingRoom, setIsVisitingRoom] = useState(false);
-
-  const parsedVisits = Object.values(visits);
 
   async function onVisitRoom(roomId: string) {
     setIsVisitingRoom(true);
@@ -39,8 +34,8 @@ function VisitsPage() {
   }
 
   function renderVisits() {
-    if (parsedVisits.length) {
-      return parsedVisits.map((room) => (
+    if (visits.length) {
+      return visits.map((room) => (
         <RoomCard
           onRemoveRoom={removeVisit}
           roomInfo={room}
@@ -71,7 +66,9 @@ function VisitsPage() {
           </div>
         </div>
 
-        <div className={styles.visits}>{renderVisits()}</div>
+        <div className={styles.visits}>
+          <ClientOnly>{renderVisits()}</ClientOnly>
+        </div>
       </section>
 
       {isVisitingRoom && <BackdropLoader>Entrando na sala...</BackdropLoader>}
