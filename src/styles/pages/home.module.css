@@ -47,6 +47,16 @@
   margin-top: 1rem;
 
   overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.withoutVisits {
+  text-align: center;
+  margin: auto;
+  padding: 0.25rem;
+  color: #7c7c8a;
 }
 
 @media (min-width: 320px) and (max-width: 480px) {

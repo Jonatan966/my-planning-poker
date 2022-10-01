@@ -25,6 +25,25 @@ function VisitsPage() {
     router.push(`/rooms/${roomId}`);
   }
 
+  function renderVisits() {
+    if (parsedVisits.length) {
+      return parsedVisits.map((room) => (
+        <RoomCard
+          onRemoveRoom={removeVisit}
+          roomInfo={room}
+          key={room.id}
+          onClick={onVisitRoom}
+        />
+      ));
+    }
+
+    return (
+      <span className={styles.withoutVisits}>
+        Você não visitou nenhuma sala
+      </span>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <section className={styles.contentBox}>
@@ -39,16 +58,7 @@ function VisitsPage() {
           </div>
         </div>
 
-        <div className={styles.visits}>
-          {parsedVisits.map((room) => (
-            <RoomCard
-              onRemoveRoom={removeVisit}
-              roomInfo={room}
-              key={room.id}
-              onClick={onVisitRoom}
-            />
-          ))}
-        </div>
+        <div className={styles.visits}>{renderVisits()}</div>
       </section>
     </div>
   );
