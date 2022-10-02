@@ -10,6 +10,7 @@ import styles from "../styles/pages/home.module.css";
 import BackdropLoader from "../components/ui/backdrop-loader";
 import ClientOnly from "../components/engine/client-only";
 import RoomCard from "../components/domain/room-card";
+import PageHead from "../components/engine/page-head";
 
 function VisitsPage() {
   const router = useRouter();
@@ -53,26 +54,31 @@ function VisitsPage() {
   }
 
   return (
-    <div className={styles.container}>
-      <section className={styles.contentBox}>
-        <div className={styles.appName}>
-          <FaHistory size={32} />
-          <h1 translate="no">Minhas visitas</h1>
+    <>
+      <PageHead title="Minhas Visitas" />
+      <div className={styles.container}>
+        <section className={styles.contentBox}>
+          <div className={styles.appName}>
+            <FaHistory size={32} />
+            <h1 translate="no">Minhas visitas</h1>
 
-          <div className={styles.menu}>
-            <Link href="/">
-              <Button colorScheme="danger">Voltar</Button>
-            </Link>
+            <div className={styles.menu}>
+              <Link href="/">
+                <Button colorScheme="danger">Voltar</Button>
+              </Link>
+            </div>
           </div>
-        </div>
 
-        <div className={styles.visits}>
-          <ClientOnly>{renderVisits()}</ClientOnly>
-        </div>
-      </section>
+          <div className={styles.visits}>
+            <ClientOnly>{renderVisits()}</ClientOnly>
+          </div>
+        </section>
 
-      {isVisitingRoom && <BackdropLoader>Encontrando a sala...</BackdropLoader>}
-    </div>
+        {isVisitingRoom && (
+          <BackdropLoader>Encontrando a sala...</BackdropLoader>
+        )}
+      </div>
+    </>
   );
 }
 

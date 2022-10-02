@@ -14,6 +14,7 @@ import { errorCodes } from "../../configs/error-codes";
 import { ConfettiProvider } from "../../contexts/confetti-context";
 
 import styles from "../../styles/pages/room.module.css";
+import PageHead from "../../components/engine/page-head";
 
 interface RoomPageProps {
   basicMe: {
@@ -32,6 +33,7 @@ function RoomPage({ basicMe, roomInfo }: RoomPageProps) {
 
   return (
     <ConfettiProvider>
+      <PageHead title={roomInfo.name} />
       <RoomHeader basicMe={basicMe} roomInfo={roomInfo} />
       <ConnectionDialog
         isOpen={isLoading}
