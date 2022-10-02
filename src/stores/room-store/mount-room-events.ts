@@ -44,7 +44,6 @@ export function mountRoomEvents(
           points: me.points,
         },
         targetPeopleID: people.id,
-        countdownStartedAt: state.basicInfo.countdownStartedAt,
       });
     }
   }
@@ -148,10 +147,6 @@ export function mountRoomEvents(
     );
 
     set({ peoples: updatedPeoplesList });
-
-    if (!state.basicInfo.showPoints && senderPeople.countdownStartedAt) {
-      onShowPoints({ show: true, startedAt: senderPeople.countdownStartedAt });
-    }
   }
 
   function onHighlightPeople({
