@@ -1,36 +1,17 @@
 import _ from "lodash";
 import produce from "immer";
 import { Members } from "pusher-js";
-import { StateCreator } from "zustand";
 
 import { api } from "../../lib/axios";
-import { People, RoomStoreProps } from "./types";
-
-type MountRoomEventsProps = Parameters<
-  StateCreator<RoomStoreProps, [], [], RoomStoreProps>
->;
-
-interface OnLoadPeopleProps {
-  id: string;
-  info: {
-    name: string;
-    entered_at: Date;
-  };
-}
-
-interface OnShowPointsProps {
-  show: boolean;
-}
-
-interface OnSyncPeoplePointsProps {
-  id: string;
-  points: number;
-}
-
-interface OnHighlightPeopleProps {
-  sender_id: string;
-  highlight?: boolean;
-}
+import {
+  MountRoomEventsProps,
+  OnHighlightPeopleProps,
+  OnLoadPeopleProps,
+  OnShowPointsProps,
+  OnSyncPeoplePointsProps,
+  People,
+  RoomStoreProps,
+} from "./types";
 
 function sortPeoplesByArrival(peoples: People[]) {
   return _.sortBy(peoples, ["entered_at"], ["asc"]);
