@@ -2,7 +2,11 @@ import classNames from "classnames";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useRoomStore, MainRoomEvents } from "../../../stores/room-store";
+import {
+  useRoomStore,
+  MainRoomEvents,
+  EventMode,
+} from "../../../stores/room-store";
 import { useVisitsStore } from "../../../stores/visits-store";
 import Dialog from "../../ui/dialog";
 import { ConnectingMessage } from "./connecting-message";
@@ -19,6 +23,7 @@ interface ConnectionDialogProps {
   roomInfo: {
     id: string;
     name: string;
+    countdown_started_at?: number;
     created_at: Date;
   };
 }
@@ -30,14 +35,19 @@ function ConnectionDialog({
   roomInfo,
 }: ConnectionDialogProps) {
   const router = useRouter();
-  const { connectOnRoom, disconnectOnRoom, room, connection } = useRoomStore(
-    (state) => ({
-      connectOnRoom: state.connectOnRoom,
-      disconnectOnRoom: state.disconnectOnRoom,
-      room: state.basicInfo,
-      connection: state.connection,
-    })
-  );
+  const {
+    connectOnRoom,
+    disconnectOnRoom,
+    setRoomPointsVisibility,
+    room,
+    connection,
+  } = useRoomStore((state) => ({
+    connectOnRoom: state.connectOnRoom,
+    disconnectOnRoom: state.disconnectOnRoom,
+    setRoomPointsVisibility: state.setRoomPointsVisibility,
+    room: state.basicInfo,
+    connection: state.connection,
+  }));
 
   const { addVisit } = useVisitsStore((state) => ({
     addVisit: state.addVisit,
@@ -104,8 +114,18 @@ function ConnectionDialog({
       return;
     }
 
-    if (!isConnectingIntoRoom) {
-      onRequestClose();
+    if (isConnectingIntoRoom) {
+      return;
+    }
+
+    onRequestClose();
+
+    if (roomInfo.countdown_started_at) {
+      setRoomPointsVisibility(
+        true,
+        roomInfo.countdown_started_at,
+        EventMode.PRIVATE
+      );
     }
   }, [isConnectingIntoRoom]);
 

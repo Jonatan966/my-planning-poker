@@ -145,11 +145,10 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
   async function setRoomPointsVisibility(
     show?: boolean,
+    startedAt = Date.now(),
     mode: EventMode = EventMode.PUBLIC
   ) {
     const { basicInfo } = get();
-
-    const startedAt = Date.now();
 
     if (mode === EventMode.PUBLIC) {
       api.post("/set-points-countdown", {
