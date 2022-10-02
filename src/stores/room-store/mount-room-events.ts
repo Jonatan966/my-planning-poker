@@ -44,6 +44,7 @@ export function mountRoomEvents(
           points: me.points,
         },
         targetPeopleID: people.id,
+        countdownStartedAt: state.basicInfo.countdownStartedAt,
       });
     }
   }
@@ -135,16 +136,22 @@ export function mountRoomEvents(
   }
 
   function onSyncPeoplePoints(senderPeople: OnSyncPeoplePointsProps) {
-    set((state) => ({
-      peoples: state.peoples.map((people) =>
-        people.id === senderPeople.id
-          ? {
-              ...people,
-              points: senderPeople.points,
-            }
-          : people
-      ),
-    }));
+    const state = get();
+
+    const updatedPeoplesList = state.peoples.map((people) =>
+      people.id === senderPeople.id
+        ? {
+            ...people,
+            points: senderPeople.points,
+          }
+        : people
+    );
+
+    set({ peoples: updatedPeoplesList });
+
+    if (!state.basicInfo.showPoints && senderPeople.countdownStartedAt) {
+      onShowPoints({ show: true, startedAt: senderPeople.countdownStartedAt });
+    }
   }
 
   function onHighlightPeople({
