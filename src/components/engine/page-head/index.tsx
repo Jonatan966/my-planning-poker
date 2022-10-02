@@ -7,9 +7,11 @@ interface PageHeadProps {
 }
 
 function PageHead({ title, children }: PageHeadProps) {
+  const parsedTitle = title ? `${title} | ` : "";
+
   return (
     <Head>
-      <title>{title && `${title} | `}My Planning Poker</title>
+      <title>{`${parsedTitle}My Planning Poker`}</title>
       {children}
     </Head>
   );
