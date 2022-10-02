@@ -149,13 +149,16 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   ) {
     const { basicInfo } = get();
 
+    const startedAt = Date.now();
+
     if (mode === EventMode.PUBLIC) {
       basicInfo.subscription.trigger(MainRoomEvents.SHOW_POINTS, {
         show,
+        startedAt,
       });
     }
 
-    roomEvents.onShowPoints({ show });
+    roomEvents.onShowPoints({ show, startedAt });
   }
 
   function setEasterEggVisibility(show: boolean) {

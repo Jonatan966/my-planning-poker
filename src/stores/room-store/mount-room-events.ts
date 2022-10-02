@@ -85,26 +85,39 @@ export function mountRoomEvents(
     }));
   }
 
-  function onShowPoints({ show }: OnShowPointsProps) {
+  function onShowPoints({ show, startedAt }: OnShowPointsProps) {
     if (show) {
+      const ONE_SECOND = 1000;
+      const MAX_COUNTDOWN = 8;
+
+      const currentTime = Date.now();
+      const startDelay = (currentTime - startedAt) / 1000;
+      const firstCountdown = MAX_COUNTDOWN - Math.floor(startDelay);
+
+      const firstTimeoutDelay =
+        (Math.ceil(startDelay) - startDelay) * 1000 || ONE_SECOND;
+
       set(
         produce((state: RoomStoreProps) => {
-          state.basicInfo.showPointsCountdown = 3;
+          state.basicInfo.showPointsCountdown = firstCountdown;
+          state.basicInfo.countdownStartedAt = startedAt;
         })
       );
 
-      const intervalID = setInterval(() => {
+      function countdownStep() {
         set(
           produce((state: RoomStoreProps) => {
             if (state.basicInfo.showPointsCountdown === 0) {
-              clearInterval(intervalID);
               return;
             }
 
             state.basicInfo.showPointsCountdown--;
+            setTimeout(countdownStep, ONE_SECOND);
           })
         );
-      }, 1000);
+      }
+
+      setTimeout(countdownStep, firstTimeoutDelay);
     }
 
     set(
