@@ -88,7 +88,7 @@ export function mountRoomEvents(
   function onShowPoints({ show, startedAt }: OnShowPointsProps) {
     if (show) {
       const ONE_SECOND = 1000;
-      const MAX_COUNTDOWN = 8;
+      const MAX_COUNTDOWN = 5;
 
       const currentTime = Date.now();
       const startDelay = (currentTime - startedAt) / 1000;
