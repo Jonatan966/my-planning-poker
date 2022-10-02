@@ -1,33 +1,20 @@
+import _ from "lodash";
 import produce from "immer";
 import { Members } from "pusher-js";
-import { StateCreator } from "zustand";
 
 import { api } from "../../lib/axios";
-import { People, RoomStoreProps } from "./types";
+import {
+  MountRoomEventsProps,
+  OnHighlightPeopleProps,
+  OnLoadPeopleProps,
+  OnShowPointsProps,
+  OnSyncPeoplePointsProps,
+  People,
+  RoomStoreProps,
+} from "./types";
 
-type MountRoomEventsProps = Parameters<
-  StateCreator<RoomStoreProps, [], [], RoomStoreProps>
->;
-
-interface OnLoadPeopleProps {
-  id: string;
-  info: {
-    name: string;
-  };
-}
-
-interface OnShowPointsProps {
-  show: boolean;
-}
-
-interface OnSyncPeoplePointsProps {
-  id: string;
-  points: number;
-}
-
-interface OnHighlightPeopleProps {
-  sender_id: string;
-  highlight?: boolean;
+function sortPeoplesByArrival(peoples: People[]) {
+  return _.sortBy(peoples, ["entered_at"], ["asc"]);
 }
 
 export function mountRoomEvents(
@@ -37,12 +24,14 @@ export function mountRoomEvents(
   async function onLoadPeople(people: OnLoadPeopleProps) {
     const state = get();
 
-    set((state) => ({
-      peoples: state.peoples.concat({
-        id: people.id,
-        name: people.info.name,
-      }),
-    }));
+    const updatedPeoplesList = state.peoples.concat({
+      id: people.id,
+      name: people.info.name,
+      entered_at: people.info.entered_at,
+    });
+    const sortedPeoplesList = sortPeoplesByArrival(updatedPeoplesList);
+
+    set({ peoples: sortedPeoplesList });
 
     const me = state.peoples.find(
       (people) => people.id === state.basicInfo.subscription.members.myID
@@ -65,10 +54,13 @@ export function mountRoomEvents(
     ).map<People>(([id, people]) => ({
       id,
       name: people.name,
+      entered_at: people.entered_at,
     }));
 
+    const sortedMembers = sortPeoplesByArrival(parsedMembers);
+
     set({
-      peoples: parsedMembers,
+      peoples: sortedMembers,
     });
   }
 
