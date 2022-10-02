@@ -94,12 +94,14 @@ export function mountRoomEvents(
       const startDelay = (currentTime - startedAt) / 1000;
       const firstCountdown = MAX_COUNTDOWN - Math.floor(startDelay);
 
+      const parsedFirstCountdown = firstCountdown >= 0 ? firstCountdown : 0;
+
       const firstTimeoutDelay =
         (Math.ceil(startDelay) - startDelay) * 1000 || ONE_SECOND;
 
       set(
         produce((state: RoomStoreProps) => {
-          state.basicInfo.showPointsCountdown = firstCountdown;
+          state.basicInfo.showPointsCountdown = parsedFirstCountdown;
           state.basicInfo.countdownStartedAt = startedAt;
         })
       );
@@ -117,7 +119,9 @@ export function mountRoomEvents(
         );
       }
 
-      setTimeout(countdownStep, firstTimeoutDelay);
+      if (parsedFirstCountdown > 0) {
+        setTimeout(countdownStep, firstTimeoutDelay);
+      }
     }
 
     set(

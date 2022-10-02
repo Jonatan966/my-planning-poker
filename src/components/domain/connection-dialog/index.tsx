@@ -114,18 +114,16 @@ function ConnectionDialog({
       return;
     }
 
-    if (isConnectingIntoRoom) {
-      return;
-    }
-
-    onRequestClose();
-
     if (roomInfo.countdown_started_at) {
       setRoomPointsVisibility(
         true,
         roomInfo.countdown_started_at,
         EventMode.PRIVATE
       );
+    }
+
+    if (!isConnectingIntoRoom) {
+      onRequestClose();
     }
   }, [isConnectingIntoRoom]);
 
