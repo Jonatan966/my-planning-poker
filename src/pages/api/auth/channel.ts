@@ -19,6 +19,8 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     }
   );
 
+  const entered_at = new Date();
+
   let authResponse = pusher.authorizeChannel(
     socket_id as string,
     channel_name as string,
@@ -26,6 +28,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
       user_id: userID,
       user_info: {
         name: userName,
+        entered_at,
       },
     }
   );
