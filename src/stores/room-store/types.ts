@@ -8,6 +8,7 @@ export enum EventMode {
 export interface People {
   id?: string;
   name: string;
+  entered_at: Date;
   points?: number;
   highlight?: boolean;
 }
