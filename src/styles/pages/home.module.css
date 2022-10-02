@@ -46,10 +46,16 @@
   border-radius: 5px;
   margin-top: 1rem;
 
+  padding: 0.5rem;
+
   overflow-y: auto;
 
   display: flex;
   flex-direction: column;
+}
+
+.visits > * + * {
+  margin-top: 0.5rem;
 }
 
 .withoutVisits {
