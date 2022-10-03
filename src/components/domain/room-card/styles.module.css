@@ -5,11 +5,8 @@
   align-items: stretch;
   gap: 0.5rem;
 
-  margin: 0.5rem;
   padding: 0.5rem;
   border-radius: 5px;
-
-  width: calc(100% - 1rem);
 
   transition: filter 0.2s;
 

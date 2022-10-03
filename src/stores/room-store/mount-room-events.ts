@@ -85,26 +85,43 @@ export function mountRoomEvents(
     }));
   }
 
-  function onShowPoints({ show }: OnShowPointsProps) {
+  function onShowPoints({ show, startedAt }: OnShowPointsProps) {
     if (show) {
+      const ONE_SECOND = 1000;
+      const MAX_COUNTDOWN = 5;
+
+      const currentTime = Date.now();
+      const startDelay = (currentTime - startedAt) / 1000;
+      const firstCountdown = MAX_COUNTDOWN - Math.floor(startDelay);
+
+      const parsedFirstCountdown = firstCountdown >= 0 ? firstCountdown : 0;
+
+      const firstTimeoutDelay =
+        (Math.ceil(startDelay) - startDelay) * 1000 || ONE_SECOND;
+
       set(
         produce((state: RoomStoreProps) => {
-          state.basicInfo.showPointsCountdown = 3;
+          state.basicInfo.showPointsCountdown = parsedFirstCountdown;
+          state.basicInfo.countdownStartedAt = startedAt;
         })
       );
 
-      const intervalID = setInterval(() => {
+      function countdownStep() {
         set(
           produce((state: RoomStoreProps) => {
             if (state.basicInfo.showPointsCountdown === 0) {
-              clearInterval(intervalID);
               return;
             }
 
             state.basicInfo.showPointsCountdown--;
+            setTimeout(countdownStep, ONE_SECOND);
           })
         );
-      }, 1000);
+      }
+
+      if (parsedFirstCountdown > 0) {
+        setTimeout(countdownStep, firstTimeoutDelay);
+      }
     }
 
     set(
@@ -122,16 +139,18 @@ export function mountRoomEvents(
   }
 
   function onSyncPeoplePoints(senderPeople: OnSyncPeoplePointsProps) {
-    set((state) => ({
-      peoples: state.peoples.map((people) =>
-        people.id === senderPeople.id
-          ? {
-              ...people,
-              points: senderPeople.points,
-            }
-          : people
-      ),
-    }));
+    const state = get();
+
+    const updatedPeoplesList = state.peoples.map((people) =>
+      people.id === senderPeople.id
+        ? {
+            ...people,
+            points: senderPeople.points,
+          }
+        : people
+    );
+
+    set({ peoples: updatedPeoplesList });
   }
 
   function onHighlightPeople({

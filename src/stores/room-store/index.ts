@@ -145,17 +145,24 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
   async function setRoomPointsVisibility(
     show?: boolean,
+    startedAt = Date.now(),
     mode: EventMode = EventMode.PUBLIC
   ) {
     const { basicInfo } = get();
 
     if (mode === EventMode.PUBLIC) {
+      api.post("/set-points-countdown", {
+        roomId: basicInfo.id,
+        countdownStartedAt: show ? startedAt : null,
+      });
+
       basicInfo.subscription.trigger(MainRoomEvents.SHOW_POINTS, {
         show,
+        startedAt,
       });
     }
 
-    roomEvents.onShowPoints({ show });
+    roomEvents.onShowPoints({ show, startedAt });
   }
 
   function setEasterEggVisibility(show: boolean) {
