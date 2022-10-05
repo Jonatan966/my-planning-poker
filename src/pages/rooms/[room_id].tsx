@@ -24,7 +24,6 @@ interface RoomPageProps {
   roomInfo: {
     id: string;
     name: string;
-    countdown_started_at?: number;
     created_at: Date;
   };
 }
@@ -85,8 +84,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     });
   }
 
-  const parsedCountdown = Number(room.countdown_started_at);
-
   return {
     props: {
       basicMe: {
@@ -96,7 +93,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       roomInfo: {
         id: room.id,
         name: room.name,
-        countdown_started_at: parsedCountdown,
         created_at: room.created_at.toISOString(),
       },
     },

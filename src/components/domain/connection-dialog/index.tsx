@@ -35,19 +35,15 @@ function ConnectionDialog({
   roomInfo,
 }: ConnectionDialogProps) {
   const router = useRouter();
-  const {
-    connectOnRoom,
-    disconnectOnRoom,
-    setRoomPointsVisibility,
-    room,
-    connection,
-  } = useRoomStore((state) => ({
-    connectOnRoom: state.connectOnRoom,
-    disconnectOnRoom: state.disconnectOnRoom,
-    setRoomPointsVisibility: state.setRoomPointsVisibility,
-    room: state.basicInfo,
-    connection: state.connection,
-  }));
+  const { connectOnRoom, disconnectOnRoom, room, connection } = useRoomStore(
+    (state) => ({
+      connectOnRoom: state.connectOnRoom,
+      disconnectOnRoom: state.disconnectOnRoom,
+      setRoomPointsVisibility: state.setRoomPointsVisibility,
+      room: state.basicInfo,
+      connection: state.connection,
+    })
+  );
 
   const { addVisit } = useVisitsStore((state) => ({
     addVisit: state.addVisit,
@@ -112,14 +108,6 @@ function ConnectionDialog({
     if (isInitialInteraction.current) {
       isInitialInteraction.current = false;
       return;
-    }
-
-    if (roomInfo.countdown_started_at) {
-      setRoomPointsVisibility(
-        true,
-        roomInfo.countdown_started_at,
-        EventMode.PRIVATE
-      );
     }
 
     if (!isConnectingIntoRoom) {
