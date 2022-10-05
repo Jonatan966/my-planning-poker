@@ -10,10 +10,9 @@ datasource db {
 }
 
 model Room {
-  id                   String   @id @default(uuid())
-  name                 String
-  countdown_started_at String?
-  created_at           DateTime @default(now())
+  id         String   @id @default(uuid())
+  name       String
+  created_at DateTime @default(now())
 
   features RoomFeature[]
 }
