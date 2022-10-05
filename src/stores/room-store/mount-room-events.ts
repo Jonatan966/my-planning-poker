@@ -37,13 +37,14 @@ export function mountRoomEvents(
       (people) => people.id === state.basicInfo.subscription.members.myID
     );
 
-    if (me.points !== undefined) {
+    if (me.points !== undefined || !!state.basicInfo.countdownStartedAt) {
       await api.post("sync-people-points", {
         senderPeople: {
           id: me.id,
           points: me.points,
         },
         targetPeopleID: people.id,
+        countdownStartedAt: state.basicInfo.countdownStartedAt,
       });
     }
   }
@@ -149,6 +150,13 @@ export function mountRoomEvents(
           }
         : people
     );
+
+    if (!state.basicInfo.countdownStartedAt) {
+      onShowPoints({
+        show: true,
+        startedAt: senderPeople.countdownStartedAt,
+      });
+    }
 
     set({ peoples: updatedPeoplesList });
   }
