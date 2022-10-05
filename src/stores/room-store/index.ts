@@ -71,7 +71,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
     connection.user.bind(
       MainRoomEvents.SYNC_PEOPLE_POINTS,
-      roomEvents.onSyncPeoplePoints
+      roomEvents.onSyncPeople
     );
 
     return disconnectOnRoom;

@@ -8,7 +8,7 @@ import {
   OnHighlightPeopleProps,
   OnLoadPeopleProps,
   OnShowPointsProps,
-  OnSyncPeoplePointsProps,
+  OnSyncPeopleProps,
   People,
   RoomStoreProps,
 } from "./types";
@@ -38,7 +38,7 @@ export function mountRoomEvents(
     );
 
     if (me.points !== undefined || !!state.basicInfo.countdownStartedAt) {
-      await api.post("sync-people-points", {
+      await api.post("sync-people", {
         senderPeople: {
           id: me.id,
           points: me.points,
@@ -139,7 +139,7 @@ export function mountRoomEvents(
     );
   }
 
-  function onSyncPeoplePoints(senderPeople: OnSyncPeoplePointsProps) {
+  function onSyncPeople(senderPeople: OnSyncPeopleProps) {
     const state = get();
 
     const updatedPeoplesList = state.peoples.map((people) =>
@@ -183,7 +183,7 @@ export function mountRoomEvents(
     onPeopleLeave,
     onSelectPoint,
     onShowPoints,
-    onSyncPeoplePoints,
+    onSyncPeople,
     onHighlightPeople,
   };
 }

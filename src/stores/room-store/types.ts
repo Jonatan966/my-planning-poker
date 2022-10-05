@@ -88,7 +88,7 @@ export interface OnShowPointsProps {
   startedAt: number;
 }
 
-export interface OnSyncPeoplePointsProps {
+export interface OnSyncPeopleProps {
   id: string;
   points: number;
   countdownStartedAt?: number;
