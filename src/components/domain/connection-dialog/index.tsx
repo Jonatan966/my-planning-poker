@@ -2,11 +2,8 @@ import classNames from "classnames";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import {
-  useRoomStore,
-  MainRoomEvents,
-  EventMode,
-} from "../../../stores/room-store";
+
+import { useRoomStore, MainRoomEvents } from "../../../stores/room-store";
 import { useVisitsStore } from "../../../stores/visits-store";
 import Dialog from "../../ui/dialog";
 import { ConnectingMessage } from "./connecting-message";
