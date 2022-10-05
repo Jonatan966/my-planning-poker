@@ -151,11 +151,6 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     const { basicInfo } = get();
 
     if (mode === EventMode.PUBLIC) {
-      api.post("/set-points-countdown", {
-        roomId: basicInfo.id,
-        countdownStartedAt: show ? startedAt : null,
-      });
-
       basicInfo.subscription.trigger(MainRoomEvents.SHOW_POINTS, {
         show,
         startedAt,
