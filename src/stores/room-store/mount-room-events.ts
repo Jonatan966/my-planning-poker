@@ -8,7 +8,7 @@ import {
   OnHighlightPeopleProps,
   OnLoadPeopleProps,
   OnShowPointsProps,
-  OnSyncPeoplePointsProps,
+  OnSyncPeopleProps,
   People,
   RoomStoreProps,
 } from "./types";
@@ -37,13 +37,14 @@ export function mountRoomEvents(
       (people) => people.id === state.basicInfo.subscription.members.myID
     );
 
-    if (me.points !== undefined) {
-      await api.post("sync-people-points", {
+    if (me.points !== undefined || !!state.basicInfo.countdownStartedAt) {
+      await api.post("sync-people", {
         senderPeople: {
           id: me.id,
           points: me.points,
         },
         targetPeopleID: people.id,
+        countdownStartedAt: state.basicInfo.countdownStartedAt,
       });
     }
   }
@@ -138,7 +139,7 @@ export function mountRoomEvents(
     );
   }
 
-  function onSyncPeoplePoints(senderPeople: OnSyncPeoplePointsProps) {
+  function onSyncPeople(senderPeople: OnSyncPeopleProps) {
     const state = get();
 
     const updatedPeoplesList = state.peoples.map((people) =>
@@ -149,6 +150,13 @@ export function mountRoomEvents(
           }
         : people
     );
+
+    if (!state.basicInfo.countdownStartedAt) {
+      onShowPoints({
+        show: true,
+        startedAt: senderPeople.countdownStartedAt,
+      });
+    }
 
     set({ peoples: updatedPeoplesList });
   }
@@ -175,7 +183,7 @@ export function mountRoomEvents(
     onPeopleLeave,
     onSelectPoint,
     onShowPoints,
-    onSyncPeoplePoints,
+    onSyncPeople,
     onHighlightPeople,
   };
 }

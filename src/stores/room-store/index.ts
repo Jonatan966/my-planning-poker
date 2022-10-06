@@ -71,7 +71,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
     connection.user.bind(
       MainRoomEvents.SYNC_PEOPLE_POINTS,
-      roomEvents.onSyncPeoplePoints
+      roomEvents.onSyncPeople
     );
 
     return disconnectOnRoom;
@@ -151,11 +151,6 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     const { basicInfo } = get();
 
     if (mode === EventMode.PUBLIC) {
-      api.post("/set-points-countdown", {
-        roomId: basicInfo.id,
-        countdownStartedAt: show ? startedAt : null,
-      });
-
       basicInfo.subscription.trigger(MainRoomEvents.SHOW_POINTS, {
         show,
         startedAt,

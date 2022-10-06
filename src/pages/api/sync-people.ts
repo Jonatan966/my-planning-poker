@@ -6,13 +6,14 @@ export default async (
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<NextApiResponse> => {
-  const { senderPeople, targetPeopleID } = req.body;
+  const { senderPeople, targetPeopleID, countdownStartedAt } = req.body;
 
   const pusher = connectOnPusherServer();
 
   await pusher.sendToUser(targetPeopleID, MainRoomEvents.SYNC_PEOPLE_POINTS, {
     id: senderPeople.id,
     points: senderPeople.points,
+    countdownStartedAt,
   });
 
   return res.end();
