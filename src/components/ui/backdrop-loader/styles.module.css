@@ -1,0 +1,29 @@
+.backdropContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background: #12121480;
+}
+
+.backdropSpinner {
+  animation: 1.5s linear 0s normal none infinite spin;
+  margin-bottom: 0.75rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

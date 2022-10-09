@@ -32,4 +32,4 @@ function setItem<V = string>(key: string, value: V): boolean {
   }
 }
 
-export const storageManager = { getItem, setItem };
+export const localStorageManager = { getItem, setItem };

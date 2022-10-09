@@ -13,6 +13,10 @@
 
   border: 2px solid var(--border);
   transition: filter 0.2s;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .buttonContainer:not(:disabled):hover {

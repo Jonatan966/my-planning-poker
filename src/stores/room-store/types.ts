@@ -1,8 +1,15 @@
 import pusherJs, { PresenceChannel } from "pusher-js";
+import { StateCreator } from "zustand";
+
+export enum EventMode {
+  PUBLIC,
+  PRIVATE,
+}
 
 export interface People {
   id?: string;
   name: string;
+  entered_at: Date;
   points?: number;
   highlight?: boolean;
 }
@@ -44,6 +51,7 @@ export interface RoomStoreProps {
     name?: string;
     showPoints: boolean;
     showPointsCountdown?: number;
+    countdownStartedAt?: number;
     subscription?: PresenceChannel;
   };
   peoples: People[];
@@ -54,7 +62,39 @@ export interface RoomStoreProps {
   connectOnRoom(roomBasicInfo: BasicRoomInfo): Promise<() => void>;
   disconnectOnRoom(): void;
   selectPoint(points: number): Promise<void>;
-  setRoomPointsVisibility(show?: boolean): Promise<void>;
+  setRoomPointsVisibility(
+    show?: boolean,
+    startedAt?: number,
+    mode?: EventMode
+  ): Promise<void>;
   broadcastConfetti(): void;
   setPeopleHighlight(people_id: string, highlight?: boolean): void;
+}
+
+export type MountRoomEventsProps = Parameters<
+  StateCreator<RoomStoreProps, [], [], RoomStoreProps>
+>;
+
+export interface OnLoadPeopleProps {
+  id: string;
+  info: {
+    name: string;
+    entered_at: Date;
+  };
+}
+
+export interface OnShowPointsProps {
+  show: boolean;
+  startedAt: number;
+}
+
+export interface OnSyncPeopleProps {
+  id: string;
+  points: number;
+  countdownStartedAt?: number;
+}
+
+export interface OnHighlightPeopleProps {
+  sender_id: string;
+  highlight?: boolean;
 }

@@ -13,6 +13,7 @@
 
   background: #202024;
 
+  min-height: 25.5rem;
   max-width: 500px;
   width: 100%;
 }
@@ -26,6 +27,42 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.menu {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.menu button {
+  padding: 0 12px;
+}
+
+.visits {
+  background: #121214;
+  height: 18rem;
+
+  border-radius: 5px;
+  margin-top: 1rem;
+
+  padding: 0.5rem;
+
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.visits > * + * {
+  margin-top: 0.5rem;
+}
+
+.withoutVisits {
+  text-align: center;
+  margin: auto;
+  padding: 0.25rem;
+  color: #7c7c8a;
 }
 
 @media (min-width: 320px) and (max-width: 480px) {

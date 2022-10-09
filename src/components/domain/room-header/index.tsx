@@ -13,13 +13,13 @@ interface RoomHeaderProps {
     id: string;
     name?: string;
   };
-  basicRoomInfo: {
+  roomInfo: {
     id: string;
     name: string;
   };
 }
 
-function RoomHeader({ basicMe, basicRoomInfo }: RoomHeaderProps) {
+function RoomHeader({ basicMe, roomInfo }: RoomHeaderProps) {
   const { disconnectOnRoom, room } = useRoomStore((state) => ({
     disconnectOnRoom: state.disconnectOnRoom,
     room: state.basicInfo,
@@ -46,7 +46,7 @@ function RoomHeader({ basicMe, basicRoomInfo }: RoomHeaderProps) {
       <div>
         <strong className={styles.room}>
           <RoomLogo />
-          {basicRoomInfo.name}
+          {roomInfo.name}
         </strong>
         <nav>
           <span className={styles.myName}>{myName}</span>
