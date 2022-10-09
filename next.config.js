@@ -8,16 +8,13 @@ const withPWA = preparePWA({
   disable: inDevelopment,
 });
 
+const sentryOptions = {};
+
+const sentryWebpackPluginOptions = {};
+
 const sentryConfig = withSentryConfig(
-  {
-    sentry: {
-      hideSourceMaps: true,
-      autoInstrumentServerFunctions: true,
-    },
-  },
-  {
-    silent: true,
-  }
+  sentryOptions,
+  sentryWebpackPluginOptions
 );
 
 export default withPWA(sentryConfig);
