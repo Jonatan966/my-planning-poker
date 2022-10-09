@@ -8,13 +8,14 @@ const withPWA = preparePWA({
   disable: inDevelopment,
 });
 
-const sentryOptions = {};
+const sentryOptions = {
+  sentry: {
+    autoInstrumentServerFunctions: true,
+  },
+};
+
+const pwaConfig = withPWA(sentryOptions);
 
 const sentryWebpackPluginOptions = {};
 
-const sentryConfig = withSentryConfig(
-  sentryOptions,
-  sentryWebpackPluginOptions
-);
-
-export default withPWA(sentryConfig);
+export default withSentryConfig(pwaConfig, sentryWebpackPluginOptions);
