@@ -37,14 +37,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     const parsedEvent = {
       event_type: event.event,
-      people_id: event.user_id,
+      user_id: event.user_id,
       sended_data: JSON.parse(event.data),
       room_id: parsedRoomID,
       sended_at: eventsSendedAt,
       environment: process.env.NODE_ENV,
+      app_name: "my-planning-poker",
     };
 
-    await amplitude.logEvent(parsedEvent);
+    const eventResponse = await amplitude.logEvent(parsedEvent);
+
+    console.log(eventResponse);
   }
 
   return res.end();
