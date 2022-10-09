@@ -33,7 +33,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       event_properties: {
         room_id: parsedRoomID,
         sended_at: eventsSendedAt,
-        environment: process.env.NODE_ENV,
+        environment: process.env.VERCEL_ENV,
       },
       user_properties: event?.data ? JSON.parse(event.data) : undefined,
     };
