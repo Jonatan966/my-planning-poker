@@ -2,36 +2,17 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type { Event as AmplitudeEvent } from "@amplitude/node";
 
 import { amplitude } from "../../lib/amplitude";
-import { connectOnPusherServer } from "../../lib/pusher";
-
-interface PusherEvent {
-  event: string;
-  user_id: string;
-  data: string;
-  channel: string;
-  name: string;
-  socket_id: string;
-}
+import { usePusherWebhook } from "../../hooks/use-pusher-webhook";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const pusher = connectOnPusherServer();
-
-  const webhook = pusher.webhook({
+  const { events, eventsSendedAt, webhookIsValid } = usePusherWebhook({
+    body: req.body,
     headers: req.headers,
-    rawBody: JSON.stringify(req.body),
-  });
-
-  const webhookIsValid = webhook.isValid({
-    key: process.env.NEXT_PUBLIC_PUSHER_KEY,
-    secret: process.env.PUSHER_SECRET,
   });
 
   if (!webhookIsValid) {
     return res.status(404).end();
   }
-
-  const eventsSendedAt = webhook.getTime();
-  const events = webhook.getEvents() as PusherEvent[];
 
   for (const event of events) {
     const parsedRoomID = event.channel.replace("presence-", "");
