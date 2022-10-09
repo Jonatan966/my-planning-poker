@@ -1,4 +1,5 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
+import type { Event as AmplitudeEvent } from "@amplitude/node";
 
 import { amplitude } from "../../lib/amplitude";
 import { connectOnPusherServer } from "../../lib/pusher";
@@ -35,19 +36,23 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   for (const event of events) {
     const parsedRoomID = event.channel.replace("presence-", "");
 
-    const parsedEvent = {
+    const parsedEvent: AmplitudeEvent = {
       event_type: event.event,
       user_id: event.user_id,
-      sended_data: JSON.parse(event.data),
-      room_id: parsedRoomID,
-      sended_at: eventsSendedAt,
-      environment: process.env.NODE_ENV,
-      app_name: "my-planning-poker",
+      platform: "my-planning-poker",
+      event_properties: {
+        room_id: parsedRoomID,
+        sended_at: eventsSendedAt,
+        environment: process.env.NODE_ENV,
+        sended_data: JSON.parse(event.data),
+      },
     };
 
     const eventResponse = await amplitude.logEvent(parsedEvent);
 
-    console.log(eventResponse);
+    if (eventResponse.statusCode !== 200) {
+      throw new Error(`Event "${event.event}" not sent`);
+    }
   }
 
   return res.end();
