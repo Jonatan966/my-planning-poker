@@ -3,6 +3,12 @@ import type { Event as AmplitudeEvent } from "@amplitude/node";
 
 import { amplitude } from "../../lib/amplitude";
 import { usePusherWebhook } from "../../hooks/use-pusher-webhook";
+import { MainRoomEvents } from "../../stores/room-store";
+
+const eventTypeParsers = {
+  member_added: MainRoomEvents.LOAD_PEOPLE,
+  member_removed: MainRoomEvents.PEOPLE_LEAVE,
+};
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { events, eventsSendedAt, webhookIsValid } = usePusherWebhook({
@@ -17,16 +23,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   for (const event of events) {
     const parsedRoomID = event.channel.replace("presence-", "");
 
+    const parsedEventType: string =
+      event?.event || eventTypeParsers?.[event?.name];
+
     const parsedEvent: AmplitudeEvent = {
-      event_type: event.event,
+      event_type: parsedEventType,
       user_id: event.user_id,
       platform: "my-planning-poker",
       event_properties: {
         room_id: parsedRoomID,
         sended_at: eventsSendedAt,
         environment: process.env.NODE_ENV,
-        sended_data: JSON.parse(event.data),
       },
+      user_properties: event?.data ? JSON.parse(event.data) : undefined,
     };
 
     const eventResponse = await amplitude.logEvent(parsedEvent);
