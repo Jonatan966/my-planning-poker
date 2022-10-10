@@ -151,7 +151,10 @@ export function mountRoomEvents(
         : people
     );
 
-    if (!state.basicInfo.countdownStartedAt) {
+    if (
+      !state.basicInfo.countdownStartedAt &&
+      senderPeople.countdownStartedAt
+    ) {
       onShowPoints({
         show: true,
         startedAt: senderPeople.countdownStartedAt,
