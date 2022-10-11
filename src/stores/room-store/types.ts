@@ -14,19 +14,6 @@ export interface People {
   highlight?: boolean;
 }
 
-export enum InternalRoomEvents {
-  PEOPLE_ENTER = "pusher:member_added",
-  PEOPLE_LEAVE = "pusher:member_removed",
-  PREPARE_ROOM = "pusher:subscription_succeeded",
-}
-
-export enum ClientRoomEvents {
-  ROOM_SYNC_PEOPLE = "people-ROOM_SYNC_PEOPLE",
-  ROOM_SHOW_POINTS = "client-room_show_points",
-  PEOPLE_SELECT_POINT = "client-people_select_point",
-  PEOPLE_FIRE_CONFETTI = "client-people_fire_confetti",
-}
-
 export interface RoomInfo {
   name: string;
   id: string;

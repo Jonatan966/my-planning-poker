@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectOnPusherServer } from "../../lib/pusher";
-import { ClientRoomEvents } from "../../stores/room-store";
+import { ClientRoomEvents } from "../../services/room-events";
 
 export default async (
   req: NextApiRequest,

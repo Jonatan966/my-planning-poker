@@ -3,7 +3,7 @@ import type { Event as AmplitudeEvent } from "@amplitude/node";
 
 import { amplitude } from "../../lib/amplitude";
 import { usePusherWebhook } from "../../hooks/use-pusher-webhook";
-import { InternalRoomEvents } from "../../stores/room-store";
+import { InternalRoomEvents } from "../../services/room-events";
 
 const eventTypeParsers = {
   member_added: InternalRoomEvents.PEOPLE_ENTER,
