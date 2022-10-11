@@ -130,6 +130,7 @@ export function mountRoomEvents(
         state.basicInfo.showPoints = show;
 
         if (!show) {
+          state.basicInfo.countdownStartedAt = undefined;
           state.peoples = state.peoples.map((people) => ({
             ...people,
             points: undefined,
