@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { BsFillSuitClubFill, BsPiggyBankFill } from "react-icons/bs";
 
 import { useConfetti } from "../../../../contexts/confetti-context";
-import { MainRoomEvents, useRoomStore } from "../../../../stores/room-store";
+import { ClientRoomEvents, useRoomStore } from "../../../../stores/room-store";
 
 import styles from "./styles.module.css";
 
@@ -37,13 +37,13 @@ function RoomLogo() {
     }
 
     roomSubscription.bind(
-      MainRoomEvents.FIRE_CONFETTI,
+      ClientRoomEvents.PEOPLE_FIRE_CONFETTI,
       ({ sender_id }: { sender_id: string }) =>
         showEasterEggConfettis(EasterEggMode.PRIVATE, sender_id)
     );
 
     return () => {
-      roomSubscription.unbind(MainRoomEvents.FIRE_CONFETTI);
+      roomSubscription.unbind(ClientRoomEvents.PEOPLE_FIRE_CONFETTI);
     };
   }, [roomSubscription]);
 

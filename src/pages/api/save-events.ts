@@ -3,11 +3,11 @@ import type { Event as AmplitudeEvent } from "@amplitude/node";
 
 import { amplitude } from "../../lib/amplitude";
 import { usePusherWebhook } from "../../hooks/use-pusher-webhook";
-import { MainRoomEvents } from "../../stores/room-store";
+import { InternalRoomEvents } from "../../stores/room-store";
 
 const eventTypeParsers = {
-  member_added: MainRoomEvents.LOAD_PEOPLE,
-  member_removed: MainRoomEvents.PEOPLE_LEAVE,
+  member_added: InternalRoomEvents.PEOPLE_ENTER,
+  member_removed: InternalRoomEvents.PEOPLE_LEAVE,
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

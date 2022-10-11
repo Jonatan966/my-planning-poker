@@ -7,8 +7,9 @@ import { createWebConnection } from "../../lib/pusher";
 
 import {
   BasicRoomInfo,
+  ClientRoomEvents,
   EventMode,
-  MainRoomEvents,
+  InternalRoomEvents,
   RoomInfo,
   RoomStoreProps,
 } from "./types";
@@ -57,20 +58,37 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     });
   }
 
+  function _logEvent(event: string) {
+    console.log("[pusher events]", event);
+  }
+
   function prepareRoomConnection(subscription: PresenceChannel) {
-    subscription.bind_global((event) => console.log("[pusher events]", event));
-    subscription.bind(MainRoomEvents.LOAD_PEOPLE, roomEvents.onLoadPeople);
-    subscription.bind(MainRoomEvents.PREPARE_ROOM, roomEvents.onPrepareRoom);
-    subscription.bind(MainRoomEvents.PEOPLE_LEAVE, roomEvents.onPeopleLeave);
-    subscription.bind(MainRoomEvents.SELECT_POINT, roomEvents.onSelectPoint);
-    subscription.bind(MainRoomEvents.SHOW_POINTS, roomEvents.onShowPoints);
+    subscription.bind_global(_logEvent);
+
+    subscription.bind(InternalRoomEvents.PEOPLE_ENTER, roomEvents.onLoadPeople);
     subscription.bind(
-      MainRoomEvents.FIRE_CONFETTI,
+      InternalRoomEvents.PREPARE_ROOM,
+      roomEvents.onPrepareRoom
+    );
+    subscription.bind(
+      InternalRoomEvents.PEOPLE_LEAVE,
+      roomEvents.onPeopleLeave
+    );
+    subscription.bind(
+      ClientRoomEvents.PEOPLE_SELECT_POINT,
+      roomEvents.onSelectPoint
+    );
+    subscription.bind(
+      ClientRoomEvents.ROOM_SHOW_POINTS,
+      roomEvents.onShowPoints
+    );
+    subscription.bind(
+      ClientRoomEvents.PEOPLE_FIRE_CONFETTI,
       roomEvents.onHighlightPeople
     );
 
     connection.user.bind(
-      MainRoomEvents.SYNC_PEOPLE_POINTS,
+      ClientRoomEvents.ROOM_SYNC_PEOPLE,
       roomEvents.onSyncPeople
     );
 
@@ -137,7 +155,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       points,
     });
 
-    basicInfo.subscription.trigger(MainRoomEvents.SELECT_POINT, {
+    basicInfo.subscription.trigger(ClientRoomEvents.PEOPLE_SELECT_POINT, {
       id: myID,
       points,
     });
@@ -151,7 +169,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     const { basicInfo } = get();
 
     if (mode === EventMode.PUBLIC) {
-      basicInfo.subscription.trigger(MainRoomEvents.SHOW_POINTS, {
+      basicInfo.subscription.trigger(ClientRoomEvents.ROOM_SHOW_POINTS, {
         show,
         startedAt,
       });
@@ -167,7 +185,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   function broadcastConfetti() {
     const { basicInfo } = get();
 
-    basicInfo.subscription.trigger(MainRoomEvents.FIRE_CONFETTI, {
+    basicInfo.subscription.trigger(ClientRoomEvents.PEOPLE_FIRE_CONFETTI, {
       sender_id: basicInfo.subscription.members.myID,
     });
   }

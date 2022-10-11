@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectOnPusherServer } from "../../lib/pusher";
-import { MainRoomEvents } from "../../stores/room-store";
+import { ClientRoomEvents } from "../../stores/room-store";
 
 export default async (
   req: NextApiRequest,
@@ -10,7 +10,7 @@ export default async (
 
   const pusher = connectOnPusherServer();
 
-  await pusher.sendToUser(targetPeopleID, MainRoomEvents.SYNC_PEOPLE_POINTS, {
+  await pusher.sendToUser(targetPeopleID, ClientRoomEvents.ROOM_SYNC_PEOPLE, {
     id: senderPeople.id,
     points: senderPeople.points,
     countdownStartedAt,

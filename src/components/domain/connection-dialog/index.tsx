@@ -3,7 +3,11 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
-import { useRoomStore, MainRoomEvents } from "../../../stores/room-store";
+import {
+  useRoomStore,
+  InternalRoomEvents,
+  ClientRoomEvents,
+} from "../../../stores/room-store";
 import { useVisitsStore } from "../../../stores/visits-store";
 import Dialog from "../../ui/dialog";
 import { ConnectingMessage } from "./connecting-message";
@@ -128,23 +132,29 @@ function ConnectionDialog({
       }
     }
 
-    room.subscription.bind(MainRoomEvents.PREPARE_ROOM, debounceConnectionLoad);
-    room.subscription.bind(MainRoomEvents.LOAD_PEOPLE, debounceConnectionLoad);
-    connection.bind(MainRoomEvents.SYNC_PEOPLE_POINTS, debounceConnectionLoad);
+    room.subscription.bind(
+      InternalRoomEvents.PREPARE_ROOM,
+      debounceConnectionLoad
+    );
+    room.subscription.bind(
+      InternalRoomEvents.PEOPLE_ENTER,
+      debounceConnectionLoad
+    );
+    connection.bind(ClientRoomEvents.ROOM_SYNC_PEOPLE, debounceConnectionLoad);
 
     debounceConnectionLoad();
 
     return () => {
       room.subscription.unbind(
-        MainRoomEvents.PREPARE_ROOM,
+        InternalRoomEvents.PREPARE_ROOM,
         debounceConnectionLoad
       );
       room.subscription.unbind(
-        MainRoomEvents.LOAD_PEOPLE,
+        InternalRoomEvents.PEOPLE_ENTER,
         debounceConnectionLoad
       );
       connection.unbind(
-        MainRoomEvents.SYNC_PEOPLE_POINTS,
+        ClientRoomEvents.ROOM_SYNC_PEOPLE,
         debounceConnectionLoad
       );
     };
