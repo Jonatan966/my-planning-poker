@@ -17,7 +17,7 @@ function sortPeoplesByArrival(peoples: People[]) {
   return _.sortBy(peoples, ["entered_at"], ["asc"]);
 }
 
-export function mountRoomEvents(
+export function mountRoomHandler(
   set: MountRoomEventsProps[0],
   get: MountRoomEventsProps[1]
 ) {
