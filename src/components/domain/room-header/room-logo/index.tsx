@@ -4,7 +4,8 @@ import toast from "react-hot-toast";
 import { BsFillSuitClubFill, BsPiggyBankFill } from "react-icons/bs";
 
 import { useConfetti } from "../../../../contexts/confetti-context";
-import { ClientRoomEvents, useRoomStore } from "../../../../stores/room-store";
+import { ClientRoomEvents } from "../../../../services/room-events";
+import { useRoomStore } from "../../../../stores/room-store";
 
 import styles from "./styles.module.css";
 

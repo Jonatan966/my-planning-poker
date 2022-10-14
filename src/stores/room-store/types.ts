@@ -73,11 +73,6 @@ export interface OnLoadPeopleProps {
   };
 }
 
-export interface OnShowPointsProps {
-  show: boolean;
-  startedAt: number;
-}
-
 export interface OnSyncPeopleProps {
   id: string;
   points: number;

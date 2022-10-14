@@ -8,6 +8,7 @@ import { createWebConnection } from "../../lib/pusher";
 import {
   InternalRoomEvents,
   ClientRoomEvents,
+  roomEvents,
 } from "../../services/room-events";
 import { BasicRoomInfo, EventMode, RoomInfo, RoomStoreProps } from "./types";
 
@@ -151,13 +152,13 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     const myID = basicInfo.subscription.members.myID;
 
     roomHandler.onSelectPoint({
-      id: myID,
-      points,
+      people_id: myID,
+      people_selected_points: points,
     });
 
-    basicInfo.subscription.trigger(ClientRoomEvents.PEOPLE_SELECT_POINT, {
-      id: myID,
-      points,
+    roomEvents.onPeopleSelectPoint(basicInfo.subscription, {
+      people_id: myID,
+      people_selected_points: points,
     });
   }
 
@@ -169,13 +170,16 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     const { basicInfo } = get();
 
     if (mode === EventMode.PUBLIC) {
-      basicInfo.subscription.trigger(ClientRoomEvents.ROOM_SHOW_POINTS, {
-        show,
-        startedAt,
+      roomEvents.onRoomShowPoints(basicInfo.subscription, {
+        show_points: show,
+        room_countdown_started_at: startedAt,
       });
     }
 
-    roomHandler.onShowPoints({ show, startedAt });
+    roomHandler.onShowPoints({
+      show_points: show,
+      room_countdown_started_at: startedAt,
+    });
   }
 
   function setEasterEggVisibility(show: boolean) {
@@ -185,8 +189,8 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   function broadcastConfetti() {
     const { basicInfo } = get();
 
-    basicInfo.subscription.trigger(ClientRoomEvents.PEOPLE_FIRE_CONFETTI, {
-      sender_id: basicInfo.subscription.members.myID,
+    roomEvents.onPeopleFireConfetti(basicInfo.subscription, {
+      people_id: basicInfo.subscription.members.myID,
     });
   }
 

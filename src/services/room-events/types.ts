@@ -13,14 +13,21 @@ export enum ClientRoomEvents {
 
 export interface OnPeopleSelectPointProps {
   people_id: string;
-  people_has_selected_points: boolean;
+  people_selected_points: number;
 }
 
 export interface OnRoomShowPointsProps {
   show_points: boolean;
-  countdown_started_at: number;
+  room_countdown_started_at: number;
 }
 
 export interface OnPeopleFireConfettiProps {
   people_id: string;
+}
+
+export interface OnRoomSyncPeopleProps {
+  target_people_id: string;
+  people_id: string;
+  selected_points: number;
+  room_countdown_started_at?: number;
 }

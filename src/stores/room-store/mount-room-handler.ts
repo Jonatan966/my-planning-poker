@@ -7,11 +7,10 @@ import {
   MountRoomEventsProps,
   OnHighlightPeopleProps,
   OnLoadPeopleProps,
-  OnShowPointsProps,
-  OnSyncPeopleProps,
   People,
   RoomStoreProps,
 } from "./types";
+import * as RoomEvents from "../../services/room-events";
 
 function sortPeoplesByArrival(peoples: People[]) {
   return _.sortBy(peoples, ["entered_at"], ["asc"]);
@@ -73,26 +72,32 @@ export function mountRoomHandler(
     }));
   }
 
-  function onSelectPoint(people: Pick<People, "id" | "points">) {
+  function onSelectPoint({
+    people_id,
+    people_selected_points,
+  }: RoomEvents.OnPeopleSelectPointProps) {
     set((state) => ({
       peoples: state.peoples.map((statePeople) =>
-        statePeople.id === people.id
+        statePeople.id === people_id
           ? {
               ...statePeople,
-              points: people.points,
+              points: people_selected_points,
             }
           : statePeople
       ),
     }));
   }
 
-  function onShowPoints({ show, startedAt }: OnShowPointsProps) {
-    if (show) {
+  function onShowPoints({
+    show_points,
+    room_countdown_started_at,
+  }: RoomEvents.OnRoomShowPointsProps) {
+    if (show_points) {
       const ONE_SECOND = 1000;
       const MAX_COUNTDOWN = 5;
 
       const currentTime = Date.now();
-      const startDelay = (currentTime - startedAt) / 1000;
+      const startDelay = (currentTime - room_countdown_started_at) / 1000;
       const firstCountdown = MAX_COUNTDOWN - Math.floor(startDelay);
 
       const parsedFirstCountdown = firstCountdown >= 0 ? firstCountdown : 0;
@@ -103,7 +108,7 @@ export function mountRoomHandler(
       set(
         produce((state: RoomStoreProps) => {
           state.basicInfo.showPointsCountdown = parsedFirstCountdown;
-          state.basicInfo.countdownStartedAt = startedAt;
+          state.basicInfo.countdownStartedAt = room_countdown_started_at;
         })
       );
 
@@ -127,9 +132,9 @@ export function mountRoomHandler(
 
     set(
       produce((state: RoomStoreProps) => {
-        state.basicInfo.showPoints = show;
+        state.basicInfo.showPoints = show_points;
 
-        if (!show) {
+        if (!show_points) {
           state.basicInfo.countdownStartedAt = undefined;
           state.peoples = state.peoples.map((people) => ({
             ...people,
@@ -140,25 +145,26 @@ export function mountRoomHandler(
     );
   }
 
-  function onSyncPeople(senderPeople: OnSyncPeopleProps) {
+  function onSyncPeople({
+    people_id,
+    selected_points,
+    room_countdown_started_at,
+  }: RoomEvents.OnRoomSyncPeopleProps) {
     const state = get();
 
     const updatedPeoplesList = state.peoples.map((people) =>
-      people.id === senderPeople.id
+      people.id === people_id
         ? {
             ...people,
-            points: senderPeople.points,
+            points: selected_points,
           }
         : people
     );
 
-    if (
-      !state.basicInfo.countdownStartedAt &&
-      senderPeople.countdownStartedAt
-    ) {
+    if (!state.basicInfo.countdownStartedAt && room_countdown_started_at) {
       onShowPoints({
-        show: true,
-        startedAt: senderPeople.countdownStartedAt,
+        show_points: true,
+        room_countdown_started_at,
       });
     }
 
