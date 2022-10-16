@@ -25,7 +25,6 @@ async function onRoomShowPoints(
     event_properties: {
       show_points: props.show_points,
     },
-    time: props.countdown_started_at,
   });
 
   await amplitude.logEvent(event);

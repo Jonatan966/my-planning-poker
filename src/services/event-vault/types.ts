@@ -19,7 +19,6 @@ export namespace VaultEventHandlers {
 
   export interface OnRoomShowPointsProps extends BasicEventProps {
     show_points: boolean;
-    countdown_started_at: number;
   }
 
   export interface OnPeopleSelectPointProps extends BasicEventProps {
