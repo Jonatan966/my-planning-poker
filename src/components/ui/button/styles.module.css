@@ -7,11 +7,11 @@
   border-radius: 5px;
   padding: 0 24px;
 
-  background: var(--background);
-  border-color: var(--border);
-  color: var(--color);
+  background: var(--color);
+  border-color: var(--color);
+  color: #fff;
 
-  border: 2px solid var(--border);
+  border: 2px solid var(--color);
   transition: filter 0.2s;
 
   display: flex;
@@ -33,21 +33,20 @@
 }
 
 .primaryColorScheme {
-  --background: #eb8a1d;
-  --border: #eb8a1d;
-  --color: #fff;
+  --color: #eb8a1d;
 }
 
 .secondaryColorScheme {
-  --background: #29292e;
-  --border: #29292e;
-  --color: #fff;
+  --color: #29292e;
 }
 
 .dangerColorScheme {
-  --background: #29292e;
-  --border: #f75a68;
   --color: #f75a68;
+}
+
+.outlined {
+  background: #29292e;
+  color: var(--color);
 }
 
 .spinner {

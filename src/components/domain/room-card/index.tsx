@@ -56,6 +56,7 @@ function RoomCard({ roomInfo, onRemoveRoom, onClick }: RoomCardProps) {
         </Button>
         <Button
           colorScheme="danger"
+          outlined
           title="Remover sala"
           onClick={handleRemoveRoom}
         >

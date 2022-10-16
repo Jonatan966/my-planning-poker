@@ -64,7 +64,9 @@ function VisitsPage() {
 
             <div className={styles.menu}>
               <Link href="/">
-                <Button colorScheme="danger">Voltar</Button>
+                <Button colorScheme="danger" outlined>
+                  Voltar
+                </Button>
               </Link>
             </div>
           </div>
