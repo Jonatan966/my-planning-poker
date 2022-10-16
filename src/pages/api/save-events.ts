@@ -35,7 +35,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       case VaultEvent.room_show_points:
         await eventVault[parsedEventType]({
           event_sended_at: new Date(parsedEventData.room_countdown_started_at),
-          people_id: parsedEventData.people_id,
+          people_id: event.user_id,
           room_id: parsedRoomID,
           show_points: parsedEventData.show_points,
         });
@@ -44,7 +44,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       case VaultEvent.people_select_point:
         await eventVault[parsedEventType]({
           event_sended_at: eventsSendedAt,
-          people_id: parsedEventData.people_id,
+          people_id: event.user_id,
           room_id: parsedRoomID,
           people_selected_points: parsedEventData.people_selected_points,
         });
@@ -53,7 +53,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       default:
         await eventVault[parsedEventType]({
           event_sended_at: eventsSendedAt,
-          people_id: parsedEventData.people_id,
+          people_id: event.user_id,
           room_id: parsedRoomID,
         });
         break;
