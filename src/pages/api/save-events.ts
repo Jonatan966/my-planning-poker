@@ -34,7 +34,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     switch (parsedEventType) {
       case VaultEvent.room_show_points:
         await eventVault[parsedEventType]({
-          event_sended_at: parsedEventData.room_countdown_started_at,
+          event_sended_at: new Date(parsedEventData.room_countdown_started_at),
           people_id: parsedEventData.people_id,
           room_id: parsedRoomID,
           show_points: parsedEventData.show_points,
