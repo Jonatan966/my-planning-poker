@@ -101,10 +101,10 @@ function Table() {
   const isSomePeopleSelectPoint = countOfPeoplesWithPoints > 0;
 
   const isSafeToShowPoints =
+    room.showPoints ||
     countOfPeoplesWithPoints >= Math.floor(peoples.length / 2);
 
-  const tableButtonColorScheme =
-    room.showPoints || isSafeToShowPoints ? "secondary" : "danger";
+  const tableButtonColorScheme = isSafeToShowPoints ? "secondary" : "danger";
 
   async function handleSetRoomPointsVisibility() {
     await setRoomPointsVisibility(!room.showPoints);
@@ -153,6 +153,11 @@ function Table() {
             colorScheme={tableButtonColorScheme}
             onClick={handleSetRoomPointsVisibility}
             disabled={!room.showPoints && !isSomePeopleSelectPoint}
+            title={
+              isSafeToShowPoints
+                ? ""
+                : "Ainda há pessoas que não selecionaram pontos"
+            }
           >
             {
               tableConfig[
