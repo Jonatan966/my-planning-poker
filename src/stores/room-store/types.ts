@@ -14,16 +14,6 @@ export interface People {
   highlight?: boolean;
 }
 
-export enum MainRoomEvents {
-  PREPARE_ROOM = "pusher:subscription_succeeded",
-  PEOPLE_LEAVE = "pusher:member_removed",
-  SELECT_POINT = "client-SELECT_POINT",
-  SHOW_POINTS = "client-SHOW_POINTS",
-  SYNC_PEOPLE_POINTS = "people-SYNC_PEOPLE_POINTS",
-  LOAD_PEOPLE = "pusher:member_added",
-  FIRE_CONFETTI = "client-FIRE_CONFETTI",
-}
-
 export interface RoomInfo {
   name: string;
   id: string;
@@ -81,11 +71,6 @@ export interface OnLoadPeopleProps {
     name: string;
     entered_at: Date;
   };
-}
-
-export interface OnShowPointsProps {
-  show: boolean;
-  startedAt: number;
 }
 
 export interface OnSyncPeopleProps {

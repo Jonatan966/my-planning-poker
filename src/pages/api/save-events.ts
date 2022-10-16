@@ -1,13 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import type { Event as AmplitudeEvent } from "@amplitude/node";
 
-import { amplitude } from "../../lib/amplitude";
 import { usePusherWebhook } from "../../hooks/use-pusher-webhook";
-import { MainRoomEvents } from "../../stores/room-store";
+import { ClientRoomEvents } from "../../services/room-events";
+import { VaultEvent } from "../../services/event-vault/types";
+import { eventVault } from "../../services/event-vault";
 
 const eventTypeParsers = {
-  member_added: MainRoomEvents.LOAD_PEOPLE,
-  member_removed: MainRoomEvents.PEOPLE_LEAVE,
+  member_added: VaultEvent.room_people_enter,
+  member_removed: VaultEvent.room_people_leave,
+  [ClientRoomEvents.PEOPLE_FIRE_CONFETTI]: VaultEvent.people_fire_confetti,
+  [ClientRoomEvents.PEOPLE_SELECT_POINT]: VaultEvent.people_select_point,
+  [ClientRoomEvents.ROOM_SHOW_POINTS]: VaultEvent.room_show_points,
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -23,25 +26,37 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   for (const event of events) {
     const parsedRoomID = event.channel.replace("presence-", "");
 
-    const parsedEventType: string =
-      event?.event || eventTypeParsers?.[event?.name];
+    const parsedEventType: VaultEvent =
+      eventTypeParsers?.[event?.event || event?.name];
 
-    const parsedEvent: AmplitudeEvent = {
-      event_type: parsedEventType,
-      user_id: event.user_id,
-      platform: "my-planning-poker",
-      event_properties: {
-        room_id: parsedRoomID,
-        sended_at: eventsSendedAt,
-        environment: process.env.VERCEL_ENV,
-      },
-      user_properties: event?.data ? JSON.parse(event.data) : undefined,
-    };
+    const parsedEventData = JSON.parse(event.data || "{}");
 
-    const eventResponse = await amplitude.logEvent(parsedEvent);
+    switch (parsedEventType) {
+      case VaultEvent.room_show_points:
+        await eventVault[parsedEventType]({
+          event_sended_at: new Date(parsedEventData.room_countdown_started_at),
+          people_id: event.user_id,
+          room_id: parsedRoomID,
+          show_points: parsedEventData.show_points,
+        });
+        break;
 
-    if (eventResponse.statusCode !== 200) {
-      throw new Error(`Event "${event.event}" not sent`);
+      case VaultEvent.people_select_point:
+        await eventVault[parsedEventType]({
+          event_sended_at: eventsSendedAt,
+          people_id: event.user_id,
+          room_id: parsedRoomID,
+          people_selected_points: parsedEventData.people_selected_points,
+        });
+        break;
+
+      default:
+        await eventVault[parsedEventType]({
+          event_sended_at: eventsSendedAt,
+          people_id: event.user_id,
+          room_id: parsedRoomID,
+        });
+        break;
     }
   }
 
