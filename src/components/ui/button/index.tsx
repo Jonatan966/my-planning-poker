@@ -1,9 +1,4 @@
-import {
-  ComponentProps,
-  ForwardedRef,
-  forwardRef,
-  HTMLAttributes,
-} from "react";
+import { ComponentProps, ForwardedRef, forwardRef } from "react";
 import className from "classnames";
 
 import styles from "./styles.module.css";
@@ -12,10 +7,17 @@ import { FaSpinner } from "react-icons/fa";
 type ButtonProps = ComponentProps<"button"> & {
   colorScheme?: "primary" | "secondary" | "danger";
   isLoading?: boolean;
+  outlined?: boolean;
 };
 
 function ButtonComponent(
-  { colorScheme = "primary", isLoading, disabled, ...props }: ButtonProps,
+  {
+    colorScheme = "primary",
+    isLoading,
+    disabled,
+    outlined,
+    ...props
+  }: ButtonProps,
   ref: ForwardedRef<HTMLButtonElement>
 ) {
   return (
@@ -24,7 +26,8 @@ function ButtonComponent(
       className={className(
         props.className,
         styles.buttonContainer,
-        styles[`${colorScheme}ColorScheme`]
+        styles[`${colorScheme}ColorScheme`],
+        { [styles.outlined]: outlined }
       )}
       ref={ref}
       disabled={isLoading || disabled}

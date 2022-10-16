@@ -42,6 +42,7 @@ function PeopleForm({
           <Button
             type="button"
             colorScheme="danger"
+            outlined
             onClick={onCancelRoomConnection}
           >
             Cancelar

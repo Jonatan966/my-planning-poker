@@ -59,7 +59,11 @@ function RoomHeader({ basicMe, roomInfo }: RoomHeaderProps) {
             <p>Copiar link da sala</p>
             <FaLink />
           </Button>
-          <Button colorScheme="danger" onClick={handleDisconnectOnRoom}>
+          <Button
+            colorScheme="danger"
+            outlined
+            onClick={handleDisconnectOnRoom}
+          >
             Sair
           </Button>
         </nav>
