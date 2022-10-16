@@ -1,17 +1,16 @@
 import pusherJs, { PresenceChannel } from "pusher-js";
 import createStore, { StateCreator } from "zustand";
 
-import { mountRoomEvents } from "./mount-room-events";
+import { mountRoomHandler } from "./mount-room-handler";
 import { api } from "../../lib/axios";
 import { createWebConnection } from "../../lib/pusher";
 
 import {
-  BasicRoomInfo,
-  EventMode,
-  MainRoomEvents,
-  RoomInfo,
-  RoomStoreProps,
-} from "./types";
+  InternalRoomEvents,
+  ClientRoomEvents,
+  roomEvents,
+} from "../../services/room-events";
+import { BasicRoomInfo, EventMode, RoomInfo, RoomStoreProps } from "./types";
 
 let connection: pusherJs;
 
@@ -19,7 +18,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   set,
   get
 ) => {
-  const roomEvents = mountRoomEvents(set, get);
+  const roomHandler = mountRoomHandler(set, get);
 
   const INITIAL_STORE_VALUE: RoomStoreProps = {
     basicInfo: {
@@ -57,21 +56,41 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     });
   }
 
+  function _logEvent(event: string) {
+    console.log("[pusher events]", event);
+  }
+
   function prepareRoomConnection(subscription: PresenceChannel) {
-    subscription.bind_global((event) => console.log("[pusher events]", event));
-    subscription.bind(MainRoomEvents.LOAD_PEOPLE, roomEvents.onLoadPeople);
-    subscription.bind(MainRoomEvents.PREPARE_ROOM, roomEvents.onPrepareRoom);
-    subscription.bind(MainRoomEvents.PEOPLE_LEAVE, roomEvents.onPeopleLeave);
-    subscription.bind(MainRoomEvents.SELECT_POINT, roomEvents.onSelectPoint);
-    subscription.bind(MainRoomEvents.SHOW_POINTS, roomEvents.onShowPoints);
+    subscription.bind_global(_logEvent);
+
     subscription.bind(
-      MainRoomEvents.FIRE_CONFETTI,
-      roomEvents.onHighlightPeople
+      InternalRoomEvents.PEOPLE_ENTER,
+      roomHandler.onLoadPeople
+    );
+    subscription.bind(
+      InternalRoomEvents.PREPARE_ROOM,
+      roomHandler.onPrepareRoom
+    );
+    subscription.bind(
+      InternalRoomEvents.PEOPLE_LEAVE,
+      roomHandler.onPeopleLeave
+    );
+    subscription.bind(
+      ClientRoomEvents.PEOPLE_SELECT_POINT,
+      roomHandler.onSelectPoint
+    );
+    subscription.bind(
+      ClientRoomEvents.ROOM_SHOW_POINTS,
+      roomHandler.onShowPoints
+    );
+    subscription.bind(
+      ClientRoomEvents.PEOPLE_FIRE_CONFETTI,
+      roomHandler.onHighlightPeople
     );
 
     connection.user.bind(
-      MainRoomEvents.SYNC_PEOPLE_POINTS,
-      roomEvents.onSyncPeople
+      ClientRoomEvents.ROOM_SYNC_PEOPLE,
+      roomHandler.onSyncPeople
     );
 
     return disconnectOnRoom;
@@ -132,14 +151,14 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
     const myID = basicInfo.subscription.members.myID;
 
-    roomEvents.onSelectPoint({
-      id: myID,
-      points,
+    roomHandler.onSelectPoint({
+      people_id: myID,
+      people_selected_points: points,
     });
 
-    basicInfo.subscription.trigger(MainRoomEvents.SELECT_POINT, {
-      id: myID,
-      points,
+    roomEvents.onPeopleSelectPoint(basicInfo.subscription, {
+      people_id: myID,
+      people_selected_points: points,
     });
   }
 
@@ -151,13 +170,16 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     const { basicInfo } = get();
 
     if (mode === EventMode.PUBLIC) {
-      basicInfo.subscription.trigger(MainRoomEvents.SHOW_POINTS, {
-        show,
-        startedAt,
+      roomEvents.onRoomShowPoints(basicInfo.subscription, {
+        show_points: show,
+        room_countdown_started_at: startedAt,
       });
     }
 
-    roomEvents.onShowPoints({ show, startedAt });
+    roomHandler.onShowPoints({
+      show_points: show,
+      room_countdown_started_at: startedAt,
+    });
   }
 
   function setEasterEggVisibility(show: boolean) {
@@ -167,13 +189,13 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   function broadcastConfetti() {
     const { basicInfo } = get();
 
-    basicInfo.subscription.trigger(MainRoomEvents.FIRE_CONFETTI, {
-      sender_id: basicInfo.subscription.members.myID,
+    roomEvents.onPeopleFireConfetti(basicInfo.subscription, {
+      people_id: basicInfo.subscription.members.myID,
     });
   }
 
   function setPeopleHighlight(people_id: string, highlight?: boolean) {
-    roomEvents.onHighlightPeople({
+    roomHandler.onHighlightPeople({
       sender_id: people_id,
       highlight,
     });
