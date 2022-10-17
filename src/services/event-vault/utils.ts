@@ -12,7 +12,7 @@ export function prepareBasicEvent(
     user_id: basicProps.people_id,
     event_properties: {
       room_id: basicProps.room_id,
-      environment: process.env.VERCEL_ENV,
+      environment: basicProps.environment,
     },
     time: basicProps.event_sended_at.getTime(),
   };
