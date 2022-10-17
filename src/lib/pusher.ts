@@ -3,7 +3,7 @@ import PusherWeb from "pusher-js";
 
 export function connectOnPusherWeb() {
   const pusher = new PusherWeb(process.env.NEXT_PUBLIC_PUSHER_KEY, {
-    cluster: "us2",
+    cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
     channelAuthorization: {
       endpoint: "/api/auth/channel",
       transport: "ajax",
@@ -22,7 +22,7 @@ export function connectOnPusherServer() {
     appId: process.env.PUSHER_APP_ID,
     key: process.env.NEXT_PUBLIC_PUSHER_KEY,
     secret: process.env.PUSHER_SECRET,
-    cluster: "us2",
+    cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
     useTLS: true,
   });
 
