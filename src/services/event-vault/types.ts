@@ -11,6 +11,7 @@ export namespace VaultEventHandlers {
     room_id: string;
     people_id: string;
     event_sended_at: Date;
+    environment: string;
   }
 
   export interface OnRoomPeopleEnterProps extends BasicEventProps {}

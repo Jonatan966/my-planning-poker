@@ -14,6 +14,8 @@ const eventTypeParsers = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+  const eventEnvironmentOrigin = String(req.query.environment);
+
   const { events, eventsSendedAt, webhookIsValid } = usePusherWebhook({
     body: req.body,
     headers: req.headers,
@@ -37,6 +39,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           event_sended_at: new Date(parsedEventData.room_countdown_started_at),
           people_id: event.user_id,
           room_id: parsedRoomID,
+          environment: eventEnvironmentOrigin,
           show_points: parsedEventData.show_points,
         });
         break;
@@ -46,6 +49,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           event_sended_at: eventsSendedAt,
           people_id: event.user_id,
           room_id: parsedRoomID,
+          environment: eventEnvironmentOrigin,
           people_selected_points: parsedEventData.people_selected_points,
         });
         break;
@@ -55,6 +59,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           event_sended_at: eventsSendedAt,
           people_id: event.user_id,
           room_id: parsedRoomID,
+          environment: eventEnvironmentOrigin,
         });
         break;
     }
