@@ -2,11 +2,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { FaHistory, FaNewspaper } from "react-icons/fa";
+import { FaHistory, FaNewspaper, FaInfoCircle } from "react-icons/fa";
 import { ConnectionForm } from "../components/domain/connection-form";
 import Button from "../components/ui/button";
 
 import { TabMenu } from "../components/ui/tab-menu";
+import { Tooltip } from "../components/ui/tooltip";
 import { errorCodes } from "../configs/error-codes";
 import styles from "../styles/pages/home.module.css";
 
@@ -64,7 +65,11 @@ function HomePage() {
           ]}
           selectedMenu={menu}
           setSelectedMenu={setMenu}
-        />
+        >
+          <Tooltip message="Entre em uma sala existente ou crie uma nova">
+            <FaInfoCircle size={20} />
+          </Tooltip>
+        </TabMenu>
 
         <ConnectionForm
           menu={menu}
