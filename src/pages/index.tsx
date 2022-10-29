@@ -49,11 +49,11 @@ function HomePage() {
           menus={[
             {
               id: "enter",
-              name: "Entrar",
+              name: "Entrar na sala",
             },
             {
               id: "create",
-              name: "Criar",
+              name: "Criar sala",
             },
           ]}
           selectedMenu={menu}
