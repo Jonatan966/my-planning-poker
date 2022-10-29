@@ -16,8 +16,14 @@ function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (router.query?.error === errorCodes.ROOM_NOT_EXISTS) {
-      toast.error("Não existe uma sala com esse código");
+    switch (router.query?.error) {
+      case errorCodes.ROOM_NOT_EXISTS:
+        toast.error("Não existe uma sala com esse código");
+        break;
+
+      case errorCodes.INTERNAL_ERROR:
+        toast.error("Ocorreu um problema interno ao tentar entrar nessa sala");
+        break;
     }
   }, [router.query]);
 
