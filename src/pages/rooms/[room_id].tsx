@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { randomUUID } from "crypto";
 import { GetServerSideProps } from "next";
+import * as Sentry from "@sentry/nextjs";
 
 import PointsList from "../../components/domain/points-list";
 import RoomHeader from "../../components/domain/room-header";
@@ -57,46 +58,64 @@ function RoomPage({ basicMe, roomInfo }: RoomPageProps) {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { room_id } = ctx.query;
 
-  const room = await database.room.findUnique({
-    where: {
-      id: String(room_id),
-    },
-  });
+  try {
+    const room = await database.room.findUnique({
+      where: {
+        id: String(room_id),
+      },
+    });
 
-  if (!room) {
+    if (!room) {
+      return {
+        redirect: {
+          destination: `/?error=${errorCodes.ROOM_NOT_EXISTS}`,
+          permanent: false,
+        },
+      };
+    }
+
+    const peopleName = cookieStorageManager.getItem(
+      persistedCookieVars.PEOPLE_NAME,
+      ctx
+    );
+    const peopleID = randomUUID();
+
+    if (!cookieStorageManager.getItem(persistedCookieVars.PEOPLE_ID, ctx)) {
+      cookieStorageManager.setItem(
+        persistedCookieVars.PEOPLE_ID,
+        peopleID,
+        ctx,
+        {
+          httpOnly: true,
+        }
+      );
+    }
+
+    return {
+      props: {
+        basicMe: {
+          id: peopleID,
+          name: peopleName || null,
+        },
+        roomInfo: {
+          id: room.id,
+          name: room.name,
+          created_at: room.created_at.toISOString(),
+        },
+      },
+    };
+  } catch (error) {
+    if (process.env.VERCEL_ENV !== "development") {
+      Sentry.captureException(error);
+    }
+
     return {
       redirect: {
-        destination: `/?error=${errorCodes.ROOM_NOT_EXISTS}`,
+        destination: `/?error=${errorCodes.INTERNAL_ERROR}`,
         permanent: false,
       },
     };
   }
-
-  const peopleName = cookieStorageManager.getItem(
-    persistedCookieVars.PEOPLE_NAME,
-    ctx
-  );
-  const peopleID = randomUUID();
-
-  if (!cookieStorageManager.getItem(persistedCookieVars.PEOPLE_ID, ctx)) {
-    cookieStorageManager.setItem(persistedCookieVars.PEOPLE_ID, peopleID, ctx, {
-      httpOnly: true,
-    });
-  }
-
-  return {
-    props: {
-      basicMe: {
-        id: peopleID,
-        name: peopleName || null,
-      },
-      roomInfo: {
-        id: room.id,
-        name: room.name,
-        created_at: room.created_at.toISOString(),
-      },
-    },
-  };
 };
 
 export default RoomPage;

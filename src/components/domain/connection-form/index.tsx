@@ -78,7 +78,7 @@ function ConnectionForm({
         <form className={styles.form} onSubmit={handleCreateRoom}>
           <TextInput
             title="Seu nome"
-            placeholder="Ex: John Doe"
+            placeholder="Informe o seu nome"
             defaultValue={peopleName}
             ref={peopleNameInputRef}
             required
@@ -86,8 +86,8 @@ function ConnectionForm({
             disabled={isLoading}
           />
           <TextInput
-            placeholder="Ex: Planejamento semanal"
             title="Nome da sala"
+            placeholder="Informe um nome para a nova sala"
             value={roomName}
             onChange={(e) => setRoomName(e.target.value)}
             required
@@ -104,7 +104,7 @@ function ConnectionForm({
         <form className={styles.form} onSubmit={handleConnectOnRoom}>
           <TextInput
             title="Seu nome"
-            placeholder="Ex: John Doe"
+            placeholder="Informe o seu nome"
             defaultValue={peopleName}
             ref={peopleNameInputRef}
             required
@@ -113,7 +113,7 @@ function ConnectionForm({
           />
           <TextInput
             title="Código da sala"
-            placeholder="Ex: 4d71a4a3-f191-498d-a160-2de65febcb4e"
+            placeholder="Informe o código de uma sala existente"
             value={roomCode}
             onChange={(e) => setRoomCode(e.target.value)}
             required
