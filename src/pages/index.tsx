@@ -30,7 +30,7 @@ function HomePage() {
       <section className={styles.contentBox}>
         <div className={styles.appName}>
           <img src="/favicon.png" alt="Logotipo da aplicação" />
-          <h1 translate="no">My Planning Poker</h1>
+          <h3 translate="no">My Planning Poker</h3>
 
           <div className={styles.menu}>
             <Button colorScheme="secondary" title="Changelog" disabled>
