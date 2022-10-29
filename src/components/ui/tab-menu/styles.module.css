@@ -39,3 +39,9 @@
 .tabRightContent:has(svg) {
   font-size: 0;
 }
+
+@media (max-width: 425px) {
+  .tabOptions button {
+    padding: 0.75rem 1rem;
+  }
+}
