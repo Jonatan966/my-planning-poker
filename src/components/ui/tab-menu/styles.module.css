@@ -30,6 +30,7 @@
 .tabOptions button:disabled {
   cursor: not-allowed;
   filter: brightness(0.5);
+  border-color: transparent;
 }
 
 .tabRightContent {
