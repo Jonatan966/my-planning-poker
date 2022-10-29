@@ -15,12 +15,16 @@
   font-size: 1rem;
 
   transform: translateY(2px);
-  transition: filter 0.2s;
+  transition: filter 0.2s, background 0.2s, border-color 0.2s;
+  border-bottom: 2px solid #29292e;
 }
 
 .tabOptions button.selected {
-  font-weight: bold;
-  border-bottom: 2px solid #eb8a1d;
+  border-color: #eb8a1d;
+
+  background: #29292e;
+  color: #ffffff;
+  border-radius: 5px 5px 0 0;
 }
 
 .tabOptions button:disabled {
