@@ -32,7 +32,7 @@ function PeopleForm({
       <form className={styles.form} onSubmit={handleFillPeopleName}>
         <TextInput
           title="Seu nome"
-          placeholder="Ex: John Doe"
+          placeholder="Informe o seu nome"
           ref={peopleNameInputRef}
           required
           maxLength={20}
