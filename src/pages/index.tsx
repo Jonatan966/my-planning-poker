@@ -44,11 +44,13 @@ function HomePage() {
               <FaNewspaper size={18} />
             </Button>
 
-            <Link href="/visits">
-              <Button colorScheme="secondary" title="Minhas visitas">
-                <FaHistory size={18} />
-              </Button>
-            </Link>
+            <Tooltip message="Saiba quais salas você já visitou" place="top">
+              <Link href="/visits">
+                <Button colorScheme="secondary" title="Minhas visitas">
+                  <FaHistory size={18} />
+                </Button>
+              </Link>
+            </Tooltip>
           </div>
         </div>
         <TabMenu
