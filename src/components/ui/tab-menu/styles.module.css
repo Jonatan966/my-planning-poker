@@ -1,6 +1,9 @@
 .tabOptions {
   margin: 1rem 0;
   border-bottom: 2px solid #29292e;
+
+  display: flex;
+  align-items: center;
 }
 
 .tabOptions button {
@@ -23,4 +26,12 @@
 .tabOptions button:disabled {
   cursor: not-allowed;
   filter: brightness(0.5);
+}
+
+.tabRightContent {
+  margin-left: auto;
+}
+
+.tabRightContent:has(svg) {
+  font-size: 0;
 }
