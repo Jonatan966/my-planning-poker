@@ -25,3 +25,15 @@
   display: flex;
   flex-direction: column;
 }
+
+.dialogHeaderMenu {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.dialogHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
