@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdFeedback } from "react-icons/md";
 
 import { useDialog } from "../../../hooks/use-dialog";
@@ -18,6 +18,12 @@ export function FeedbackDialog() {
   const descriptionRef = useRef<HTMLTextAreaElement>();
 
   const isFilledFeedbackType = !!selectedFeedbackType;
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedFeedbackType(undefined);
+    }
+  }, [isOpen]);
 
   function handleSelectFeedbackType(type: FeedbackType) {
     setSelectedFeedbackType(type);
