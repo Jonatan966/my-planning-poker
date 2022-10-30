@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaHistory, FaNewspaper, FaInfoCircle } from "react-icons/fa";
 import { ConnectionForm } from "../components/domain/connection-form";
+import { FeedbackDialog } from "../components/domain/feedback-dialog";
 import Button from "../components/ui/button";
 
 import { TabMenu } from "../components/ui/tab-menu";
@@ -40,6 +41,7 @@ function HomePage() {
           <h3 translate="no">My Planning Poker</h3>
 
           <div className={styles.menu}>
+            <FeedbackDialog />
             <Button colorScheme="secondary" title="Changelog" disabled>
               <FaNewspaper size={18} />
             </Button>
