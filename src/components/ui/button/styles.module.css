@@ -12,11 +12,15 @@
   color: #fff;
 
   border: 2px solid var(--color);
-  transition: filter 0.2s;
+  transition: filter 0.2s, background 0.2s, border-color 0.2s;
 
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.shortPadding {
+  padding: 0 12px;
 }
 
 .buttonContainer:not(:disabled):hover {

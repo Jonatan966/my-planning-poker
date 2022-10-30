@@ -8,12 +8,14 @@ type ButtonProps = ComponentProps<"button"> & {
   colorScheme?: "primary" | "secondary" | "danger";
   isLoading?: boolean;
   outlined?: boolean;
+  isShort?: boolean;
 };
 
 function ButtonComponent(
   {
     colorScheme = "primary",
     isLoading,
+    isShort,
     disabled,
     outlined,
     ...props
@@ -27,7 +29,7 @@ function ButtonComponent(
         props.className,
         styles.buttonContainer,
         styles[`${colorScheme}ColorScheme`],
-        { [styles.outlined]: outlined }
+        { [styles.outlined]: outlined, [styles.shortPadding]: isShort }
       )}
       ref={ref}
       disabled={isLoading || disabled}
