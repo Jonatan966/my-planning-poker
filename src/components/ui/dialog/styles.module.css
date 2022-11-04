@@ -39,3 +39,15 @@
   align-items: center;
   gap: 0.5rem;
 }
+
+.dialogHeader h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .dialogContainer {
+    padding: 20px;
+  }
+}

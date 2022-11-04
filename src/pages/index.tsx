@@ -42,10 +42,10 @@ function HomePage() {
 
           <div className={styles.menu}>
             <FeedbackDialog />
+
             <Button colorScheme="secondary" title="Changelog" disabled>
               <FaNewspaper size={18} />
             </Button>
-
             <Tooltip message="Saiba quais salas você já visitou" place="top">
               <Link href="/visits">
                 <Button colorScheme="secondary" title="Minhas visitas">

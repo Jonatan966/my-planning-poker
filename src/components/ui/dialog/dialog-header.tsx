@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import styles from "./styles.module.css";
 
 interface DialogHeaderProps {
-  title: string;
+  title: ReactNode;
   children?: ReactNode;
 }
 

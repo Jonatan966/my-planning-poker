@@ -13,6 +13,7 @@ import { FeedbackType, FeedbackTypes } from "./feedback-types";
 import { SuccessMessage } from "./success-message";
 
 import styles from "./styles.module.css";
+import { Tooltip } from "../../ui/tooltip";
 
 export function FeedbackDialog() {
   const router = useRouter();
@@ -43,6 +44,11 @@ export function FeedbackDialog() {
     setSelectedFeedbackType(undefined);
   }
 
+  function handleCloseFeedbackDialog() {
+    closeDialog();
+    onRecreateFeedback();
+  }
+
   async function handleSendFeedback(event: FormEvent) {
     event.preventDefault();
 
@@ -68,15 +74,21 @@ export function FeedbackDialog() {
 
   return (
     <>
-      <Dialog isOpen={isOpen} onRequestClose={closeDialog}>
-        <DialogHeader title="Enviar um feedback">
+      <Dialog isOpen={isOpen} onRequestClose={handleCloseFeedbackDialog}>
+        <DialogHeader
+          title={
+            <>
+              <MdFeedback size={24} /> Enviar um feedback
+            </>
+          }
+        >
           <Button
             colorScheme="danger"
             outlined
-            onClick={closeDialog}
+            onClick={handleCloseFeedbackDialog}
             disabled={isSendingFeedback}
           >
-            Voltar
+            Fechar
           </Button>
         </DialogHeader>
 
@@ -110,9 +122,20 @@ export function FeedbackDialog() {
           </>
         )}
       </Dialog>
-      <Button colorScheme="secondary" isShort onClick={openDialog}>
-        <MdFeedback size={18} />
-      </Button>
+
+      <Tooltip
+        place="top"
+        message="Reporte um problema ou sugira uma nova funcionalidade"
+      >
+        <Button
+          colorScheme="secondary"
+          isShort
+          onClick={openDialog}
+          title="Enviar um feedback"
+        >
+          <MdFeedback size={18} />
+        </Button>
+      </Tooltip>
     </>
   );
 }
