@@ -6,12 +6,14 @@ export type FeedbackType = "problem" | "suggestion";
 
 interface FeedbackTypesProps {
   selectedFeedbackType?: FeedbackType;
+  isDisabled?: boolean;
   onSelectFeedbackType(type: FeedbackType): void;
 }
 
 export function FeedbackTypes({
   onSelectFeedbackType,
   selectedFeedbackType,
+  isDisabled,
 }: FeedbackTypesProps) {
   return (
     <div className={styles.feedbackTypesContainer}>
@@ -22,6 +24,7 @@ export function FeedbackTypes({
             selectedFeedbackType === "problem" ? "primary" : "secondary"
           }
           onClick={() => onSelectFeedbackType("problem")}
+          disabled={isDisabled}
         >
           Problema
         </Button>
@@ -30,6 +33,7 @@ export function FeedbackTypes({
             selectedFeedbackType === "suggestion" ? "primary" : "secondary"
           }
           onClick={() => onSelectFeedbackType("suggestion")}
+          disabled={isDisabled}
         >
           Sugestão
         </Button>

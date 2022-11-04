@@ -1,19 +1,28 @@
-import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { MdFeedback } from "react-icons/md";
 
 import { useDialog } from "../../../hooks/use-dialog";
+import { api } from "../../../lib/axios";
 import Button from "../../ui/button";
 import Dialog from "../../ui/dialog";
 import { DialogHeader } from "../../ui/dialog/dialog-header";
 import { TextArea } from "../../ui/text-area";
 import { FeedbackType, FeedbackTypes } from "./feedback-types";
+import { SuccessMessage } from "./success-message";
 
 import styles from "./styles.module.css";
 
 export function FeedbackDialog() {
+  const router = useRouter();
+
   const { isOpen, openDialog, closeDialog } = useDialog();
   const [selectedFeedbackType, setSelectedFeedbackType] =
     useState<FeedbackType>();
+
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
+  const [hasSentFeedback, setHasSentFeedback] = useState(false);
 
   const descriptionRef = useRef<HTMLTextAreaElement>();
 
@@ -29,36 +38,77 @@ export function FeedbackDialog() {
     setSelectedFeedbackType(type);
   }
 
+  function onRecreateFeedback() {
+    setHasSentFeedback(false);
+    setSelectedFeedbackType(undefined);
+  }
+
+  async function handleSendFeedback(event: FormEvent) {
+    event.preventDefault();
+
+    setIsSendingFeedback(true);
+
+    try {
+      await api.post("/feedback", {
+        description: descriptionRef.current.value,
+        roomId: router.query?.room_id,
+        type: selectedFeedbackType,
+      });
+
+      setHasSentFeedback(true);
+    } catch {
+      setIsSendingFeedback(false);
+      toast.error(
+        "Não foi possível enviar o feedback no momento. Tente novamente mais tarde"
+      );
+    }
+
+    setIsSendingFeedback(false);
+  }
+
   return (
     <>
       <Dialog isOpen={isOpen} onRequestClose={closeDialog}>
         <DialogHeader title="Enviar um feedback">
-          <Button colorScheme="danger" outlined onClick={closeDialog}>
+          <Button
+            colorScheme="danger"
+            outlined
+            onClick={closeDialog}
+            disabled={isSendingFeedback}
+          >
             Voltar
           </Button>
         </DialogHeader>
 
-        <FeedbackTypes
-          selectedFeedbackType={selectedFeedbackType}
-          onSelectFeedbackType={handleSelectFeedbackType}
-        />
-        <form>
-          <TextArea
-            title="Descrição"
-            rows={5}
-            disabled={!isFilledFeedbackType}
-            required
-            ref={descriptionRef}
-          />
+        {hasSentFeedback ? (
+          <SuccessMessage onRecreateFeedback={onRecreateFeedback} />
+        ) : (
+          <>
+            <FeedbackTypes
+              isDisabled={isSendingFeedback}
+              selectedFeedbackType={selectedFeedbackType}
+              onSelectFeedbackType={handleSelectFeedbackType}
+            />
+            <form onSubmit={handleSendFeedback}>
+              <TextArea
+                title="Descrição"
+                rows={5}
+                disabled={!isFilledFeedbackType}
+                required
+                ref={descriptionRef}
+              />
 
-          <Button
-            className={styles.sendButton}
-            disabled={!isFilledFeedbackType}
-            type="submit"
-          >
-            Enviar feedback
-          </Button>
-        </form>
+              <Button
+                className={styles.sendButton}
+                disabled={!isFilledFeedbackType}
+                type="submit"
+                isLoading={isSendingFeedback}
+              >
+                Enviar feedback
+              </Button>
+            </form>
+          </>
+        )}
       </Dialog>
       <Button colorScheme="secondary" isShort onClick={openDialog}>
         <MdFeedback size={18} />
