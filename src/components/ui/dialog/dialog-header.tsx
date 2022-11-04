@@ -10,7 +10,7 @@ interface DialogHeaderProps {
 export function DialogHeader({ title, children }: DialogHeaderProps) {
   return (
     <div className={styles.dialogHeader}>
-      <h2>{title}</h2>
+      <h3>{title}</h3>
       {children && <div className={styles.dialogHeaderMenu}>{children}</div>}
     </div>
   );
