@@ -2,9 +2,9 @@ import _ from "lodash";
 import type { Event as AmplitudeEvent } from "@amplitude/node";
 import { VaultEvent, VaultEventHandlers } from "./types";
 
-export function prepareBasicEvent(
+export function prepareBasicRoomEvent(
   eventType: VaultEvent,
-  basicProps: VaultEventHandlers.BasicEventProps,
+  basicProps: VaultEventHandlers.BasicRoomEventProps,
   restEvent?: Partial<AmplitudeEvent>
 ): AmplitudeEvent {
   const basicEvent: AmplitudeEvent = {
@@ -15,6 +15,21 @@ export function prepareBasicEvent(
       environment: basicProps.environment,
     },
     time: basicProps.event_sended_at.getTime(),
+  };
+
+  return _.merge(basicEvent, restEvent);
+}
+
+export function prepareBasicEvent(
+  eventType: VaultEvent,
+  basicProps: VaultEventHandlers.BasicEventProps,
+  restEvent?: Partial<AmplitudeEvent>
+): AmplitudeEvent {
+  const basicEvent: AmplitudeEvent = {
+    event_type: eventType,
+    event_properties: {
+      environment: basicProps.environment,
+    },
   };
 
   return _.merge(basicEvent, restEvent);
