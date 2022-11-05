@@ -60,7 +60,7 @@ function VisitsPage() {
         <section className={styles.contentBox}>
           <div className={styles.appName}>
             <FaHistory size={32} />
-            <h1 translate="no">Minhas visitas</h1>
+            <h3>Minhas visitas</h3>
 
             <div className={styles.menu}>
               <Link href="/">

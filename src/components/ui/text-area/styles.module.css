@@ -1,0 +1,35 @@
+.textArea {
+  background: #121214;
+  border: none;
+
+  border: 2px solid #121214;
+  border-radius: 5px;
+  padding: 0.5rem;
+
+  font-size: 1rem;
+
+  transition: border-color 0.2s, filter 0.2s;
+  resize: vertical;
+}
+
+.textArea:focus {
+  border-color: #eb8a1d;
+  outline: none;
+}
+
+.textAreaLabel {
+  font-size: 14px;
+  color: #87868b;
+}
+
+.textArea:disabled {
+  filter: brightness(0.6);
+  cursor: not-allowed;
+}
+
+.textAreaContainer {
+  display: flex;
+  gap: 0.5rem;
+
+  flex-direction: column;
+}

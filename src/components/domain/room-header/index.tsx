@@ -4,6 +4,7 @@ import { FaLink } from "react-icons/fa";
 import { useRoomStore } from "../../../stores/room-store";
 
 import Button from "../../ui/button";
+import { FeedbackDialog } from "../feedback-dialog";
 import { RoomLogo } from "./room-logo";
 
 import styles from "./styles.module.css";
@@ -50,6 +51,7 @@ function RoomHeader({ basicMe, roomInfo }: RoomHeaderProps) {
         </strong>
         <nav>
           <span className={styles.myName}>{myName}</span>
+          <FeedbackDialog />
           <Button
             colorScheme="primary"
             onClick={copyRoomCode}

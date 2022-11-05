@@ -12,10 +12,10 @@ import { database } from "../../lib/database";
 import { cookieStorageManager } from "../../utils/cookie-storage-manager";
 import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
 import { errorCodes } from "../../configs/error-codes";
-import { ConfettiProvider } from "../../contexts/confetti-context";
 
 import styles from "../../styles/pages/room.module.css";
 import PageHead from "../../components/engine/page-head";
+import { appConfig } from "../../configs/app";
 
 interface RoomPageProps {
   basicMe: {
@@ -33,7 +33,7 @@ function RoomPage({ basicMe, roomInfo }: RoomPageProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <ConfettiProvider>
+    <>
       <PageHead title={roomInfo.name} />
       <RoomHeader basicMe={basicMe} roomInfo={roomInfo} />
       <ConnectionDialog
@@ -51,7 +51,7 @@ function RoomPage({ basicMe, roomInfo }: RoomPageProps) {
           <PointsList />
         </>
       )}
-    </ConfettiProvider>
+    </>
   );
 }
 
@@ -105,7 +105,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   } catch (error) {
-    if (process.env.VERCEL_ENV !== "development") {
+    if (!appConfig.isDevelopment) {
       Sentry.captureException(error);
     }
 

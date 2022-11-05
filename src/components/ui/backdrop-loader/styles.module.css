@@ -11,6 +11,8 @@
   justify-content: center;
 
   background: #12121480;
+
+  z-index: 100;
 }
 
 .backdropSpinner {

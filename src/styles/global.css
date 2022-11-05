@@ -15,7 +15,8 @@ html {
 
 body,
 button,
-input {
+input,
+textarea {
   color: #e1e1e6;
 }
 
