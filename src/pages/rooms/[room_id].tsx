@@ -15,6 +15,7 @@ import { errorCodes } from "../../configs/error-codes";
 
 import styles from "../../styles/pages/room.module.css";
 import PageHead from "../../components/engine/page-head";
+import { appConfig } from "../../configs/app";
 
 interface RoomPageProps {
   basicMe: {
@@ -104,7 +105,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   } catch (error) {
-    if (process.env.VERCEL_ENV !== "development") {
+    if (!appConfig.isDevelopment) {
       Sentry.captureException(error);
     }
 
