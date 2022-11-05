@@ -54,6 +54,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         });
         break;
 
+      case VaultEvent.people_send_feedback:
+        break;
+
       default:
         await eventVault[parsedEventType]({
           event_sended_at: eventsSendedAt,
