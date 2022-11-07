@@ -1,10 +1,15 @@
 import _ from "lodash";
 import type { Event as AmplitudeEvent } from "@amplitude/node";
-import { VaultEvent, VaultEventHandlers } from "./types";
+import {
+  BasicEventProps,
+  FreeVaultEvent,
+  WebhookVaultEvent,
+  WebhookVaultEventHandlers,
+} from "./types";
 
 export function prepareBasicRoomEvent(
-  eventType: VaultEvent,
-  basicProps: VaultEventHandlers.BasicRoomEventProps,
+  eventType: WebhookVaultEvent,
+  basicProps: WebhookVaultEventHandlers.BasicRoomEventProps,
   restEvent?: Partial<AmplitudeEvent>
 ): AmplitudeEvent {
   const basicEvent: AmplitudeEvent = {
@@ -21,8 +26,8 @@ export function prepareBasicRoomEvent(
 }
 
 export function prepareBasicEvent(
-  eventType: VaultEvent,
-  basicProps: VaultEventHandlers.BasicEventProps,
+  eventType: WebhookVaultEvent | FreeVaultEvent,
+  basicProps: BasicEventProps,
   restEvent?: Partial<AmplitudeEvent>
 ): AmplitudeEvent {
   const basicEvent: AmplitudeEvent = {
