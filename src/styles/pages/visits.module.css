@@ -1,0 +1,33 @@
+.visitsContentBox {
+  display: flex;
+  flex-direction: column;
+
+  max-height: 25.5rem;
+  gap: 1rem;
+}
+
+.visitsList {
+  background: #121214;
+
+  border-radius: 5px;
+
+  padding: 0.5rem;
+
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+
+  flex: 1 1 auto;
+}
+
+.visitsList > * + * {
+  margin-top: 0.5rem;
+}
+
+.withoutVisits {
+  text-align: center;
+  margin: auto;
+  padding: 0.25rem;
+  color: #7c7c8a;
+}
