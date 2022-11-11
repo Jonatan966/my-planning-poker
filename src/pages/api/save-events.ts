@@ -14,16 +14,20 @@ const eventTypeParsers = {
   [ClientRoomEvents.ROOM_SHOW_POINTS]: WebhookVaultEvent.room_show_points,
 };
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const eventEnvironmentOrigin = String(req.query.environment);
+export default async (request: NextApiRequest, response: NextApiResponse) => {
+  if (request.method !== "POST") {
+    return response.status(405).end();
+  }
+
+  const eventEnvironmentOrigin = String(request.query.environment);
 
   const { events, eventsSendedAt, webhookIsValid } = usePusherWebhook({
-    body: req.body,
-    headers: req.headers,
+    body: request.body,
+    headers: request.headers,
   });
 
   if (!webhookIsValid) {
-    return res.status(404).end();
+    return response.status(404).end();
   }
 
   for (const event of events) {
@@ -66,5 +70,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 
-  return res.end();
+  return response.end();
 };
