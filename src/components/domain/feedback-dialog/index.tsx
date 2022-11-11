@@ -55,7 +55,7 @@ export function FeedbackDialog() {
     setIsSendingFeedback(true);
 
     try {
-      await api.post("/feedback", {
+      await api.post("/feedbacks", {
         description: descriptionRef.current.value,
         roomId: router.query?.room_id,
         type: selectedFeedbackType,

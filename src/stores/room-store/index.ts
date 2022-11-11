@@ -117,7 +117,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   }
 
   async function createRoom(roomName: string) {
-    const { data: roomInfo } = await api.post<RoomInfo>("/create-room", {
+    const { data: roomInfo } = await api.post<RoomInfo>("/rooms", {
       name: roomName,
     });
 

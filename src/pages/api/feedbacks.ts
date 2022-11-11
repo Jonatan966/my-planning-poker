@@ -5,6 +5,10 @@ import { database } from "../../lib/database";
 import { eventVault } from "../../services/event-vault";
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
+  if (request.method !== "POST") {
+    return response.status(405).end();
+  }
+
   const { description, type } = request.body;
 
   const parsedFeedbackType = FeedbackType?.[type];

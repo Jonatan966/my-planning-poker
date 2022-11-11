@@ -37,7 +37,7 @@ export function mountRoomHandler(
     );
 
     if (me.points !== undefined || !!state.basicInfo.countdownStartedAt) {
-      await api.post("sync-people", {
+      await api.post("/peoples/sync", {
         senderPeople: {
           id: me.id,
           points: me.points,
