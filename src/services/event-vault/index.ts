@@ -75,7 +75,11 @@ async function onPeopleFireConfetti(
 async function onPeopleSendFeedback(
   props: FreeVaultEventHandlers.OnPeopleSendFeedback
 ) {
-  const event = prepareBasicEvent(FreeVaultEvent.people_send_feedback, props);
+  const event = prepareBasicEvent(FreeVaultEvent.people_send_feedback, {
+    event_properties: {
+      feedback_type: props.feedback_type,
+    },
+  });
 
   await amplitude.logEvent(event);
 }
