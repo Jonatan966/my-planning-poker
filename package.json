@@ -18,7 +18,7 @@
     "axios": "^0.27.2",
     "classnames": "^2.3.1",
     "immer": "^9.0.15",
-    "lodash.clonedeep": "^4.5.0",
+    "lodash": "^4.17.20",
     "next": "^12.2.5",
     "next-pwa": "^5.6.0",
     "nookies": "^2.5.2",
@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@types/cookie": "^0.5.1",
-    "@types/lodash.clonedeep": "^4.5.7",
+    "@types/lodash": "^4.14.188",
     "@types/node": "^18.7.3",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",

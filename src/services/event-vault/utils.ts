@@ -1,5 +1,6 @@
-import _ from "lodash";
+import mergeObjects from "lodash/merge";
 import type { Event as AmplitudeEvent } from "@amplitude/node";
+
 import {
   BasicEventProps,
   FreeVaultEvent,
@@ -22,7 +23,7 @@ export function prepareBasicRoomEvent(
     time: basicProps.event_sended_at.getTime(),
   };
 
-  return _.merge(basicEvent, restEvent);
+  return mergeObjects(basicEvent, restEvent);
 }
 
 export function prepareBasicEvent(
@@ -37,5 +38,5 @@ export function prepareBasicEvent(
     },
   };
 
-  return _.merge(basicEvent, restEvent);
+  return mergeObjects(basicEvent, restEvent);
 }

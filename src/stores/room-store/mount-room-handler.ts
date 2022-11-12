@@ -1,4 +1,4 @@
-import _ from "lodash";
+import sortBy from "lodash/sortBy";
 import produce from "immer";
 import { Members } from "pusher-js";
 
@@ -13,7 +13,7 @@ import {
 import * as RoomEvents from "../../services/room-events";
 
 function sortPeoplesByArrival(peoples: People[]) {
-  return _.sortBy(peoples, ["entered_at"], ["asc"]);
+  return sortBy(peoples, ["entered_at"], ["asc"]);
 }
 
 export function mountRoomHandler(

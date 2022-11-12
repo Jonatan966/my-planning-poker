@@ -1,4 +1,4 @@
-import cloneDeep from "lodash.clonedeep";
+import cloneDeep from "lodash/cloneDeep";
 import { useMemo } from "react";
 import useDimensions from "react-cool-dimensions";
 import { useRoomStore, People } from "../../../stores/room-store";
