@@ -12,12 +12,8 @@ export enum WebhookVaultEvent {
   people_fire_confetti = "mpp_people_fire_confetti",
 }
 
-export interface BasicEventProps {
-  environment: string;
-}
-
 export namespace WebhookVaultEventHandlers {
-  export interface BasicRoomEventProps extends BasicEventProps {
+  export interface BasicRoomEventProps {
     event_sended_at: Date;
     room_id: string;
     people_id: string;
@@ -39,7 +35,7 @@ export namespace WebhookVaultEventHandlers {
 }
 
 export namespace FreeVaultEventHandlers {
-  export interface OnPeopleSendFeedback extends BasicEventProps {
+  export interface OnPeopleSendFeedback {
     feedback_type: FeedbackType;
   }
 }
