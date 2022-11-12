@@ -1,6 +1,5 @@
 import { useMemo, useRef } from "react";
 import classNames from "classnames";
-import confetti from "canvas-confetti";
 
 import PointButton from "../../ui/point-button";
 import { useRoomStore, People } from "../../../stores/room-store";
