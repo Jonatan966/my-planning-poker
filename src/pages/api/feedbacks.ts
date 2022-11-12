@@ -1,6 +1,7 @@
 import { Environment, FeedbackType } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
+import { appConfig } from "../../configs/app";
 import { database } from "../../lib/database";
 import { eventVault } from "../../services/event-vault";
 
@@ -29,7 +30,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     data: {
       description,
       type: parsedFeedbackType,
-      environment: process.env.VERCEL_ENV as Environment,
+      environment: appConfig.environment as Environment,
     },
   });
 
@@ -40,7 +41,6 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
   }
 
   await eventVault.mpp_people_send_feedback({
-    environment: createdFeedback.environment,
     feedback_type: createdFeedback.type,
   });
 
