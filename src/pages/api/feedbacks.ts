@@ -2,8 +2,10 @@ import { Environment, FeedbackType } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { appConfig } from "../../configs/app";
+import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
 import { database } from "../../lib/database";
 import { eventVault } from "../../services/event-vault";
+import { cookieStorageManager } from "../../utils/cookie-storage-manager";
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
   if (request.method !== "POST") {
@@ -40,8 +42,13 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     });
   }
 
+  const peopleID = cookieStorageManager.getItem(persistedCookieVars.PEOPLE_ID, {
+    req: request,
+  });
+
   await eventVault.mpp_people_send_feedback({
     feedback_type: createdFeedback.type,
+    people_id: peopleID,
   });
 
   return response.status(201).json(createdFeedback);

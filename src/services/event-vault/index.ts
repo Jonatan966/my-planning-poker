@@ -79,6 +79,7 @@ async function onPeopleSendFeedback(
     event_properties: {
       feedback_type: props.feedback_type,
     },
+    user_id: props.people_id,
   });
 
   await amplitude.logEvent(event);
