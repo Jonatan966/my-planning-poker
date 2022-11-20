@@ -9,6 +9,17 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
+enum Environment {
+  development
+  production
+  preview
+}
+
+enum FeedbackType {
+  problem
+  suggestion
+}
+
 model Room {
   id         String   @id @default(uuid())
   name       String
@@ -18,7 +29,7 @@ model Room {
 }
 
 model FeatureFlag {
-  id          String   @id
+  id          String   @id @default(uuid())
   description String
   created_at  DateTime @default(now())
 
@@ -33,4 +44,12 @@ model RoomFeature {
   feature FeatureFlag @relation(fields: [featureId], references: [id], onDelete: Cascade)
 
   @@id([roomId, featureId])
+}
+
+model Feedback {
+  id          String       @id @default(uuid())
+  description String       @db.Text
+  environment Environment
+  type        FeedbackType
+  created_at  DateTime     @default(now())
 }

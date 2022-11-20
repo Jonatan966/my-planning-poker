@@ -17,7 +17,7 @@ function ConnectingMessage({ onCancelRoomConnection }: ConnectingMessageProps) {
         <span>Tentando se conectar à sala...</span>
       </div>
 
-      <Button colorScheme="danger" onClick={onCancelRoomConnection}>
+      <Button colorScheme="danger" outlined onClick={onCancelRoomConnection}>
         Cancelar
       </Button>
     </>

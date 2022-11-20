@@ -4,13 +4,13 @@ import { FaLink } from "react-icons/fa";
 import { useRoomStore } from "../../../stores/room-store";
 
 import Button from "../../ui/button";
+import { FeedbackDialog } from "../feedback-dialog";
 import { RoomLogo } from "./room-logo";
 
 import styles from "./styles.module.css";
 
 interface RoomHeaderProps {
   basicMe: {
-    id: string;
     name?: string;
   };
   roomInfo: {
@@ -50,6 +50,7 @@ function RoomHeader({ basicMe, roomInfo }: RoomHeaderProps) {
         </strong>
         <nav>
           <span className={styles.myName}>{myName}</span>
+          <FeedbackDialog />
           <Button
             colorScheme="primary"
             onClick={copyRoomCode}
@@ -59,7 +60,11 @@ function RoomHeader({ basicMe, roomInfo }: RoomHeaderProps) {
             <p>Copiar link da sala</p>
             <FaLink />
           </Button>
-          <Button colorScheme="danger" onClick={handleDisconnectOnRoom}>
+          <Button
+            colorScheme="danger"
+            outlined
+            onClick={handleDisconnectOnRoom}
+          >
             Sair
           </Button>
         </nav>

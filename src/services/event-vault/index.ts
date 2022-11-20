@@ -1,59 +1,95 @@
 import { amplitude } from "../../lib/amplitude";
-import { VaultEventHandlers, VaultEvent } from "./types";
-import { prepareBasicEvent } from "./utils";
+import {
+  FreeVaultEvent,
+  WebhookVaultEventHandlers,
+  WebhookVaultEvent,
+  FreeVaultEventHandlers,
+} from "./types";
+import { prepareBasicEvent, prepareBasicRoomEvent } from "./utils";
 
 async function onRoomPeopleEnter(
-  props: VaultEventHandlers.OnRoomPeopleEnterProps
+  props: WebhookVaultEventHandlers.OnRoomPeopleEnterProps
 ) {
-  const event = prepareBasicEvent(VaultEvent.room_people_enter, props);
+  const event = prepareBasicRoomEvent(
+    WebhookVaultEvent.room_people_enter,
+    props
+  );
 
   await amplitude.logEvent(event);
 }
 
 async function onRoomPeopleLeave(
-  props: VaultEventHandlers.OnRoomPeopleLeaveProps
+  props: WebhookVaultEventHandlers.OnRoomPeopleLeaveProps
 ) {
-  const event = prepareBasicEvent(VaultEvent.room_people_leave, props);
+  const event = prepareBasicRoomEvent(
+    WebhookVaultEvent.room_people_leave,
+    props
+  );
 
   await amplitude.logEvent(event);
 }
 
 async function onRoomShowPoints(
-  props: VaultEventHandlers.OnRoomShowPointsProps
+  props: WebhookVaultEventHandlers.OnRoomShowPointsProps
 ) {
-  const event = prepareBasicEvent(VaultEvent.room_show_points, props, {
-    event_properties: {
-      show_points: props.show_points,
-    },
-  });
+  const event = prepareBasicRoomEvent(
+    WebhookVaultEvent.room_show_points,
+    props,
+    {
+      event_properties: {
+        show_points: props.show_points,
+      },
+    }
+  );
 
   await amplitude.logEvent(event);
 }
 
 async function onPeopleSelectPoint(
-  props: VaultEventHandlers.OnPeopleSelectPointProps
+  props: WebhookVaultEventHandlers.OnPeopleSelectPointProps
 ) {
-  const event = prepareBasicEvent(VaultEvent.people_select_point, props, {
-    event_properties: {
-      people_selected_points: props.people_selected_points,
-    },
-  });
+  const event = prepareBasicRoomEvent(
+    WebhookVaultEvent.people_select_point,
+    props,
+    {
+      event_properties: {
+        people_selected_points: props.people_selected_points,
+      },
+    }
+  );
 
   await amplitude.logEvent(event);
 }
 
 async function onPeopleFireConfetti(
-  props: VaultEventHandlers.OnPeopleFireConfettiProps
+  props: WebhookVaultEventHandlers.OnPeopleFireConfettiProps
 ) {
-  const event = prepareBasicEvent(VaultEvent.people_fire_confetti, props);
+  const event = prepareBasicRoomEvent(
+    WebhookVaultEvent.people_fire_confetti,
+    props
+  );
+
+  await amplitude.logEvent(event);
+}
+
+async function onPeopleSendFeedback(
+  props: FreeVaultEventHandlers.OnPeopleSendFeedback
+) {
+  const event = prepareBasicEvent(FreeVaultEvent.people_send_feedback, {
+    event_properties: {
+      feedback_type: props.feedback_type,
+    },
+    user_id: props.people_id,
+  });
 
   await amplitude.logEvent(event);
 }
 
 export const eventVault = {
-  [VaultEvent.room_people_enter]: onRoomPeopleEnter,
-  [VaultEvent.room_people_leave]: onRoomPeopleLeave,
-  [VaultEvent.room_show_points]: onRoomShowPoints,
-  [VaultEvent.people_select_point]: onPeopleSelectPoint,
-  [VaultEvent.people_fire_confetti]: onPeopleFireConfetti,
+  [WebhookVaultEvent.room_people_enter]: onRoomPeopleEnter,
+  [WebhookVaultEvent.room_people_leave]: onRoomPeopleLeave,
+  [WebhookVaultEvent.room_show_points]: onRoomShowPoints,
+  [WebhookVaultEvent.people_select_point]: onPeopleSelectPoint,
+  [WebhookVaultEvent.people_fire_confetti]: onPeopleFireConfetti,
+  [FreeVaultEvent.people_send_feedback]: onPeopleSendFeedback,
 };

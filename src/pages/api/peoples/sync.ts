@@ -1,12 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { connectOnPusherServer } from "../../lib/pusher";
-import { roomEvents } from "../../services/room-events";
+import { connectOnPusherServer } from "../../../lib/pusher";
+import { roomEvents } from "../../../services/room-events";
 
 export default async (
-  req: NextApiRequest,
-  res: NextApiResponse
+  request: NextApiRequest,
+  response: NextApiResponse
 ): Promise<NextApiResponse> => {
-  const { senderPeople, targetPeopleID, countdownStartedAt } = req.body;
+  if (request.method !== "POST") {
+    return response.status(405).end();
+  }
+
+  const { senderPeople, targetPeopleID, countdownStartedAt } = request.body;
 
   const pusher = connectOnPusherServer();
 
@@ -17,5 +21,5 @@ export default async (
     room_countdown_started_at: countdownStartedAt,
   });
 
-  return res.end();
+  return response.end();
 };

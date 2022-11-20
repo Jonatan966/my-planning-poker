@@ -1,0 +1,16 @@
+.successMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  flex: 1;
+}
+
+.successMessage svg {
+  fill: #00875f;
+}
+
+.successMessage p {
+  margin: 0.5rem 0;
+}

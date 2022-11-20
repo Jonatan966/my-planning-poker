@@ -2,6 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { database } from "../../lib/database";
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
+  if (request.method !== "POST") {
+    return response.status(405).end();
+  }
+
   const { name } = request.body;
 
   if (!name) {

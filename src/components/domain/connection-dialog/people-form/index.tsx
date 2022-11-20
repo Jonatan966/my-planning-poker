@@ -32,7 +32,7 @@ function PeopleForm({
       <form className={styles.form} onSubmit={handleFillPeopleName}>
         <TextInput
           title="Seu nome"
-          placeholder="Ex: John Doe"
+          placeholder="Informe o seu nome"
           ref={peopleNameInputRef}
           required
           maxLength={20}
@@ -42,6 +42,7 @@ function PeopleForm({
           <Button
             type="button"
             colorScheme="danger"
+            outlined
             onClick={onCancelRoomConnection}
           >
             Cancelar

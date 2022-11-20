@@ -6,11 +6,14 @@ import { FaHistory } from "react-icons/fa";
 
 import Button from "../components/ui/button";
 import { useVisitsStore } from "../stores/visits-store";
-import styles from "../styles/pages/home.module.css";
 import BackdropLoader from "../components/ui/backdrop-loader";
 import ClientOnly from "../components/engine/client-only";
 import RoomCard from "../components/domain/room-card";
 import PageHead from "../components/engine/page-head";
+
+import homeStyles from "../styles/pages/home.module.css";
+import visitsStyles from "../styles/pages/visits.module.css";
+import classNames from "classnames";
 
 function VisitsPage() {
   const router = useRouter();
@@ -47,7 +50,7 @@ function VisitsPage() {
     }
 
     return (
-      <span className={styles.withoutVisits}>
+      <span className={visitsStyles.withoutVisits}>
         Você não visitou nenhuma sala
       </span>
     );
@@ -56,20 +59,27 @@ function VisitsPage() {
   return (
     <>
       <PageHead title="Minhas Visitas" />
-      <div className={styles.container}>
-        <section className={styles.contentBox}>
-          <div className={styles.appName}>
+      <div className={homeStyles.container}>
+        <section
+          className={classNames(
+            homeStyles.contentBox,
+            visitsStyles.visitsContentBox
+          )}
+        >
+          <div className={homeStyles.appName}>
             <FaHistory size={32} />
-            <h1 translate="no">Minhas visitas</h1>
+            <h3>Minhas visitas</h3>
 
-            <div className={styles.menu}>
+            <div className={homeStyles.menu}>
               <Link href="/">
-                <Button colorScheme="danger">Voltar</Button>
+                <Button colorScheme="danger" outlined>
+                  Voltar
+                </Button>
               </Link>
             </div>
           </div>
 
-          <div className={styles.visits}>
+          <div className={visitsStyles.visitsList}>
             <ClientOnly>{renderVisits()}</ClientOnly>
           </div>
         </section>

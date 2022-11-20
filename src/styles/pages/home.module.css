@@ -39,32 +39,6 @@
   padding: 0 12px;
 }
 
-.visits {
-  background: #121214;
-  height: 18rem;
-
-  border-radius: 5px;
-  margin-top: 1rem;
-
-  padding: 0.5rem;
-
-  overflow-y: auto;
-
-  display: flex;
-  flex-direction: column;
-}
-
-.visits > * + * {
-  margin-top: 0.5rem;
-}
-
-.withoutVisits {
-  text-align: center;
-  margin: auto;
-  padding: 0.25rem;
-  color: #7c7c8a;
-}
-
 @media (min-width: 320px) and (max-width: 480px) {
   .contentBox {
     padding: 20px;

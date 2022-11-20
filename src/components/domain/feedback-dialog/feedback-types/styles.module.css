@@ -1,0 +1,25 @@
+.feedbackTypesButtons {
+  display: flex;
+  gap: 0.5rem;
+
+  background: #121214;
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+
+.feedbackTypesButtons > button {
+  flex: 1;
+}
+
+.feedbackTypesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  margin: 1rem 0;
+}
+
+.feedbackTypesContainer label {
+  font-size: 14px;
+  color: #87868b;
+}
