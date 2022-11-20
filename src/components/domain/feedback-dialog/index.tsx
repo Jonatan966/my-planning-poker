@@ -55,7 +55,7 @@ export function FeedbackDialog() {
     setIsSendingFeedback(true);
 
     try {
-      await api.post("/feedback", {
+      await api.post("/feedbacks", {
         description: descriptionRef.current.value,
         roomId: router.query?.room_id,
         type: selectedFeedbackType,
@@ -74,7 +74,11 @@ export function FeedbackDialog() {
 
   return (
     <>
-      <Dialog isOpen={isOpen} onRequestClose={handleCloseFeedbackDialog}>
+      <Dialog
+        isOpen={isOpen}
+        onRequestClose={handleCloseFeedbackDialog}
+        className={styles.dialogContainer}
+      >
         <DialogHeader
           title={
             <>
@@ -101,7 +105,10 @@ export function FeedbackDialog() {
               selectedFeedbackType={selectedFeedbackType}
               onSelectFeedbackType={handleSelectFeedbackType}
             />
-            <form onSubmit={handleSendFeedback}>
+            <form
+              onSubmit={handleSendFeedback}
+              className={styles.suggestionForm}
+            >
               <TextArea
                 title="Descrição"
                 rows={5}

@@ -11,7 +11,6 @@ import styles from "./styles.module.css";
 
 interface RoomHeaderProps {
   basicMe: {
-    id: string;
     name?: string;
   };
   roomInfo: {

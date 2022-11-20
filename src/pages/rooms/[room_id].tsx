@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { randomUUID } from "crypto";
 import { GetServerSideProps } from "next";
 import * as Sentry from "@sentry/nextjs";
 
@@ -19,7 +18,6 @@ import { appConfig } from "../../configs/app";
 
 interface RoomPageProps {
   basicMe: {
-    id: string;
     name?: string;
   };
   roomInfo: {
@@ -78,23 +76,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       persistedCookieVars.PEOPLE_NAME,
       ctx
     );
-    const peopleID = randomUUID();
-
-    if (!cookieStorageManager.getItem(persistedCookieVars.PEOPLE_ID, ctx)) {
-      cookieStorageManager.setItem(
-        persistedCookieVars.PEOPLE_ID,
-        peopleID,
-        ctx,
-        {
-          httpOnly: true,
-        }
-      );
-    }
 
     return {
       props: {
         basicMe: {
-          id: peopleID,
           name: peopleName || null,
         },
         roomInfo: {
