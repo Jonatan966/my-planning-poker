@@ -112,7 +112,7 @@ export function FeedbackDialog() {
               <TextArea
                 title="Descrição"
                 rows={5}
-                disabled={!isFilledFeedbackType}
+                disabled={isSendingFeedback || !isFilledFeedbackType}
                 required
                 ref={descriptionRef}
               />
