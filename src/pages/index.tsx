@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { FaHistory, FaNewspaper, FaInfoCircle } from "react-icons/fa";
+import { FaNewspaper, FaInfoCircle } from "react-icons/fa";
 import { ConnectionForm } from "../components/domain/connection-form";
 import { FeedbackDialog } from "../components/domain/feedback-dialog";
 import { QuickRoomAccess } from "../components/domain/quick-room-access";
@@ -47,13 +46,6 @@ function HomePage() {
             <Button colorScheme="secondary" title="Changelog" disabled>
               <FaNewspaper size={18} />
             </Button>
-            <Tooltip message="Saiba quais salas você já visitou" place="top">
-              <Link href="/visits">
-                <Button colorScheme="secondary" title="Minhas visitas">
-                  <FaHistory size={18} />
-                </Button>
-              </Link>
-            </Tooltip>
           </div>
         </div>
 
