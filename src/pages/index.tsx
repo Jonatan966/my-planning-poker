@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { FaHistory, FaNewspaper, FaInfoCircle } from "react-icons/fa";
 import { ConnectionForm } from "../components/domain/connection-form";
 import { FeedbackDialog } from "../components/domain/feedback-dialog";
+import { QuickRoomAccess } from "../components/domain/quick-room-access";
 import Button from "../components/ui/button";
 
 import { TabMenu } from "../components/ui/tab-menu";
@@ -55,6 +56,7 @@ function HomePage() {
             </Tooltip>
           </div>
         </div>
+
         <TabMenu
           disabled={isLoading}
           menus={[
@@ -74,12 +76,13 @@ function HomePage() {
             <FaInfoCircle size={20} />
           </Tooltip>
         </TabMenu>
-
         <ConnectionForm
           menu={menu}
           setIsLoading={setIsLoading}
           isLoading={isLoading}
-        />
+        >
+          <QuickRoomAccess />
+        </ConnectionForm>
       </section>
     </div>
   );
