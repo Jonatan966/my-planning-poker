@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useVisitsStore } from "../../../stores/visits-store";
-import RoomCard from "../room-card";
+import RoomCard from "./room-card";
 
 import styles from "./styles.module.css";
 
@@ -16,6 +16,14 @@ export function QuickRoomAccess() {
     setIsMounted(true);
   }, []);
 
+  function renderContent() {
+    if (isMounted && lastVisitedRoom) {
+      return <RoomCard onRemoveRoom={removeVisit} roomInfo={lastVisitedRoom} />;
+    }
+
+    return <span>Visite uma sala e ela aparecerá aqui</span>;
+  }
+
   return (
     <>
       <label className={styles.quickRoomAccessLabel}>
@@ -23,13 +31,7 @@ export function QuickRoomAccess() {
         <Link href="/visits">Ver mais</Link>
       </label>
 
-      <div className={styles.quickRoomAccessContainer}>
-        {isMounted && lastVisitedRoom ? (
-          <RoomCard onRemoveRoom={removeVisit} roomInfo={lastVisitedRoom} />
-        ) : (
-          <span>Visite uma sala e ela aparecerá aqui</span>
-        )}
-      </div>
+      <div className={styles.quickRoomAccessContainer}>{renderContent()}</div>
     </>
   );
 }

@@ -8,7 +8,7 @@ import Button from "../components/ui/button";
 import { useVisitsStore } from "../stores/visits-store";
 import BackdropLoader from "../components/ui/backdrop-loader";
 import ClientOnly from "../components/engine/client-only";
-import RoomCard from "../components/domain/room-card";
+import RoomCard from "../components/domain/quick-room-access/room-card";
 import PageHead from "../components/engine/page-head";
 
 import homeStyles from "../styles/pages/home.module.css";
