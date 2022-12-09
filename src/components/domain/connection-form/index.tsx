@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState, FormEvent, useRef } from "react";
+import { useState, FormEvent, useRef, ReactNode } from "react";
 import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
 import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 import Button from "../../ui/button";
@@ -9,6 +9,7 @@ import { useRoomStore } from "../../../stores/room-store";
 import styles from "./styles.module.css";
 
 interface ConnectionFormProps {
+  children?: ReactNode;
   menu: string;
   isLoading: boolean;
   setIsLoading: (value: boolean) => void;
@@ -17,6 +18,7 @@ interface ConnectionFormProps {
 function ConnectionForm({
   menu,
   isLoading,
+  children,
   setIsLoading,
 }: ConnectionFormProps) {
   const peopleName = cookieStorageManager.getItem(
@@ -94,8 +96,11 @@ function ConnectionForm({
             maxLength={32}
             disabled={isLoading}
           />
+          {children}
 
-          <Button isLoading={isLoading}>Criar sala</Button>
+          <Button isLoading={isLoading} type="submit">
+            Criar sala
+          </Button>
         </form>
       );
 
@@ -119,7 +124,11 @@ function ConnectionForm({
             required
             disabled={isLoading}
           />
-          <Button isLoading={isLoading}>Entrar na sala</Button>
+          {children}
+
+          <Button isLoading={isLoading} type="submit">
+            Entrar na sala
+          </Button>
         </form>
       );
   }
