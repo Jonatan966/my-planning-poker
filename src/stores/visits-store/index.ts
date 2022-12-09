@@ -8,9 +8,22 @@ const visitsStore: StateCreator<VisitsStoreProps, [], [], VisitsStoreProps> = (
   set,
   get
 ) => {
-  function _persistVisits(visits: Visits) {
-    set({ visits });
+  const visits =
+    localStorageManager.getItem<Visits>(persistentLocalVars.ROOMS) || {};
+  const lastVisitedRoomId = localStorageManager.getItem<string>(
+    persistentLocalVars.LAST_VISITED_ROOM
+  );
+
+  function _persistVisits(visits: Visits, lastVisitedRoomId?: string) {
+    const lastVisitedRoom = visits?.[lastVisitedRoomId];
+
+    set({ visits, lastVisitedRoom });
+
     localStorageManager.setItem(persistentLocalVars.ROOMS, visits);
+    localStorageManager.setItem(
+      persistentLocalVars.LAST_VISITED_ROOM,
+      lastVisitedRoomId
+    );
   }
 
   function addVisit(room: Room) {
@@ -20,22 +33,25 @@ const visitsStore: StateCreator<VisitsStoreProps, [], [], VisitsStoreProps> = (
       visits[room.id] = room;
     }
 
-    _persistVisits(visits);
+    _persistVisits(visits, room.id);
   }
 
   function removeVisit(roomId: string) {
-    const { visits } = get();
+    const { visits, lastVisitedRoom } = get();
 
     if (visits[roomId]) {
       delete visits[roomId];
     }
 
-    _persistVisits(visits);
+    const persistLastVisit =
+      roomId === lastVisitedRoom?.id ? null : lastVisitedRoom?.id;
+
+    _persistVisits(visits, persistLastVisit);
   }
 
   return {
-    visits:
-      localStorageManager.getItem<Visits>(persistentLocalVars.ROOMS) || {},
+    visits,
+    lastVisitedRoom: visits?.[lastVisitedRoomId],
     addVisit,
     removeVisit,
   };
