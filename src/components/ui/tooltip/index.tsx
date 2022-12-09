@@ -8,19 +8,24 @@ import React, {
 } from "react";
 import ReactTooltip, { TooltipProps } from "react-tooltip";
 import { Slot } from "@radix-ui/react-slot";
+import classNames from "classnames";
 
 import styles from "./styles.module.css";
 
 interface CustomTooltipProps extends TooltipProps {
-  message: string;
+  message: ReactNode;
   children: ReactNode;
   asChild?: boolean;
+  wrapperClassName?: string;
 }
 
 const TooltipComponent: ForwardRefRenderFunction<
   ReactTooltip,
   CustomTooltipProps
-> = ({ children, message, asChild, ...tooltipProps }, ref) => {
+> = (
+  { children, message, asChild, wrapperClassName, ...tooltipProps },
+  ref
+) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -32,7 +37,11 @@ const TooltipComponent: ForwardRefRenderFunction<
 
   return (
     <React.Fragment>
-      <Wrapper data-tip data-for={tooltipId} className={styles.tooltipTrigger}>
+      <Wrapper
+        data-tip
+        data-for={tooltipId}
+        className={classNames(styles.tooltipTrigger, wrapperClassName)}
+      >
         {children}
       </Wrapper>
       {isMounted && (
@@ -41,6 +50,10 @@ const TooltipComponent: ForwardRefRenderFunction<
           effect="solid"
           backgroundColor="#09090A"
           {...tooltipProps}
+          className={classNames(
+            styles.tooltipContainer,
+            tooltipProps.className
+          )}
           id={tooltipId}
           ref={ref}
         >
