@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { FaInfoCircle } from "react-icons/fa";
+import { useRoomAccess } from "../../../contexts/room-access-context";
 import { useVisitsStore } from "../../../stores/visits-store";
 import { Tooltip } from "../../ui/tooltip";
 import RoomCard from "./room-card";
@@ -12,6 +14,7 @@ export function QuickRoomAccess() {
     lastVisitedRoom: state.lastVisitedRoom,
     removeVisit: state.removeVisit,
   }));
+  const { onVisitRoom } = useRoomAccess();
 
   useEffect(() => {
     setIsMounted(true);
@@ -19,13 +22,14 @@ export function QuickRoomAccess() {
 
   function renderContent() {
     if (isMounted && lastVisitedRoom) {
-      return <RoomCard onRemoveRoom={removeVisit} roomInfo={lastVisitedRoom} />;
+      return (
+        <RoomCard
+          onRemoveRoom={removeVisit}
+          roomInfo={lastVisitedRoom}
+          onClick={onVisitRoom}
+        />
+      );
     }
-
-    return (
-      <span>Visite uma sala e você poderá acessá-la rapidamente por aqui</span>
-    );
-  }
 
     return <span>Visite uma sala e ela aparecerá aqui</span>;
   }
