@@ -10,12 +10,22 @@
   color: #eb8a1d;
 }
 
+.quickRoomAccessTitle {
+  display: flex;
+  align-items: center;
+}
+
+.helpIcon {
+  font-size: 0;
+  margin-left: 0.5rem;
+}
+
 .quickRoomAccessContainer {
   background: #121214;
   border-radius: 5px;
   padding: 0.5rem;
 
-  height: 72px;
+  min-height: 72px;
 
   display: flex;
   align-items: center;

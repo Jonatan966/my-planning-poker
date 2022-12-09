@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useVisitsStore } from "../../../stores/visits-store";
+import { Tooltip } from "../../ui/tooltip";
 import RoomCard from "./room-card";
 
 import styles from "./styles.module.css";
@@ -26,10 +27,26 @@ export function QuickRoomAccess() {
     );
   }
 
+    return <span>Visite uma sala e ela aparecerá aqui</span>;
+  }
+
   return (
     <>
       <label className={styles.quickRoomAccessLabel}>
-        <span>Última visita</span>
+        <div className={styles.quickRoomAccessTitle}>
+          <span>Acesso rápido</span>
+          <Tooltip
+            message={
+              <>
+                Acesse rápidamente a última sala visitada, <br /> ou veja um
+                histórico com todas as suas visitas
+              </>
+            }
+            wrapperClassName={styles.helpIcon}
+          >
+            <FaInfoCircle size={15} />
+          </Tooltip>
+        </div>
         <Link href="/visits">Ver mais</Link>
       </label>
 
