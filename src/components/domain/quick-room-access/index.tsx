@@ -21,7 +21,9 @@ export function QuickRoomAccess() {
       return <RoomCard onRemoveRoom={removeVisit} roomInfo={lastVisitedRoom} />;
     }
 
-    return <span>Visite uma sala e ela aparecerá aqui</span>;
+    return (
+      <span>Visite uma sala e você poderá acessá-la rapidamente por aqui</span>
+    );
   }
 
   return (
