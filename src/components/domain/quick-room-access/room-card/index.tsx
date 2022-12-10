@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 
 import { BsFillSuitClubFill } from "react-icons/bs";
 import { FaLink, FaTrash } from "react-icons/fa";
-import Button from "../../ui/button";
+import Button from "../../../ui/button";
 
 import styles from "./styles.module.css";
 

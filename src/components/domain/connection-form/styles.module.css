@@ -4,7 +4,7 @@
   grid-gap: 0.5rem;
 }
 
-.form button {
+.form button[type="submit"] {
   margin-top: 1rem;
 }
 

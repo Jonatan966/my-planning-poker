@@ -1,0 +1,42 @@
+.quickRoomAccessLabel {
+  font-size: 14px;
+  color: #87868b;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.quickRoomAccessLabel a {
+  color: #eb8a1d;
+}
+
+.quickRoomAccessTitle {
+  display: flex;
+  align-items: center;
+}
+
+.helpIcon {
+  font-size: 0;
+  margin-left: 0.5rem;
+}
+
+.quickRoomAccessContainer {
+  background: #121214;
+  border-radius: 5px;
+  padding: 0.5rem;
+
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+}
+
+.quickRoomAccessContainer > * {
+  flex: 1;
+}
+
+.quickRoomAccessContainer > span {
+  text-align: center;
+  display: block;
+  color: #757575;
+}

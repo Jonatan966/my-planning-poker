@@ -1,3 +1,7 @@
 .tooltipTrigger {
   cursor: pointer;
 }
+
+.tooltipContainer {
+  text-align: center;
+}
