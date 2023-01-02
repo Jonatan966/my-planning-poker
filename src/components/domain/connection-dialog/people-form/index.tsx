@@ -47,7 +47,7 @@ function PeopleForm({
           >
             Cancelar
           </Button>
-          <Button>Entrar na sala</Button>
+          <Button type="submit">Entrar na sala</Button>
         </div>
       </form>
     </>
