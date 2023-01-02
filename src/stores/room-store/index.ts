@@ -10,6 +10,7 @@ import {
   ClientRoomEvents,
   roomEvents,
 } from "../../services/room-events";
+import { getDateWithTimezone } from "../../utils/get-date-with-timezone";
 import { BasicRoomInfo, EventMode, RoomInfo, RoomStoreProps } from "./types";
 
 let connection: pusherJs;
@@ -164,7 +165,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
   async function setRoomPointsVisibility(
     show?: boolean,
-    startedAt = Date.now(),
+    startedAt = getDateWithTimezone().getTime(),
     mode: EventMode = EventMode.PUBLIC
   ) {
     const { basicInfo } = get();

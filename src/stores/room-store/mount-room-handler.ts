@@ -11,6 +11,7 @@ import {
   RoomStoreProps,
 } from "./types";
 import * as RoomEvents from "../../services/room-events";
+import { getDateWithTimezone } from "../../utils/get-date-with-timezone";
 
 function sortPeoplesByArrival(peoples: People[]) {
   return sortBy(peoples, ["entered_at"], ["asc"]);
@@ -96,7 +97,7 @@ export function mountRoomHandler(
       const ONE_SECOND = 1000;
       const MAX_COUNTDOWN = 5;
 
-      const currentTime = Date.now();
+      const currentTime = getDateWithTimezone().getTime();
       const startDelay = (currentTime - room_countdown_started_at) / 1000;
       const firstCountdown = MAX_COUNTDOWN - Math.floor(startDelay);
 
