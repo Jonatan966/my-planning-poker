@@ -39,8 +39,8 @@ function RoomLogo() {
 
     roomSubscription.bind(
       ClientRoomEvents.PEOPLE_FIRE_CONFETTI,
-      ({ sender_id }: { sender_id: string }) =>
-        showEasterEggConfettis(EasterEggMode.PRIVATE, sender_id)
+      ({ people_id }: { people_id: string }) =>
+        showEasterEggConfettis(EasterEggMode.PRIVATE, people_id)
     );
 
     return () => {

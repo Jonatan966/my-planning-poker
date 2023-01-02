@@ -18,6 +18,7 @@ function ButtonComponent(
     isShort,
     disabled,
     outlined,
+    type = "button",
     ...props
   }: ButtonProps,
   ref: ForwardedRef<HTMLButtonElement>
@@ -25,6 +26,7 @@ function ButtonComponent(
   return (
     <button
       {...props}
+      type={type}
       className={className(
         props.className,
         styles.buttonContainer,
