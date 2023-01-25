@@ -86,7 +86,8 @@ function Table() {
     updateOnBreakpointChange: true,
   });
 
-  const [isTableButtonEnabled, setIsTableButtonEnabled] = useState(true);
+  const [isTableButtonTemporaryDisabled, setIsTableButtonTemporaryDisabled] =
+    useState(false);
 
   if (!room) {
     return <></>;
@@ -104,23 +105,21 @@ function Table() {
 
   const hasPeoplesWithPoints = countOfPeoplesWithPoints > 0;
 
-  const isSafeToShowPoints =
-    room.showPoints ||
-    countOfPeoplesWithPoints >= Math.floor(peoples.length / 2);
-
-  const tableButtonColorScheme = isSafeToShowPoints ? "secondary" : "danger";
+  const isTableButtonDisabled =
+    isTableButtonTemporaryDisabled ||
+    (!room.showPoints && !hasPeoplesWithPoints);
 
   function debounceEnableTableButton() {
-    setIsTableButtonEnabled(false);
+    setIsTableButtonTemporaryDisabled(true);
 
-    setTimeout(() => setIsTableButtonEnabled(true), ONE_SECOND);
+    setTimeout(() => setIsTableButtonTemporaryDisabled(false), ONE_SECOND);
   }
 
   async function handleSetRoomPointsVisibility() {
     const isRoomPointsVisible = !room.showPoints;
 
     if (isRoomPointsVisible) {
-      setIsTableButtonEnabled(false);
+      setIsTableButtonTemporaryDisabled(true);
     }
 
     await setRoomPointsVisibility(isRoomPointsVisible);
@@ -157,6 +156,38 @@ function Table() {
     return renderedTableModules;
   }, [peoples, room.showPointsCountdown, currentBreakpoint]);
 
+  function renderTableCenterContent() {
+    const isInCountdown = room?.showPoints && room.showPointsCountdown > 0;
+
+    if (isInCountdown) {
+      return <h1>{room.showPointsCountdown}</h1>;
+    }
+
+    const isHaveMinimalPeoplesWithPoints =
+      countOfPeoplesWithPoints >= Math.floor(peoples.length / 2);
+
+    const isSafeToShowPoints =
+      room.showPoints || isHaveMinimalPeoplesWithPoints;
+
+    const actionButtonText =
+      tableConfig[room?.showPoints ? "newMatchButton" : "revealCardsButton"];
+    const tableButtonColorScheme = isSafeToShowPoints ? "secondary" : "danger";
+    const tableButtonTitle = isSafeToShowPoints
+      ? ""
+      : "Ainda há pessoas que não selecionaram pontos";
+
+    return (
+      <Button
+        colorScheme={tableButtonColorScheme}
+        onClick={handleSetRoomPointsVisibility}
+        disabled={isTableButtonDisabled}
+        title={tableButtonTitle}
+      >
+        {actionButtonText}
+      </Button>
+    );
+  }
+
   useEffect(() => {
     if (!room.showPoints || room.showPointsCountdown > 0) {
       return;
@@ -169,31 +200,7 @@ function Table() {
     <div className={styles.table} ref={observe}>
       {renderedTableModules}
 
-      <div className={styles.tableCenter}>
-        {room?.showPoints && room.showPointsCountdown > 0 ? (
-          <h1>{room.showPointsCountdown}</h1>
-        ) : (
-          <Button
-            colorScheme={tableButtonColorScheme}
-            onClick={handleSetRoomPointsVisibility}
-            disabled={
-              !isTableButtonEnabled ||
-              (!room.showPoints && !hasPeoplesWithPoints)
-            }
-            title={
-              isSafeToShowPoints
-                ? ""
-                : "Ainda há pessoas que não selecionaram pontos"
-            }
-          >
-            {
-              tableConfig[
-                room?.showPoints ? "newMatchButton" : "revealCardsButton"
-              ]
-            }
-          </Button>
-        )}
-      </div>
+      <div className={styles.tableCenter}>{renderTableCenterContent()}</div>
     </div>
   );
 }
