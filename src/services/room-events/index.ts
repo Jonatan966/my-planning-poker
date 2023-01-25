@@ -20,10 +20,9 @@ function onPeopleSelectPoint(
 
 function onRoomShowPoints(
   subscription: PresenceChannel,
-  { room_countdown_started_at, show_points }: OnRoomShowPointsProps
+  { show_points }: OnRoomShowPointsProps
 ) {
   subscription.trigger(ClientRoomEvents.ROOM_SHOW_POINTS, {
-    room_countdown_started_at,
     show_points,
   });
 }
@@ -43,7 +42,7 @@ async function onRoomSyncPeople(
     people_id,
     selected_points,
     target_people_id,
-    room_countdown_started_at,
+    show_points,
   }: OnRoomSyncPeopleProps
 ) {
   await pusherClient.sendToUser(
@@ -52,7 +51,7 @@ async function onRoomSyncPeople(
     {
       people_id,
       selected_points,
-      room_countdown_started_at,
+      show_points,
     }
   );
 }

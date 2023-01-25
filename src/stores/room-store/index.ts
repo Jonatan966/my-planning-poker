@@ -165,7 +165,6 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
   async function setRoomPointsVisibility(
     show?: boolean,
-    startedAt = getDateWithTimezone().getTime(),
     mode: EventMode = EventMode.PUBLIC
   ) {
     const { basicInfo } = get();
@@ -173,13 +172,11 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     if (mode === EventMode.PUBLIC) {
       roomEvents.onRoomShowPoints(basicInfo.subscription, {
         show_points: show,
-        room_countdown_started_at: startedAt,
       });
     }
 
     roomHandler.onShowPoints({
       show_points: show,
-      room_countdown_started_at: startedAt,
     });
   }
 
