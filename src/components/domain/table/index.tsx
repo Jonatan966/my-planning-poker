@@ -1,5 +1,5 @@
 import cloneDeep from "lodash/cloneDeep";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useDimensions from "react-cool-dimensions";
 import { useRoomStore, People } from "../../../stores/room-store";
 import Button from "../../ui/button";
@@ -17,6 +17,8 @@ type TableResponsiveConfigs = Record<
     revealCardsButton: string;
   }
 >;
+
+const ONE_SECOND = 1000;
 
 const tableModuleNames = ["bottom", "top", "left", "right"];
 
@@ -84,6 +86,8 @@ function Table() {
     updateOnBreakpointChange: true,
   });
 
+  const [isTableButtonEnabled, setIsTableButtonEnabled] = useState(true);
+
   if (!room) {
     return <></>;
   }
@@ -98,7 +102,7 @@ function Table() {
     (people) => typeof people.points !== "undefined"
   ).length;
 
-  const isSomePeopleSelectPoint = countOfPeoplesWithPoints > 0;
+  const hasPeoplesWithPoints = countOfPeoplesWithPoints > 0;
 
   const isSafeToShowPoints =
     room.showPoints ||
@@ -106,8 +110,20 @@ function Table() {
 
   const tableButtonColorScheme = isSafeToShowPoints ? "secondary" : "danger";
 
+  function debounceEnableTableButton() {
+    setIsTableButtonEnabled(false);
+
+    setTimeout(() => setIsTableButtonEnabled(true), ONE_SECOND);
+  }
+
   async function handleSetRoomPointsVisibility() {
-    await setRoomPointsVisibility(!room.showPoints);
+    const isRoomPointsVisible = !room.showPoints;
+
+    if (isRoomPointsVisible) {
+      setIsTableButtonEnabled(false);
+    }
+
+    await setRoomPointsVisibility(isRoomPointsVisible);
   }
 
   const renderedTableModules = useMemo(() => {
@@ -141,6 +157,14 @@ function Table() {
     return renderedTableModules;
   }, [peoples, room.showPointsCountdown, currentBreakpoint]);
 
+  useEffect(() => {
+    if (!room.showPoints || room.showPointsCountdown > 0) {
+      return;
+    }
+
+    debounceEnableTableButton();
+  }, [room.showPointsCountdown, room.showPoints]);
+
   return (
     <div className={styles.table} ref={observe}>
       {renderedTableModules}
@@ -152,7 +176,10 @@ function Table() {
           <Button
             colorScheme={tableButtonColorScheme}
             onClick={handleSetRoomPointsVisibility}
-            disabled={!room.showPoints && !isSomePeopleSelectPoint}
+            disabled={
+              !isTableButtonEnabled ||
+              (!room.showPoints && !hasPeoplesWithPoints)
+            }
             title={
               isSafeToShowPoints
                 ? ""
