@@ -41,7 +41,6 @@ export interface RoomStoreProps {
     name?: string;
     showPoints: boolean;
     showPointsCountdown?: number;
-    countdownStartedAt?: number;
     subscription?: PresenceChannel;
   };
   peoples: People[];
@@ -72,7 +71,6 @@ export interface OnLoadPeopleProps {
 export interface OnSyncPeopleProps {
   id: string;
   points: number;
-  countdownStartedAt?: number;
 }
 
 export interface OnHighlightPeopleProps {
