@@ -37,14 +37,14 @@ export function mountRoomHandler(
       (people) => people.id === state.basicInfo.subscription.members.myID
     );
 
-    if (me.points !== undefined || !!state.basicInfo.countdownStartedAt) {
+    if (me.points !== undefined || state.basicInfo.showPoints) {
       await api.post("/peoples/sync", {
         senderPeople: {
           id: me.id,
           points: me.points,
         },
         targetPeopleID: people.id,
-        countdownStartedAt: state.basicInfo.countdownStartedAt,
+        showPoints: state.basicInfo.showPoints,
       });
     }
   }
@@ -89,27 +89,14 @@ export function mountRoomHandler(
     }));
   }
 
-  function onShowPoints({
-    show_points,
-    room_countdown_started_at,
-  }: RoomEvents.OnRoomShowPointsProps) {
+  function onShowPoints({ show_points }: RoomEvents.OnRoomShowPointsProps) {
     if (show_points) {
       const ONE_SECOND = 1000;
-      const MAX_COUNTDOWN = 5;
-
-      const currentTime = getDateWithTimezone().getTime();
-      const startDelay = (currentTime - room_countdown_started_at) / 1000;
-      const firstCountdown = MAX_COUNTDOWN - Math.floor(startDelay);
-
-      const parsedFirstCountdown = firstCountdown >= 0 ? firstCountdown : 0;
-
-      const firstTimeoutDelay =
-        (Math.ceil(startDelay) - startDelay) * 1000 || ONE_SECOND;
+      const INIT_COUNTDOWN = 4;
 
       set(
         produce((state: RoomStoreProps) => {
-          state.basicInfo.showPointsCountdown = parsedFirstCountdown;
-          state.basicInfo.countdownStartedAt = room_countdown_started_at;
+          state.basicInfo.showPointsCountdown = INIT_COUNTDOWN;
         })
       );
 
@@ -126,9 +113,7 @@ export function mountRoomHandler(
         );
       }
 
-      if (parsedFirstCountdown > 0) {
-        setTimeout(countdownStep, firstTimeoutDelay);
-      }
+      countdownStep();
     }
 
     set(
@@ -136,7 +121,6 @@ export function mountRoomHandler(
         state.basicInfo.showPoints = show_points;
 
         if (!show_points) {
-          state.basicInfo.countdownStartedAt = undefined;
           state.peoples = state.peoples.map((people) => ({
             ...people,
             points: undefined,
@@ -149,7 +133,7 @@ export function mountRoomHandler(
   function onSyncPeople({
     people_id,
     selected_points,
-    room_countdown_started_at,
+    show_points,
   }: RoomEvents.OnRoomSyncPeopleProps) {
     const state = get();
 
@@ -162,14 +146,12 @@ export function mountRoomHandler(
         : people
     );
 
-    if (!state.basicInfo.countdownStartedAt && room_countdown_started_at) {
-      onShowPoints({
-        show_points: true,
-        room_countdown_started_at,
-      });
-    }
-
-    set({ peoples: updatedPeoplesList });
+    set(
+      produce((state: RoomStoreProps) => {
+        state.basicInfo.showPoints = !state.basicInfo.showPoints && show_points;
+        state.peoples = updatedPeoplesList;
+      })
+    );
   }
 
   function onHighlightPeople({

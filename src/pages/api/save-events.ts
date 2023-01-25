@@ -39,7 +39,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     switch (parsedEventType) {
       case WebhookVaultEvent.room_show_points:
         await eventVault[parsedEventType]({
-          event_sended_at: new Date(parsedEventData.room_countdown_started_at),
+          event_sended_at: eventsSendedAt,
           people_id: event.user_id,
           room_id: parsedRoomID,
           show_points: parsedEventData.show_points,

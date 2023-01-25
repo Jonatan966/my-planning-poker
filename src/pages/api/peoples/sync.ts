@@ -10,7 +10,7 @@ export default async (
     return response.status(405).end();
   }
 
-  const { senderPeople, targetPeopleID, countdownStartedAt } = request.body;
+  const { senderPeople, targetPeopleID, showPoints } = request.body;
 
   const pusher = connectOnPusherServer();
 
@@ -18,7 +18,7 @@ export default async (
     people_id: senderPeople.id,
     selected_points: senderPeople.points,
     target_people_id: targetPeopleID,
-    room_countdown_started_at: countdownStartedAt,
+    show_points: showPoints,
   });
 
   return response.end();

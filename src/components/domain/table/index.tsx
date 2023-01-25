@@ -1,5 +1,5 @@
 import cloneDeep from "lodash/cloneDeep";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useDimensions from "react-cool-dimensions";
 import { useRoomStore, People } from "../../../stores/room-store";
 import Button from "../../ui/button";
@@ -17,6 +17,8 @@ type TableResponsiveConfigs = Record<
     revealCardsButton: string;
   }
 >;
+
+const ONE_SECOND = 1000;
 
 const tableModuleNames = ["bottom", "top", "left", "right"];
 
@@ -84,6 +86,9 @@ function Table() {
     updateOnBreakpointChange: true,
   });
 
+  const [isTableButtonTemporaryDisabled, setIsTableButtonTemporaryDisabled] =
+    useState(false);
+
   if (!room) {
     return <></>;
   }
@@ -98,16 +103,26 @@ function Table() {
     (people) => typeof people.points !== "undefined"
   ).length;
 
-  const isSomePeopleSelectPoint = countOfPeoplesWithPoints > 0;
+  const hasPeoplesWithPoints = countOfPeoplesWithPoints > 0;
 
-  const isSafeToShowPoints =
-    room.showPoints ||
-    countOfPeoplesWithPoints >= Math.floor(peoples.length / 2);
+  const isTableButtonDisabled =
+    isTableButtonTemporaryDisabled ||
+    (!room.showPoints && !hasPeoplesWithPoints);
 
-  const tableButtonColorScheme = isSafeToShowPoints ? "secondary" : "danger";
+  function debounceEnableTableButton() {
+    setIsTableButtonTemporaryDisabled(true);
+
+    setTimeout(() => setIsTableButtonTemporaryDisabled(false), ONE_SECOND);
+  }
 
   async function handleSetRoomPointsVisibility() {
-    await setRoomPointsVisibility(!room.showPoints);
+    const isRoomPointsVisible = !room.showPoints;
+
+    if (isRoomPointsVisible) {
+      setIsTableButtonTemporaryDisabled(true);
+    }
+
+    await setRoomPointsVisibility(isRoomPointsVisible);
   }
 
   const renderedTableModules = useMemo(() => {
@@ -141,32 +156,51 @@ function Table() {
     return renderedTableModules;
   }, [peoples, room.showPointsCountdown, currentBreakpoint]);
 
+  function renderTableCenterContent() {
+    const isInCountdown = room?.showPoints && room.showPointsCountdown > 0;
+
+    if (isInCountdown) {
+      return <h1>{room.showPointsCountdown}</h1>;
+    }
+
+    const isHaveMinimalPeoplesWithPoints =
+      countOfPeoplesWithPoints >= Math.floor(peoples.length / 2);
+
+    const isSafeToShowPoints =
+      room.showPoints || isHaveMinimalPeoplesWithPoints;
+
+    const actionButtonText =
+      tableConfig[room?.showPoints ? "newMatchButton" : "revealCardsButton"];
+    const tableButtonColorScheme = isSafeToShowPoints ? "secondary" : "danger";
+    const tableButtonTitle = isSafeToShowPoints
+      ? ""
+      : "Ainda há pessoas que não selecionaram pontos";
+
+    return (
+      <Button
+        colorScheme={tableButtonColorScheme}
+        onClick={handleSetRoomPointsVisibility}
+        disabled={isTableButtonDisabled}
+        title={tableButtonTitle}
+      >
+        {actionButtonText}
+      </Button>
+    );
+  }
+
+  useEffect(() => {
+    if (!room.showPoints || room.showPointsCountdown > 0) {
+      return;
+    }
+
+    debounceEnableTableButton();
+  }, [room.showPointsCountdown, room.showPoints]);
+
   return (
     <div className={styles.table} ref={observe}>
       {renderedTableModules}
 
-      <div className={styles.tableCenter}>
-        {room?.showPoints && room.showPointsCountdown > 0 ? (
-          <h1>{room.showPointsCountdown}</h1>
-        ) : (
-          <Button
-            colorScheme={tableButtonColorScheme}
-            onClick={handleSetRoomPointsVisibility}
-            disabled={!room.showPoints && !isSomePeopleSelectPoint}
-            title={
-              isSafeToShowPoints
-                ? ""
-                : "Ainda há pessoas que não selecionaram pontos"
-            }
-          >
-            {
-              tableConfig[
-                room?.showPoints ? "newMatchButton" : "revealCardsButton"
-              ]
-            }
-          </Button>
-        )}
-      </div>
+      <div className={styles.tableCenter}>{renderTableCenterContent()}</div>
     </div>
   );
 }
