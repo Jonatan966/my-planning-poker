@@ -18,7 +18,6 @@ export interface OnPeopleSelectPointProps {
 
 export interface OnRoomShowPointsProps {
   show_points: boolean;
-  room_countdown_started_at: number;
 }
 
 export interface OnPeopleFireConfettiProps {
@@ -29,5 +28,5 @@ export interface OnRoomSyncPeopleProps {
   target_people_id: string;
   people_id: string;
   selected_points: number;
-  room_countdown_started_at?: number;
+  show_points?: boolean;
 }
