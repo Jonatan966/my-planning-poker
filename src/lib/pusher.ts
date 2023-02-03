@@ -5,11 +5,11 @@ export function connectOnPusherWeb() {
   const pusher = new PusherWeb(process.env.NEXT_PUBLIC_PUSHER_KEY, {
     cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
     channelAuthorization: {
-      endpoint: "/api/auth/channel",
+      endpoint: "/api/pusher-auth/channel",
       transport: "ajax",
     },
     userAuthentication: {
-      endpoint: "/api/auth/user",
+      endpoint: "/api/pusher-auth/user",
       transport: "ajax",
     },
   });
