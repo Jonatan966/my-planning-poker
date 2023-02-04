@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { persistedCookieVars } from "../../../../configs/persistent-cookie-vars";
 import { cookieStorageManager } from "../../../../utils/cookie-storage-manager";
 import Button from "../../../ui/button";
-import TextInput from "../../../ui/text-input";
+import { TextInput } from "../../../ui/text-input";
 
 import styles from "./styles.module.css";
 
@@ -30,13 +30,14 @@ function PeopleForm({
     <>
       <h1>Precisamos saber seu nome</h1>
       <form className={styles.form} onSubmit={handleFillPeopleName}>
-        <TextInput
-          title="Seu nome"
-          placeholder="Informe o seu nome"
-          ref={peopleNameInputRef}
-          required
-          maxLength={20}
-        />
+        <TextInput.Root title="Seu nome">
+          <TextInput.Input
+            placeholder="Informe o seu nome"
+            ref={peopleNameInputRef}
+            required
+            maxLength={20}
+          />
+        </TextInput.Root>
 
         <div className={styles.formButtons}>
           <Button

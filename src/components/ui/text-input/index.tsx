@@ -1,33 +1,48 @@
 import classNames from "classnames";
-import { ForwardedRef, forwardRef, ComponentProps } from "react";
+import { ComponentProps, forwardRef, ReactNode } from "react";
 
 import styles from "./styles.module.css";
 
-type TextInputProps = ComponentProps<"input">;
+interface RootProps {
+  title?: string;
+  name?: string;
+  children: ReactNode;
+}
 
-function TextInputComponent(
-  props: TextInputProps,
-  ref: ForwardedRef<HTMLInputElement>
-) {
+interface InternalContentProps {
+  children: ReactNode;
+}
+
+type InputProps = ComponentProps<"input">;
+
+function Root(props: RootProps) {
   return (
-    <>
-      {props.title && (
-        <label htmlFor={props.name} className={styles.textInputLabel}>
-          {props.title}
-        </label>
-      )}
-      <input
-        type="text"
-        {...props}
-        ref={ref}
-        className={classNames(props.className, styles.textInputContainer)}
-      />
-    </>
+    <div className={styles.textInputRoot}>
+      {props.title && <label htmlFor={props.name}>{props.title}</label>}
+      <div className={styles.textInputSubRoot}>{props.children}</div>
+    </div>
   );
 }
 
-const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
-  TextInputComponent
-);
+function InternalContent(props: InternalContentProps) {
+  return (
+    <div className={styles.textInputInternalContent}>{props.children}</div>
+  );
+}
 
-export default TextInput;
+const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+  return (
+    <input
+      type="text"
+      {...props}
+      ref={ref}
+      className={classNames(styles.textInput, props.className)}
+    />
+  );
+});
+
+export const TextInput = {
+  Root,
+  Input,
+  InternalContent,
+};

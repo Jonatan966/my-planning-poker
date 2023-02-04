@@ -1,28 +1,45 @@
-.textInputContainer {
-  background: #121214;
-  border: none;
-  height: 3rem;
-
-  border: 2px solid #121214;
-  border-radius: 5px;
-  padding: 0 1rem;
-
-  font-size: 1rem;
-
-  transition: border-color 0.2s, filter 0.2s;
+.textInputRoot {
+  display: grid;
+  gap: 0.45rem;
 }
 
-.textInputContainer:focus {
+.textInputSubRoot:focus-within {
   border-color: #eb8a1d;
-  outline: none;
 }
 
-.textInputLabel {
+.textInputRoot > label {
   font-size: 14px;
   color: #87868b;
 }
 
-.textInputContainer:disabled {
-  filter: brightness(0.6);
-  cursor: not-allowed;
+.textInputSubRoot {
+  background: #121214;
+  height: 3rem;
+
+  border: 2px solid #121214;
+  border-radius: 5px;
+
+  transition: border-color 0.2s, filter 0.2s;
+
+  display: flex;
+  align-items: stretch;
+}
+
+.textInputInternalContent {
+  margin: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.textInput {
+  font-size: 1rem;
+  background: transparent;
+
+  border: none;
+  border-radius: 5px;
+
+  outline: none;
+
+  padding: 0 1rem;
+  flex: 1;
 }

@@ -3,7 +3,7 @@ import { useState, FormEvent, useRef, ReactNode } from "react";
 import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
 import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 import Button from "../../ui/button";
-import TextInput from "../../ui/text-input";
+import { TextInput } from "../../ui/text-input";
 import { useRoomStore } from "../../../stores/room-store";
 
 import styles from "./styles.module.css";
@@ -78,24 +78,28 @@ function ConnectionForm({
     case "create":
       return (
         <form className={styles.form} onSubmit={handleCreateRoom}>
-          <TextInput
-            title="Seu nome"
-            placeholder="Informe o seu nome"
-            defaultValue={peopleName}
-            ref={peopleNameInputRef}
-            required
-            maxLength={20}
-            disabled={isLoading}
-          />
-          <TextInput
-            title="Nome da sala"
-            placeholder="Informe um nome para a nova sala"
-            value={roomName}
-            onChange={(e) => setRoomName(e.target.value)}
-            required
-            maxLength={32}
-            disabled={isLoading}
-          />
+          <TextInput.Root title="Seu nome">
+            <TextInput.Input
+              placeholder="Informe o seu nome"
+              defaultValue={peopleName}
+              ref={peopleNameInputRef}
+              required
+              maxLength={20}
+              disabled={isLoading}
+            />
+          </TextInput.Root>
+
+          <TextInput.Root title="Nome da sala">
+            <TextInput.Input
+              placeholder="Informe um nome para a nova sala"
+              value={roomName}
+              onChange={(e) => setRoomName(e.target.value)}
+              required
+              maxLength={32}
+              disabled={isLoading}
+            />
+          </TextInput.Root>
+
           {children}
 
           <Button isLoading={isLoading} type="submit">
@@ -107,23 +111,27 @@ function ConnectionForm({
     case "enter":
       return (
         <form className={styles.form} onSubmit={handleConnectOnRoom}>
-          <TextInput
-            title="Seu nome"
-            placeholder="Informe o seu nome"
-            defaultValue={peopleName}
-            ref={peopleNameInputRef}
-            required
-            maxLength={20}
-            disabled={isLoading}
-          />
-          <TextInput
-            title="Código da sala"
-            placeholder="Informe o código de uma sala existente"
-            value={roomCode}
-            onChange={(e) => setRoomCode(e.target.value)}
-            required
-            disabled={isLoading}
-          />
+          <TextInput.Root title="Seu nome">
+            <TextInput.Input
+              placeholder="Informe o seu nome"
+              defaultValue={peopleName}
+              ref={peopleNameInputRef}
+              required
+              maxLength={20}
+              disabled={isLoading}
+            />
+          </TextInput.Root>
+
+          <TextInput.Root title="Código da sala">
+            <TextInput.Input
+              placeholder="Informe o código de uma sala existente"
+              value={roomCode}
+              onChange={(e) => setRoomCode(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </TextInput.Root>
+
           {children}
 
           <Button isLoading={isLoading} type="submit">
