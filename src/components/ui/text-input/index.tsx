@@ -9,9 +9,7 @@ interface RootProps {
   children: ReactNode;
 }
 
-interface InternalContentProps {
-  children: ReactNode;
-}
+type InternalContentProps = ComponentProps<"div">;
 
 type InputProps = ComponentProps<"input">;
 
@@ -26,7 +24,12 @@ function Root(props: RootProps) {
 
 function InternalContent(props: InternalContentProps) {
   return (
-    <div className={styles.textInputInternalContent}>{props.children}</div>
+    <div
+      {...props}
+      className={classNames(styles.textInputInternalContent, props.className)}
+    >
+      {props.children}
+    </div>
   );
 }
 
