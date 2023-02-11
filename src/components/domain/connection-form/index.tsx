@@ -7,6 +7,7 @@ import { TextInput } from "../../ui/text-input";
 import { useRoomStore } from "../../../stores/room-store";
 
 import styles from "./styles.module.css";
+import { PeopleInput } from "./people-input";
 
 interface ConnectionFormProps {
   children?: ReactNode;
@@ -78,16 +79,11 @@ function ConnectionForm({
     case "create":
       return (
         <form className={styles.form} onSubmit={handleCreateRoom}>
-          <TextInput.Root title="Seu nome">
-            <TextInput.Input
-              placeholder="Informe o seu nome"
-              defaultValue={peopleName}
-              ref={peopleNameInputRef}
-              required
-              maxLength={20}
-              disabled={isLoading}
-            />
-          </TextInput.Root>
+          <PeopleInput
+            ref={peopleNameInputRef}
+            defaultValue={peopleName}
+            disabled={isLoading}
+          />
 
           <TextInput.Root title="Nome da sala">
             <TextInput.Input
@@ -111,16 +107,11 @@ function ConnectionForm({
     case "enter":
       return (
         <form className={styles.form} onSubmit={handleConnectOnRoom}>
-          <TextInput.Root title="Seu nome">
-            <TextInput.Input
-              placeholder="Informe o seu nome"
-              defaultValue={peopleName}
-              ref={peopleNameInputRef}
-              required
-              maxLength={20}
-              disabled={isLoading}
-            />
-          </TextInput.Root>
+          <PeopleInput
+            ref={peopleNameInputRef}
+            defaultValue={peopleName}
+            disabled={isLoading}
+          />
 
           <TextInput.Root title="Código da sala">
             <TextInput.Input
