@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
 import { connectOnPusherServer } from "../../../lib/pusher";
+import { peopleManagerService } from "../../../services/people-manager";
 import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
@@ -12,12 +13,10 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     req: request,
   });
 
-  const userName = cookieStorageManager.getItem(
-    persistedCookieVars.PEOPLE_NAME,
-    {
-      req: request,
-    }
-  );
+  const people = await peopleManagerService.getPeopleBasicInfo({
+    req: request,
+    res: response,
+  });
 
   const entered_at = new Date();
 
@@ -27,7 +26,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     {
       user_id: userID,
       user_info: {
-        name: userName,
+        ...people,
         entered_at,
       },
     }

@@ -8,13 +8,12 @@ import Table from "../../components/domain/table";
 import ConnectionDialog from "../../components/domain/connection-dialog";
 
 import { database } from "../../lib/database";
-import { cookieStorageManager } from "../../utils/cookie-storage-manager";
-import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
 import { errorCodes } from "../../configs/error-codes";
 
 import styles from "../../styles/pages/room.module.css";
 import PageHead from "../../components/engine/page-head";
 import { appConfig } from "../../configs/app";
+import { peopleManagerService } from "../../services/people-manager";
 
 interface RoomPageProps {
   basicMe: {
@@ -72,16 +71,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       };
     }
 
-    const peopleName = cookieStorageManager.getItem(
-      persistedCookieVars.PEOPLE_NAME,
-      ctx
-    );
+    const people = await peopleManagerService.getPeopleBasicInfo(ctx);
 
     return {
       props: {
-        basicMe: {
-          name: peopleName || null,
-        },
+        basicMe: people,
         roomInfo: {
           id: room.id,
           name: room.name,
@@ -90,6 +84,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   } catch (error) {
+    console.log(error);
     if (!appConfig.isDevelopment) {
       Sentry.captureException(error);
     }
