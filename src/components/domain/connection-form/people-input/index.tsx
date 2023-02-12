@@ -7,6 +7,8 @@ import {
   useState,
 } from "react";
 import { FaGithub, FaPowerOff, FaUser } from "react-icons/fa";
+import { persistedCookieVars } from "../../../../configs/persistent-cookie-vars";
+import { cookieStorageManager } from "../../../../utils/cookie-storage-manager";
 import Button from "../../../ui/button";
 import { TextInput } from "../../../ui/text-input";
 
@@ -16,6 +18,12 @@ const PeopleInputComponent: ForwardRefRenderFunction<
 > = (props, ref) => {
   const [isLoading, setIsLoading] = useState(false);
   const { status, data } = useSession();
+
+  const unauthenticatedPeopleName = cookieStorageManager.getItem(
+    persistedCookieVars.PEOPLE_NAME
+  );
+
+  const peopleName = data?.user?.name || unauthenticatedPeopleName;
 
   const isAuthenticated = status === "authenticated";
   const isAuthenticating = status === "loading" || isLoading;
@@ -40,6 +48,14 @@ const PeopleInputComponent: ForwardRefRenderFunction<
     }
   }
 
+  function onNameChange(newName: string) {
+    if (status !== "unauthenticated") {
+      return;
+    }
+
+    cookieStorageManager.setItem(persistedCookieVars.PEOPLE_NAME, newName);
+  }
+
   return (
     <TextInput.Root title="Seu nome">
       <TextInput.InternalContent
@@ -61,8 +77,10 @@ const PeopleInputComponent: ForwardRefRenderFunction<
         maxLength={20}
         {...props}
         ref={ref}
+        onChange={(e) => onNameChange(e.target.value)}
+        onBlur={(e) => onNameChange(e.target.value)}
         readOnly={isAuthenticated}
-        defaultValue={data?.user?.name || props?.defaultValue}
+        defaultValue={peopleName}
         required
         disabled={isAuthenticating || props?.disabled}
       />

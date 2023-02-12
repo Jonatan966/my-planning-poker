@@ -1,6 +1,3 @@
-import { useRef } from "react";
-import { persistedCookieVars } from "../../../../configs/persistent-cookie-vars";
-import { cookieStorageManager } from "../../../../utils/cookie-storage-manager";
 import Button from "../../../ui/button";
 import { PeopleInput } from "../../connection-form/people-input";
 
@@ -15,14 +12,7 @@ function PeopleForm({
   setIsFillPeopleName,
   onCancelRoomConnection,
 }: PeopleFormProps) {
-  const peopleNameInputRef = useRef<HTMLInputElement>();
-
   async function handleFillPeopleName() {
-    cookieStorageManager.setItem(
-      persistedCookieVars.PEOPLE_NAME,
-      peopleNameInputRef.current.value
-    );
-
     setIsFillPeopleName(true);
   }
 
@@ -30,7 +20,7 @@ function PeopleForm({
     <>
       <h1>Precisamos saber seu nome</h1>
       <form className={styles.form} onSubmit={handleFillPeopleName}>
-        <PeopleInput ref={peopleNameInputRef} />
+        <PeopleInput />
 
         <div className={styles.formButtons}>
           <Button

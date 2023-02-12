@@ -1,7 +1,5 @@
 import { useRouter } from "next/router";
-import { useState, FormEvent, useRef, ReactNode } from "react";
-import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
-import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
+import { useState, FormEvent, ReactNode } from "react";
 import Button from "../../ui/button";
 import { TextInput } from "../../ui/text-input";
 import { useRoomStore } from "../../../stores/room-store";
@@ -22,12 +20,6 @@ function ConnectionForm({
   children,
   setIsLoading,
 }: ConnectionFormProps) {
-  const peopleName = cookieStorageManager.getItem(
-    persistedCookieVars.PEOPLE_NAME
-  );
-
-  const peopleNameInputRef = useRef<HTMLInputElement>();
-
   const [roomName, setRoomName] = useState("");
   const [roomCode, setRoomCode] = useState("");
 
@@ -44,11 +36,6 @@ function ConnectionForm({
 
     await new Promise((resolve) => setTimeout(resolve, 250));
 
-    cookieStorageManager.setItem(
-      persistedCookieVars.PEOPLE_NAME,
-      peopleNameInputRef.current.value
-    );
-
     try {
       await router.push(`/rooms/${roomCode}`);
     } finally {
@@ -60,11 +47,6 @@ function ConnectionForm({
     event.preventDefault();
 
     setIsLoading(true);
-
-    cookieStorageManager.setItem(
-      persistedCookieVars.PEOPLE_NAME,
-      peopleNameInputRef.current.value
-    );
 
     try {
       const roomInfo = await createRoom(roomName);
@@ -79,11 +61,7 @@ function ConnectionForm({
     case "create":
       return (
         <form className={styles.form} onSubmit={handleCreateRoom}>
-          <PeopleInput
-            ref={peopleNameInputRef}
-            defaultValue={peopleName}
-            disabled={isLoading}
-          />
+          <PeopleInput disabled={isLoading} />
 
           <TextInput.Root title="Nome da sala">
             <TextInput.Input
@@ -107,11 +85,7 @@ function ConnectionForm({
     case "enter":
       return (
         <form className={styles.form} onSubmit={handleConnectOnRoom}>
-          <PeopleInput
-            ref={peopleNameInputRef}
-            defaultValue={peopleName}
-            disabled={isLoading}
-          />
+          <PeopleInput disabled={isLoading} />
 
           <TextInput.Root title="Código da sala">
             <TextInput.Input
