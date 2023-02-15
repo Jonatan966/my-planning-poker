@@ -1,11 +1,13 @@
 import { useRouter } from "next/router";
-import { useState, FormEvent, ReactNode } from "react";
+
+import { useState, FormEvent, ReactNode, useMemo, useRef } from "react";
 import Button from "../../ui/button";
 import { TextInput } from "../../ui/text-input";
 import { useRoomStore } from "../../../stores/room-store";
 
 import styles from "./styles.module.css";
 import { PeopleInput } from "./people-input";
+import { validateUUID } from "../../../utils/validate-uuid";
 
 interface ConnectionFormProps {
   children?: ReactNode;
@@ -20,10 +22,22 @@ function ConnectionForm({
   children,
   setIsLoading,
 }: ConnectionFormProps) {
-  const [roomName, setRoomName] = useState("");
-  const [roomCode, setRoomCode] = useState("");
-
   const router = useRouter();
+
+  const [roomName, setRoomName] = useState("");
+  const roomCodeInputRef = useRef<HTMLInputElement>();
+
+  const queryRoomCode = useMemo(() => {
+    const code = router.query?.room_id as string;
+
+    const isValidQueryRoomCode = validateUUID(code);
+
+    if (!isValidQueryRoomCode) {
+      return "";
+    }
+
+    return code;
+  }, [router]);
 
   const { createRoom } = useRoomStore((state) => ({
     createRoom: state.createRoom,
@@ -35,6 +49,8 @@ function ConnectionForm({
     setIsLoading(true);
 
     await new Promise((resolve) => setTimeout(resolve, 250));
+
+    const roomCode = roomCodeInputRef.current.value;
 
     try {
       await router.push(`/rooms/${roomCode}`);
@@ -90,8 +106,8 @@ function ConnectionForm({
           <TextInput.Root title="Código da sala">
             <TextInput.Input
               placeholder="Informe o código de uma sala existente"
-              value={roomCode}
-              onChange={(e) => setRoomCode(e.target.value)}
+              defaultValue={queryRoomCode}
+              ref={roomCodeInputRef}
               required
               disabled={isLoading}
             />
