@@ -56,6 +56,17 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { room_id } = ctx.query;
 
   try {
+    const people = await peopleManagerService.getPeopleBasicInfo(ctx);
+
+    if (!people?.name) {
+      return {
+        redirect: {
+          destination: `/?error=${errorCodes.NEED_LOGIN}&room_id=${room_id}`,
+          permanent: false,
+        },
+      };
+    }
+
     const room = await database.room.findUnique({
       where: {
         id: String(room_id),
@@ -70,8 +81,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         },
       };
     }
-
-    const people = await peopleManagerService.getPeopleBasicInfo(ctx);
 
     return {
       props: {
