@@ -26,6 +26,11 @@ function HomePage() {
       case errorCodes.INTERNAL_ERROR:
         toast.error("Ocorreu um problema interno ao tentar entrar nessa sala");
         break;
+
+      case errorCodes.NEED_LOGIN:
+        toast.error(
+          "Você precisa preencher seu nome ou fazer login com o Github antes de entrar na sala"
+        );
     }
   }, [router.query]);
 
