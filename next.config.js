@@ -12,6 +12,9 @@ const sentryOptions = {
   sentry: {
     autoInstrumentServerFunctions: true,
   },
+  images: {
+    domains: ["avatars.githubusercontent.com"],
+  },
 };
 
 const pwaConfig = withPWA(sentryOptions);
