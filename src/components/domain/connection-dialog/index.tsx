@@ -11,7 +11,6 @@ import { useRoomStore } from "../../../stores/room-store";
 import { useVisitsStore } from "../../../stores/visits-store";
 import Dialog from "../../ui/dialog";
 import { ConnectingMessage } from "./connecting-message";
-import { PeopleForm } from "./people-form";
 
 import styles from "./styles.module.css";
 
@@ -52,9 +51,7 @@ function ConnectionDialog({
 
   const [isConnectingIntoRoom, setIsConnectingIntoRoom] = useState(true);
 
-  const [isFillPeopleName, setIsFillPeopleName] = useState(
-    () => !!basicMe?.name
-  );
+  const isFillPeopleName = !!basicMe?.name;
 
   const isInitialInteraction = useRef(true);
   const connectionDebounceTimer = useRef(0);
@@ -73,21 +70,6 @@ function ConnectionDialog({
       toast.error("Não foi possível se conectar a essa sala");
       router.replace("/");
     }
-  }
-
-  function renderContent() {
-    if (!isFillPeopleName) {
-      return (
-        <PeopleForm
-          onCancelRoomConnection={onCancelRoomConnection}
-          setIsFillPeopleName={setIsFillPeopleName}
-        />
-      );
-    }
-
-    return (
-      <ConnectingMessage onCancelRoomConnection={onCancelRoomConnection} />
-    );
   }
 
   useEffect(() => {
@@ -168,7 +150,7 @@ function ConnectionDialog({
         [styles.isLoading]: isFillPeopleName,
       })}
     >
-      {renderContent()}
+      <ConnectingMessage onCancelRoomConnection={onCancelRoomConnection} />
     </Dialog>
   );
 }
