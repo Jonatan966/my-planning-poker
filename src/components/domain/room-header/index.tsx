@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { FaLink } from "react-icons/fa";
@@ -12,6 +13,7 @@ import styles from "./styles.module.css";
 interface RoomHeaderProps {
   basicMe: {
     name?: string;
+    avatar?: string;
   };
   roomInfo: {
     id: string;
@@ -49,7 +51,17 @@ function RoomHeader({ basicMe, roomInfo }: RoomHeaderProps) {
           {roomInfo.name}
         </strong>
         <nav>
-          <span className={styles.myName}>{myName}</span>
+          <span className={styles.myName}>
+            {basicMe?.avatar && (
+              <Image
+                src={basicMe.avatar}
+                width={32}
+                height={32}
+                className={styles.myAvatar}
+              />
+            )}
+            {myName}
+          </span>
           <FeedbackDialog />
           <Button
             colorScheme="primary"

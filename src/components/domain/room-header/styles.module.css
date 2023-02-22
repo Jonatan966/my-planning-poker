@@ -35,7 +35,13 @@
   align-items: center;
   font-weight: bold;
 
+  gap: 0.25rem;
+
   color: #996dff;
+}
+
+.myAvatar {
+  border-radius: 50%;
 }
 
 .copyRoomCode {

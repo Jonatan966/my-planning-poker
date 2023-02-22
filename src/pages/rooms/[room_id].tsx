@@ -18,6 +18,7 @@ import { peopleManagerService } from "../../services/people-manager";
 interface RoomPageProps {
   basicMe: {
     name?: string;
+    avatar?: string;
   };
   roomInfo: {
     id: string;
