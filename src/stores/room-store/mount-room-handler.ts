@@ -11,7 +11,6 @@ import {
   RoomStoreProps,
 } from "./types";
 import * as RoomEvents from "../../services/room-events";
-import { getDateWithTimezone } from "../../utils/get-date-with-timezone";
 
 function sortPeoplesByArrival(peoples: People[]) {
   return sortBy(peoples, ["entered_at"], ["asc"]);
@@ -96,6 +95,7 @@ export function mountRoomHandler(
 
       set(
         produce((state: RoomStoreProps) => {
+          state.showAFKButton = false;
           state.basicInfo.showPointsCountdown = INIT_COUNTDOWN;
         })
       );

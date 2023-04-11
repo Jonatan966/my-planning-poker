@@ -31,7 +31,9 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     },
     peoples: [],
     showEasterEgg: false,
+    showAFKButton: false,
     setEasterEggVisibility,
+    setAFKButtonVisible,
     connectOnRoom,
     createRoom,
     disconnectOnRoom,
@@ -197,6 +199,10 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       sender_id: people_id,
       highlight,
     });
+  }
+
+  function setAFKButtonVisible() {
+    set({ showAFKButton: true });
   }
 
   return INITIAL_STORE_VALUE;
