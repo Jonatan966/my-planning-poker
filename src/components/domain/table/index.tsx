@@ -6,6 +6,7 @@ import Button from "../../ui/button";
 import PointCard from "./point-card";
 
 import styles from "./styles.module.css";
+import { AfkButton } from "./afk-button";
 
 type Dimensions = "XS" | "default";
 
@@ -89,6 +90,19 @@ function Table() {
   const [isTableButtonTemporaryDisabled, setIsTableButtonTemporaryDisabled] =
     useState(false);
 
+  const { countOfPeoplesWithPoints, hasPeoplesWithPoints } = useMemo(() => {
+    const countOfPeoplesWithPoints = peoples.filter(
+      (people) => typeof people.points !== "undefined"
+    ).length;
+
+    const hasPeoplesWithPoints = countOfPeoplesWithPoints > 0;
+
+    return {
+      countOfPeoplesWithPoints,
+      hasPeoplesWithPoints,
+    };
+  }, [peoples]);
+
   if (!room) {
     return <></>;
   }
@@ -98,12 +112,6 @@ function Table() {
   const tableConfig =
     tableResponsiveConfigs?.[currentBreakpoint as Dimensions] ||
     tableResponsiveConfigs.default;
-
-  const countOfPeoplesWithPoints = peoples.filter(
-    (people) => typeof people.points !== "undefined"
-  ).length;
-
-  const hasPeoplesWithPoints = countOfPeoplesWithPoints > 0;
 
   const isTableButtonDisabled =
     isTableButtonTemporaryDisabled ||
@@ -177,14 +185,17 @@ function Table() {
       : "Ainda há pessoas que não selecionaram pontos";
 
     return (
-      <Button
-        colorScheme={tableButtonColorScheme}
-        onClick={handleSetRoomPointsVisibility}
-        disabled={isTableButtonDisabled}
-        title={tableButtonTitle}
-      >
-        {actionButtonText}
-      </Button>
+      <>
+        <Button
+          colorScheme={tableButtonColorScheme}
+          onClick={handleSetRoomPointsVisibility}
+          disabled={isTableButtonDisabled}
+          title={tableButtonTitle}
+        >
+          {actionButtonText}
+        </Button>
+        {!room?.showPoints && <AfkButton {...{ countOfPeoplesWithPoints }} />}
+      </>
     );
   }
 

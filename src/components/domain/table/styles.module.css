@@ -17,6 +17,8 @@
 
   min-height: 136px;
   min-width: 352px;
+
+  gap: 0.5rem;
 }
 
 .leftTableModule,
@@ -57,9 +59,5 @@
   .tableCenter {
     min-width: auto;
     min-height: auto;
-  }
-
-  .tableCenter button {
-    margin: 0.75rem;
   }
 }

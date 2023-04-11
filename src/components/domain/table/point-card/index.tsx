@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import { ReactNode } from "react";
 import { BsFillSuitClubFill, BsPiggyBankFill } from "react-icons/bs";
-import { useRoomStore } from "../../../../stores/room-store";
 
 import styles from "./styles.module.css";
+import { useRoomStore } from "../../../../stores/room-store";
 
 interface PointCardProps {
   points?: number;
@@ -24,16 +24,20 @@ function PointCard({
     showEasterEgg: state.showEasterEgg,
   }));
 
-  const hasSelectedPoints = typeof points !== "undefined";
-  const parsedPoints =
-    typeof points !== "undefined" && points === 0 ? "?" : points;
+  function Point() {
+    const hasSelectedPoints = typeof points !== "undefined";
+    const parsedPoints =
+      typeof points !== "undefined" && points === 0 ? "?" : points;
 
-  function decideIconToShow() {
-    if (showEasterEgg) {
-      return <BsPiggyBankFill />;
+    if (showPoints) {
+      return <>{parsedPoints}</>;
     }
 
-    return <BsFillSuitClubFill />;
+    if (hasSelectedPoints) {
+      return showEasterEgg ? <BsPiggyBankFill /> : <BsFillSuitClubFill />;
+    }
+
+    return <></>;
   }
 
   return (
@@ -47,7 +51,7 @@ function PointCard({
           [styles.highlight]: highlight,
         })}
       >
-        {showPoints ? parsedPoints : hasSelectedPoints && decideIconToShow()}
+        <Point />
       </div>
       <label
         className={classNames({
