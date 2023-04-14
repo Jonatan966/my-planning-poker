@@ -55,6 +55,7 @@ export interface RoomStoreProps {
   selectPoint(points: number): Promise<void>;
   setRoomPointsVisibility(show?: boolean, mode?: EventMode): Promise<void>;
   broadcastConfetti(): void;
+  broadcastAfkAlert(): void;
   setPeopleHighlight(people_id: string, highlight?: boolean): void;
 }
 

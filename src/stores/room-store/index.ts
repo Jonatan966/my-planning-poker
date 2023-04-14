@@ -10,7 +10,6 @@ import {
   ClientRoomEvents,
   roomEvents,
 } from "../../services/room-events";
-import { getDateWithTimezone } from "../../utils/get-date-with-timezone";
 import { BasicRoomInfo, EventMode, RoomInfo, RoomStoreProps } from "./types";
 
 let connection: pusherJs;
@@ -41,6 +40,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     setRoomPointsVisibility,
     broadcastConfetti,
     setPeopleHighlight,
+    broadcastAfkAlert,
   };
 
   function _reset() {
@@ -190,6 +190,14 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     const { basicInfo } = get();
 
     roomEvents.onPeopleFireConfetti(basicInfo.subscription, {
+      people_id: basicInfo.subscription.members.myID,
+    });
+  }
+
+  function broadcastAfkAlert() {
+    const { basicInfo } = get();
+
+    roomEvents.onRoomShowAfkAlert(basicInfo.subscription, {
       people_id: basicInfo.subscription.members.myID,
     });
   }

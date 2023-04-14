@@ -7,6 +7,7 @@ export enum InternalRoomEvents {
 export enum ClientRoomEvents {
   ROOM_SYNC_PEOPLE = "people-ROOM_SYNC_PEOPLE",
   ROOM_SHOW_POINTS = "client-room_show_points",
+  ROOM_SHOW_AFK_ALERT = "client-room_show_afk_alert",
   PEOPLE_SELECT_POINT = "client-people_select_point",
   PEOPLE_FIRE_CONFETTI = "client-people_fire_confetti",
 }
@@ -29,4 +30,8 @@ export interface OnRoomSyncPeopleProps {
   people_id: string;
   selected_points: number;
   show_points?: boolean;
+}
+
+export interface OnRoomShowAfkAlertProps {
+  people_id: string;
 }
