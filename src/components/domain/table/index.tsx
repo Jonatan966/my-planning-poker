@@ -82,6 +82,8 @@ function Table() {
     setRoomPointsVisibility: state.setRoomPointsVisibility,
   }));
 
+  const myID = room?.subscription?.members?.myID;
+
   const { observe, currentBreakpoint } = useDimensions({
     breakpoints: { XS: 0, SM: 500 },
     updateOnBreakpointChange: true,
@@ -90,24 +92,38 @@ function Table() {
   const [isTableButtonTemporaryDisabled, setIsTableButtonTemporaryDisabled] =
     useState(false);
 
-  const { countOfPeoplesWithPoints, hasPeoplesWithPoints } = useMemo(() => {
-    const countOfPeoplesWithPoints = peoples.filter(
-      (people) => typeof people.points !== "undefined"
-    ).length;
+  const { countOfPeoplesWithPoints, hasPeoplesWithPoints, meSelectedPoints } =
+    useMemo(() => {
+      const { countOfPeoplesWithPoints, meSelectedPoints } = peoples.reduce(
+        (acc, people) => {
+          if (typeof people.points !== "undefined") {
+            acc.countOfPeoplesWithPoints++;
+          }
 
-    const hasPeoplesWithPoints = countOfPeoplesWithPoints > 0;
+          if (!acc.meSelectedPoints) {
+            const isMe = people.id === myID;
+            const hasPoints = typeof people.points !== "undefined";
 
-    return {
-      countOfPeoplesWithPoints,
-      hasPeoplesWithPoints,
-    };
-  }, [peoples]);
+            acc.meSelectedPoints = isMe && hasPoints;
+          }
+
+          return acc;
+        },
+        { countOfPeoplesWithPoints: 0, meSelectedPoints: false }
+      );
+
+      const hasPeoplesWithPoints = countOfPeoplesWithPoints > 0;
+
+      return {
+        countOfPeoplesWithPoints,
+        hasPeoplesWithPoints,
+        meSelectedPoints,
+      };
+    }, [peoples, room?.subscription]);
 
   if (!room) {
     return <></>;
   }
-
-  const myID = room?.subscription?.members?.myID;
 
   const tableConfig =
     tableResponsiveConfigs?.[currentBreakpoint as Dimensions] ||
@@ -194,7 +210,9 @@ function Table() {
         >
           {actionButtonText}
         </Button>
-        {!room?.showPoints && <AfkButton {...{ countOfPeoplesWithPoints }} />}
+        {!room?.showPoints && (
+          <AfkButton {...{ countOfPeoplesWithPoints, meSelectedPoints }} />
+        )}
       </>
     );
   }

@@ -1,26 +1,58 @@
 import { BsBellFill } from "react-icons/bs";
+import { useEffect, useRef, useState } from "react";
+
 import Button from "../../../ui/button";
-import { useEffect, useRef } from "react";
 import { useRoomStore } from "../../../../stores/room-store";
+import { ClientRoomEvents } from "../../../../services/room-events";
+import { useAfkAlert } from "../../../../contexts/afk-alert-context";
 
 interface AfkButtonProps {
   countOfPeoplesWithPoints: number;
+  meSelectedPoints: boolean;
 }
 
 const FIVE_SECONDS = 5000;
+const TEN_SECONDS = 10000;
 
-export function AfkButton({ countOfPeoplesWithPoints }: AfkButtonProps) {
-  const { setAFKButtonVisible, showPoints } = useRoomStore((state) => ({
-    setAFKButtonVisible: state.setAFKButtonVisible,
+export function AfkButton({
+  countOfPeoplesWithPoints,
+  meSelectedPoints,
+}: AfkButtonProps) {
+  const { playAlert } = useAfkAlert();
+  const {
+    setAFKButtonVisibility,
+    broadcastAfkAlert,
+    showPoints,
+    roomSubscription,
+    showAFKButton,
+    countOfPeoples,
+  } = useRoomStore((state) => ({
+    setAFKButtonVisibility: state.setAFKButtonVisibility,
+    broadcastAfkAlert: state.broadcastAfkAlert,
     showPoints: state.basicInfo.showPoints,
+    roomSubscription: state.basicInfo.subscription,
+    showAFKButton: state.showAFKButton,
+    countOfPeoples: state.peoples.length,
   }));
+  const [alertIsInCooldown, setAlertIsInCooldown] = useState(false);
 
+  const alertCooldownTimer = useRef(-1);
   const afkDebounceTimer = useRef({
     timerRef: -1,
     countOfPeoplesWithPoints: 0,
   });
 
   useEffect(() => {
+    const everyoneButMeSelectPoints =
+      countOfPeoplesWithPoints === countOfPeoples - 1 && !meSelectedPoints;
+    const everyoneSelectPoints = countOfPeoplesWithPoints === countOfPeoples;
+
+    if (everyoneButMeSelectPoints || everyoneSelectPoints) {
+      clearTimeout(afkDebounceTimer.current.timerRef);
+      setAFKButtonVisibility(false);
+      return;
+    }
+
     if (
       countOfPeoplesWithPoints !==
       afkDebounceTimer.current.countOfPeoplesWithPoints
@@ -31,17 +63,53 @@ export function AfkButton({ countOfPeoplesWithPoints }: AfkButtonProps) {
         countOfPeoplesWithPoints;
 
       afkDebounceTimer.current.timerRef = Number(
-        setTimeout(setAFKButtonVisible, FIVE_SECONDS)
+        setTimeout(() => setAFKButtonVisibility(true), FIVE_SECONDS)
       );
     }
-  }, [countOfPeoplesWithPoints]);
+  }, [countOfPeoplesWithPoints, countOfPeoples, meSelectedPoints]);
 
   useEffect(() => {
     afkDebounceTimer.current.countOfPeoplesWithPoints = 0;
   }, [showPoints]);
 
+  useEffect(() => {
+    if (!roomSubscription) return;
+
+    function _showAfkAlert(_: { people_id: string }) {
+      playAlert();
+      _enableCooldown();
+    }
+
+    roomSubscription.bind(ClientRoomEvents.ROOM_SHOW_AFK_ALERT, _showAfkAlert);
+
+    return () => {
+      clearTimeout(alertCooldownTimer.current);
+      setAlertIsInCooldown(false);
+      roomSubscription.unbind(ClientRoomEvents.ROOM_SHOW_AFK_ALERT);
+    };
+  }, [roomSubscription]);
+
+  function _enableCooldown() {
+    setAlertIsInCooldown(true);
+
+    alertCooldownTimer.current = Number(
+      setTimeout(() => setAlertIsInCooldown(false), TEN_SECONDS)
+    );
+  }
+
+  function handleBroadcastAfkAlert() {
+    _enableCooldown();
+    broadcastAfkAlert();
+  }
+
   return (
-    <Button isShort colorScheme="primary" outlined>
+    <Button
+      isShort
+      colorScheme="primary"
+      outlined
+      onClick={handleBroadcastAfkAlert}
+      disabled={!showAFKButton || alertIsInCooldown}
+    >
       <BsBellFill size={14} />
     </Button>
   );
