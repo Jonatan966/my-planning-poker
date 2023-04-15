@@ -19,22 +19,17 @@ export function AfkButton({
   meSelectedPoints,
 }: AfkButtonProps) {
   const { playAlert } = useAfkAlert();
-  const {
-    setAFKButtonVisibility,
-    broadcastAfkAlert,
-    showPoints,
-    roomSubscription,
-    showAFKButton,
-    countOfPeoples,
-  } = useRoomStore((state) => ({
-    setAFKButtonVisibility: state.setAFKButtonVisibility,
-    broadcastAfkAlert: state.broadcastAfkAlert,
-    showPoints: state.basicInfo.showPoints,
-    roomSubscription: state.basicInfo.subscription,
-    showAFKButton: state.showAFKButton,
-    countOfPeoples: state.peoples.length,
-  }));
+
   const [alertIsInCooldown, setAlertIsInCooldown] = useState(false);
+  const [showAFKButton, setAFKButtonVisibility] = useState(false);
+
+  const { broadcastAfkAlert, showPoints, roomSubscription, countOfPeoples } =
+    useRoomStore((state) => ({
+      broadcastAfkAlert: state.broadcastAfkAlert,
+      showPoints: state.basicInfo.showPoints,
+      roomSubscription: state.basicInfo.subscription,
+      countOfPeoples: state.peoples.length,
+    }));
 
   const alertCooldownTimer = useRef(-1);
   const afkDebounceTimer = useRef({
