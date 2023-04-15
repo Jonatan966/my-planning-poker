@@ -45,6 +45,17 @@ async function onRoomShowPoints(
   await amplitude.logEvent(event);
 }
 
+async function onRoomShowAfkAlert(
+  props: WebhookVaultEventHandlers.OnRoomShowAfkAlertProps
+) {
+  const event = prepareBasicRoomEvent(
+    WebhookVaultEvent.room_show_afk_alert,
+    props
+  );
+
+  await amplitude.logEvent(event);
+}
+
 async function onPeopleSelectPoint(
   props: WebhookVaultEventHandlers.OnPeopleSelectPointProps
 ) {
@@ -89,6 +100,7 @@ export const eventVault = {
   [WebhookVaultEvent.room_people_enter]: onRoomPeopleEnter,
   [WebhookVaultEvent.room_people_leave]: onRoomPeopleLeave,
   [WebhookVaultEvent.room_show_points]: onRoomShowPoints,
+  [WebhookVaultEvent.room_show_afk_alert]: onRoomShowAfkAlert,
   [WebhookVaultEvent.people_select_point]: onPeopleSelectPoint,
   [WebhookVaultEvent.people_fire_confetti]: onPeopleFireConfetti,
   [FreeVaultEvent.people_send_feedback]: onPeopleSendFeedback,
