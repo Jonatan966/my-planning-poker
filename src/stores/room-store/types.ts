@@ -43,7 +43,7 @@ export interface RoomStoreProps {
     showPointsCountdown?: number;
     subscription?: PresenceChannel;
   };
-  peoples: People[];
+  peoples: Record<string, People>;
   connection?: pusherJs;
   showEasterEgg?: boolean;
   setEasterEggVisibility(visible: boolean): void;

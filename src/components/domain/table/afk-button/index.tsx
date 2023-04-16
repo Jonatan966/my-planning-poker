@@ -28,7 +28,7 @@ export function AfkButton({
       broadcastAfkAlert: state.broadcastAfkAlert,
       showPoints: state.basicInfo.showPoints,
       roomSubscription: state.basicInfo.subscription,
-      countOfPeoples: state.peoples.length,
+      countOfPeoples: Object.keys(state.peoples).length,
     }));
 
   const alertCooldownTimer = useRef(-1);

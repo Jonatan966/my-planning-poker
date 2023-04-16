@@ -28,7 +28,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       showPointsCountdown: 0,
       subscription: undefined,
     },
-    peoples: [],
+    peoples: {},
     showEasterEgg: false,
     setEasterEggVisibility,
     connectOnRoom,

@@ -12,8 +12,26 @@ import {
 } from "./types";
 import * as RoomEvents from "../../services/room-events";
 
-function sortPeoplesByArrival(peoples: People[]) {
-  return sortBy(peoples, ["entered_at"], ["asc"]);
+function sortPeoplesByArrival(peoples: Record<string, People>) {
+  return Object.fromEntries(
+    sortBy(Object.entries(peoples), ([_, people]) => people.entered_at, ["asc"])
+  );
+}
+
+function parseMembers(members: Record<string, People>) {
+  const parsedMembers = {};
+
+  for (const memberId in members) {
+    const targetMember = members[memberId];
+
+    parsedMembers[memberId] = {
+      id: memberId,
+      name: targetMember.name,
+      entered_at: targetMember.entered_at,
+    };
+  }
+
+  return parsedMembers;
 }
 
 export function mountRoomHandler(
@@ -23,18 +41,20 @@ export function mountRoomHandler(
   async function onLoadPeople(people: OnLoadPeopleProps) {
     const state = get();
 
-    const updatedPeoplesList = state.peoples.concat({
-      id: people.id,
-      name: people.info.name,
-      entered_at: people.info.entered_at,
-    });
+    const updatedPeoplesList = {
+      ...state.peoples,
+      [people.id]: {
+        id: people.id,
+        name: people.info.name,
+        entered_at: people.info.entered_at,
+      },
+    };
+
     const sortedPeoplesList = sortPeoplesByArrival(updatedPeoplesList);
 
     set({ peoples: sortedPeoplesList });
 
-    const me = state.peoples.find(
-      (people) => people.id === state.basicInfo.subscription.members.myID
-    );
+    const me = state.peoples[state.basicInfo.subscription.members.myID];
 
     if (me.points !== undefined || state.basicInfo.showPoints) {
       await api.post("/peoples/sync", {
@@ -49,13 +69,7 @@ export function mountRoomHandler(
   }
 
   function onPrepareRoom(roomPeoples: Members) {
-    const parsedMembers = Object.entries<People>(
-      roomPeoples.members
-    ).map<People>(([id, people]) => ({
-      id,
-      name: people.name,
-      entered_at: people.entered_at,
-    }));
+    const parsedMembers = parseMembers(roomPeoples.members);
 
     const sortedMembers = sortPeoplesByArrival(parsedMembers);
 
@@ -65,27 +79,22 @@ export function mountRoomHandler(
   }
 
   function onPeopleLeave(people: People) {
-    set((state) => ({
-      peoples: state.peoples.filter(
-        (statePeople) => statePeople.id !== people.id
-      ),
-    }));
+    set(
+      produce((state: RoomStoreProps) => {
+        delete state.peoples[people.id];
+      })
+    );
   }
 
   function onSelectPoint({
     people_id,
     people_selected_points,
   }: RoomEvents.OnPeopleSelectPointProps) {
-    set((state) => ({
-      peoples: state.peoples.map((statePeople) =>
-        statePeople.id === people_id
-          ? {
-              ...statePeople,
-              points: people_selected_points,
-            }
-          : statePeople
-      ),
-    }));
+    set(
+      produce((state: RoomStoreProps) => {
+        state.peoples[people_id].points = people_selected_points;
+      })
+    );
   }
 
   function onShowPoints({ show_points }: RoomEvents.OnRoomShowPointsProps) {
@@ -119,12 +128,15 @@ export function mountRoomHandler(
       produce((state: RoomStoreProps) => {
         state.basicInfo.showPoints = show_points;
 
-        if (!show_points) {
-          state.peoples = state.peoples.map((people) => ({
-            ...people,
-            points: undefined,
-          }));
+        if (show_points) {
+          return state;
         }
+
+        for (const peopleId in state.peoples) {
+          state.peoples[peopleId].points = undefined;
+        }
+
+        return state;
       })
     );
   }
@@ -136,19 +148,10 @@ export function mountRoomHandler(
   }: RoomEvents.OnRoomSyncPeopleProps) {
     const state = get();
 
-    const updatedPeoplesList = state.peoples.map((people) =>
-      people.id === people_id
-        ? {
-            ...people,
-            points: selected_points,
-          }
-        : people
-    );
-
     set(
       produce((state: RoomStoreProps) => {
         state.basicInfo.showPoints = !state.basicInfo.showPoints && show_points;
-        state.peoples = updatedPeoplesList;
+        state.peoples[people_id].points = selected_points;
       })
     );
   }
@@ -157,16 +160,11 @@ export function mountRoomHandler(
     sender_id: targetPeopleID,
     highlight = true,
   }: OnHighlightPeopleProps) {
-    set((state) => ({
-      peoples: state.peoples.map((people) =>
-        people.id === targetPeopleID
-          ? {
-              ...people,
-              highlight,
-            }
-          : people
-      ),
-    }));
+    set(
+      produce((state: RoomStoreProps) => {
+        state.peoples[targetPeopleID].highlight = highlight;
+      })
+    );
   }
 
   return {

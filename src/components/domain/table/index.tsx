@@ -94,25 +94,19 @@ function Table() {
 
   const { countOfPeoplesWithPoints, hasPeoplesWithPoints, meSelectedPoints } =
     useMemo(() => {
-      const { countOfPeoplesWithPoints, meSelectedPoints } = peoples.reduce(
+      const { countOfPeoplesWithPoints } = Object.values(peoples).reduce(
         (acc, people) => {
           if (typeof people.points !== "undefined") {
             acc.countOfPeoplesWithPoints++;
           }
 
-          if (!acc.meSelectedPoints) {
-            const isMe = people.id === myID;
-            const hasPoints = typeof people.points !== "undefined";
-
-            acc.meSelectedPoints = isMe && hasPoints;
-          }
-
           return acc;
         },
-        { countOfPeoplesWithPoints: 0, meSelectedPoints: false }
+        { countOfPeoplesWithPoints: 0 }
       );
 
       const hasPeoplesWithPoints = countOfPeoplesWithPoints > 0;
+      const meSelectedPoints = typeof peoples[myID]?.points !== "undefined";
 
       return {
         countOfPeoplesWithPoints,
@@ -154,7 +148,10 @@ function Table() {
       return [];
     }
 
-    const tableModules = buildTableModules(peoples, tableConfig.limits);
+    const tableModules = buildTableModules(
+      Object.values(peoples),
+      tableConfig.limits
+    );
 
     const renderedTableModules = tableModules
       .map((roomPeoples, moduleIndex) => (
@@ -188,7 +185,7 @@ function Table() {
     }
 
     const isHaveMinimalPeoplesWithPoints =
-      countOfPeoplesWithPoints >= Math.floor(peoples.length / 2);
+      countOfPeoplesWithPoints >= Math.floor(Object.keys(peoples).length / 2);
 
     const isSafeToShowPoints =
       room.showPoints || isHaveMinimalPeoplesWithPoints;
