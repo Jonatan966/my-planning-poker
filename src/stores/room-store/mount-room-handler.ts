@@ -95,7 +95,6 @@ export function mountRoomHandler(
 
       set(
         produce((state: RoomStoreProps) => {
-          state.showAFKButton = false;
           state.basicInfo.showPointsCountdown = INIT_COUNTDOWN;
         })
       );
