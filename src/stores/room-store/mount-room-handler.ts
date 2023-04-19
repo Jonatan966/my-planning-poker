@@ -82,6 +82,9 @@ export function mountRoomHandler(
     set(
       produce((state: RoomStoreProps) => {
         delete state.peoples[people.id];
+        state.hasPeopleWithPoints = Object.values(state.peoples).some(
+          (people) => typeof people.points !== "undefined"
+        );
       })
     );
   }
@@ -93,6 +96,7 @@ export function mountRoomHandler(
     set(
       produce((state: RoomStoreProps) => {
         state.peoples[people_id].points = people_selected_points;
+        state.hasPeopleWithPoints = true;
       })
     );
   }
@@ -136,6 +140,8 @@ export function mountRoomHandler(
           state.peoples[peopleId].points = undefined;
         }
 
+        state.hasPeopleWithPoints = false;
+
         return state;
       })
     );
@@ -146,12 +152,14 @@ export function mountRoomHandler(
     selected_points,
     show_points,
   }: RoomEvents.OnRoomSyncPeopleProps) {
-    const state = get();
-
     set(
       produce((state: RoomStoreProps) => {
         state.basicInfo.showPoints = !state.basicInfo.showPoints && show_points;
         state.peoples[people_id].points = selected_points;
+
+        if (!state.hasPeopleWithPoints) {
+          state.hasPeopleWithPoints = typeof selected_points !== "undefined";
+        }
       })
     );
   }

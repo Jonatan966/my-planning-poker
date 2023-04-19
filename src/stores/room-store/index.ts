@@ -30,6 +30,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     },
     peoples: {},
     showEasterEgg: false,
+    hasPeopleWithPoints: false,
     setEasterEggVisibility,
     connectOnRoom,
     createRoom,
