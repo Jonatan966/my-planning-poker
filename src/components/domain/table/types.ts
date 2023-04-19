@@ -7,3 +7,10 @@ export type TableResponsiveConfig = {
 };
 
 export type TableResponsiveConfigs = Record<Dimensions, TableResponsiveConfig>;
+
+export enum TableModulePosition {
+  BOTTOM = "bottom",
+  TOP = "top",
+  LEFT = "left",
+  RIGHT = "right",
+}
