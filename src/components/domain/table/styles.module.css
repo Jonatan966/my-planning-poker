@@ -24,8 +24,7 @@
 .leftTableModule,
 .topTableModule,
 .rightTableModule,
-.bottomTableModule,
-.tableCenter {
+.bottomTableModule {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -54,10 +53,5 @@
     max-width: 100%;
     min-height: 34rem;
     width: 44rem;
-  }
-
-  .tableCenter {
-    min-width: auto;
-    min-height: auto;
   }
 }
