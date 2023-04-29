@@ -27,11 +27,7 @@ export function TableCenter({ tableConfig }: TableCenterProps) {
 
   const isInCountdown = room?.showPoints && room.showPointsCountdown > 0;
 
-  const {
-    countOfPeoplesWithPoints,
-    meSelectedPoints,
-    isHaveMinimalPeoplesWithPoints,
-  } = useMemo(() => {
+  const { countOfPeoplesWithPoints, meSelectedPoints } = useMemo(() => {
     let countOfPeoplesWithPoints = 0;
 
     for (const peopleID in peoples) {
@@ -44,14 +40,9 @@ export function TableCenter({ tableConfig }: TableCenterProps) {
 
     const meSelectedPoints = typeof peoples[myID]?.points !== "undefined";
 
-    const halfPeoplesCount = Math.floor(Object.keys(peoples).length / 2);
-    const isHaveMinimalPeoplesWithPoints =
-      countOfPeoplesWithPoints >= halfPeoplesCount;
-
     return {
       countOfPeoplesWithPoints,
       meSelectedPoints,
-      isHaveMinimalPeoplesWithPoints,
     };
   }, [peoples, room?.subscription]);
 
@@ -87,13 +78,6 @@ export function TableCenter({ tableConfig }: TableCenterProps) {
     isTableButtonTemporaryDisabled ||
     (!room.showPoints && !hasPeopleWithPoints);
 
-  const isSafeToShowPoints = room.showPoints || isHaveMinimalPeoplesWithPoints;
-
-  const tableButtonColorScheme = isSafeToShowPoints ? "secondary" : "danger";
-  const tableButtonTitle = isSafeToShowPoints
-    ? ""
-    : "Ainda há pessoas que não selecionaram pontos";
-
   return (
     <div className={styles.tableCenter}>
       {isInCountdown ? (
@@ -101,10 +85,9 @@ export function TableCenter({ tableConfig }: TableCenterProps) {
       ) : (
         <>
           <Button
-            colorScheme={tableButtonColorScheme}
+            colorScheme="secondary"
             onClick={handleSetRoomPointsVisibility}
             disabled={isTableButtonDisabled}
-            title={tableButtonTitle}
           >
             {actionButtonText}
           </Button>
