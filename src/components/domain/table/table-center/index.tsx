@@ -13,14 +13,13 @@ interface TableCenterProps {
 const ONE_SECOND = 1000;
 
 export function TableCenter({ tableConfig }: TableCenterProps) {
-  const { room, peoples, myID, hasPeopleWithPoints, setRoomPointsVisibility } =
-    useRoomStore((state) => ({
+  const { room, hasPeopleWithPoints, setRoomPointsVisibility } = useRoomStore(
+    (state) => ({
       room: state.basicInfo,
-      peoples: state.peoples,
-      myID: room?.subscription?.members?.myID,
       hasPeopleWithPoints: state.hasPeopleWithPoints,
       setRoomPointsVisibility: state.setRoomPointsVisibility,
-    }));
+    })
+  );
 
   const [isTableButtonTemporaryDisabled, setIsTableButtonTemporaryDisabled] =
     useState(false);
