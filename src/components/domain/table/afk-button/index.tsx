@@ -1,41 +1,62 @@
 import { BsBellFill } from "react-icons/bs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import Button from "../../../ui/button";
 import { useRoomStore } from "../../../../stores/room-store";
 import { ClientRoomEvents } from "../../../../services/room-events";
 import { useAfkAlert } from "../../../../contexts/afk-alert-context";
 
-interface AfkButtonProps {
-  countOfPeoplesWithPoints: number;
-  meSelectedPoints: boolean;
-}
-
 const FIVE_SECONDS = 5000;
 const TEN_SECONDS = 10000;
 
-export function AfkButton({
-  countOfPeoplesWithPoints,
-  meSelectedPoints,
-}: AfkButtonProps) {
+export function AfkButton() {
   const { playAlert } = useAfkAlert();
 
   const [alertIsInCooldown, setAlertIsInCooldown] = useState(false);
   const [showAFKButton, setAFKButtonVisibility] = useState(false);
 
-  const { broadcastAfkAlert, showPoints, roomSubscription, countOfPeoples } =
-    useRoomStore((state) => ({
-      broadcastAfkAlert: state.broadcastAfkAlert,
-      showPoints: state.basicInfo.showPoints,
-      roomSubscription: state.basicInfo.subscription,
-      countOfPeoples: Object.keys(state.peoples).length,
-    }));
+  const {
+    broadcastAfkAlert,
+    showPoints,
+    roomSubscription,
+    countOfPeoples,
+    peoples,
+    room,
+    myID,
+  } = useRoomStore((state) => ({
+    broadcastAfkAlert: state.broadcastAfkAlert,
+    showPoints: state.basicInfo.showPoints,
+    roomSubscription: state.basicInfo.subscription,
+    countOfPeoples: Object.keys(state.peoples).length,
+    room: state.basicInfo,
+    peoples: state.peoples,
+    myID: room?.subscription?.members?.myID,
+  }));
 
   const alertCooldownTimer = useRef(-1);
   const afkDebounceTimer = useRef({
     timerRef: -1,
     countOfPeoplesWithPoints: 0,
   });
+
+  const { countOfPeoplesWithPoints, meSelectedPoints } = useMemo(() => {
+    let countOfPeoplesWithPoints = 0;
+
+    for (const peopleID in peoples) {
+      const { points } = peoples[peopleID];
+
+      if (typeof points !== "undefined") {
+        countOfPeoplesWithPoints++;
+      }
+    }
+
+    const meSelectedPoints = typeof peoples[myID]?.points !== "undefined";
+
+    return {
+      countOfPeoplesWithPoints,
+      meSelectedPoints,
+    };
+  }, [peoples, room?.subscription]);
 
   useEffect(() => {
     const everyoneButMeSelectPoints =

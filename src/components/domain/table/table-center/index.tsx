@@ -27,25 +27,6 @@ export function TableCenter({ tableConfig }: TableCenterProps) {
 
   const isInCountdown = room?.showPoints && room.showPointsCountdown > 0;
 
-  const { countOfPeoplesWithPoints, meSelectedPoints } = useMemo(() => {
-    let countOfPeoplesWithPoints = 0;
-
-    for (const peopleID in peoples) {
-      const { points } = peoples[peopleID];
-
-      if (typeof points !== "undefined") {
-        countOfPeoplesWithPoints++;
-      }
-    }
-
-    const meSelectedPoints = typeof peoples[myID]?.points !== "undefined";
-
-    return {
-      countOfPeoplesWithPoints,
-      meSelectedPoints,
-    };
-  }, [peoples, room?.subscription]);
-
   async function handleSetRoomPointsVisibility() {
     const isRoomPointsVisible = !room.showPoints;
 
@@ -91,9 +72,7 @@ export function TableCenter({ tableConfig }: TableCenterProps) {
           >
             {actionButtonText}
           </Button>
-          {!room?.showPoints && (
-            <AfkButton {...{ countOfPeoplesWithPoints, meSelectedPoints }} />
-          )}
+          {!room?.showPoints && <AfkButton />}
         </>
       )}
     </div>
