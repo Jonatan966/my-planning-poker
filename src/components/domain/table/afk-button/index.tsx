@@ -39,7 +39,9 @@ export function AfkButton() {
     countOfPeoplesWithPoints: 0,
   });
 
-  const { countOfPeoplesWithPoints, meSelectedPoints } = useMemo(() => {
+  const meSelectedPoints = typeof peoples[myID]?.points !== "undefined";
+
+  const { countOfPeoplesWithPoints } = useMemo(() => {
     let countOfPeoplesWithPoints = 0;
 
     for (const peopleID in peoples) {
@@ -50,11 +52,8 @@ export function AfkButton() {
       }
     }
 
-    const meSelectedPoints = typeof peoples[myID]?.points !== "undefined";
-
     return {
       countOfPeoplesWithPoints,
-      meSelectedPoints,
     };
   }, [peoples, room?.subscription]);
 
