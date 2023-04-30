@@ -15,7 +15,7 @@ enum AFKButtonState {
 }
 
 export function AfkButton() {
-  const { playAlert } = useAfkAlert();
+  const { playAlert, isPlayingAlert } = useAfkAlert();
 
   const [currentAFKButtonState, setCurrentAFKButtonState] = useState(
     AFKButtonState.DISABLED
@@ -102,7 +102,9 @@ export function AfkButton() {
       isShort
       colorScheme="primary"
       outlined
-      disabled={currentAFKButtonState !== AFKButtonState.ENABLED}
+      disabled={
+        isPlayingAlert || currentAFKButtonState !== AFKButtonState.ENABLED
+      }
       onClick={handleEmitAFKAlert}
     >
       <BsBellFill size={14} />
