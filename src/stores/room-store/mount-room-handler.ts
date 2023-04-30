@@ -165,7 +165,7 @@ export function mountRoomHandler(
   }
 
   function onHighlightPeople({
-    sender_id: targetPeopleID,
+    people_id: targetPeopleID,
     highlight = true,
   }: OnHighlightPeopleProps) {
     set(

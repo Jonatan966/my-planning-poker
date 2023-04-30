@@ -85,9 +85,11 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       ClientRoomEvents.ROOM_SHOW_POINTS,
       roomHandler.onShowPoints
     );
-    subscription.bind(
-      ClientRoomEvents.PEOPLE_FIRE_CONFETTI,
-      roomHandler.onHighlightPeople
+    subscription.bind(ClientRoomEvents.PEOPLE_FIRE_CONFETTI, (params) =>
+      roomHandler.onHighlightPeople({
+        people_id: params.people_id,
+        highlight: true,
+      })
     );
 
     connection.user.bind(
@@ -203,7 +205,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
   function setPeopleHighlight(people_id: string, highlight?: boolean) {
     roomHandler.onHighlightPeople({
-      sender_id: people_id,
+      people_id,
       highlight,
     });
   }

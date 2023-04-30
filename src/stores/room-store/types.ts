@@ -76,6 +76,6 @@ export interface OnSyncPeopleProps {
 }
 
 export interface OnHighlightPeopleProps {
-  sender_id: string;
+  people_id: string;
   highlight?: boolean;
 }
