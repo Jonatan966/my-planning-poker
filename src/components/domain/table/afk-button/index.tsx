@@ -8,11 +8,18 @@ import { useAfkAlert } from "../../../../contexts/afk-alert-context";
 
 const FIVE_SECONDS = 5000;
 
+enum AFKButtonState {
+  ENABLED,
+  DISABLED,
+  COOLDOWN,
+}
+
 export function AfkButton() {
   const { playAlert } = useAfkAlert();
 
-  const [isAFKButtonCooldown, setIsAFKButtonCooldown] = useState(false);
-  const [isAFKButtonDisabled, setIsAFKButtonDisabled] = useState(true);
+  const [currentAFKButtonState, setCurrentAFKButtonState] = useState(
+    AFKButtonState.DISABLED
+  );
 
   const {
     broadcastAfkAlert,
@@ -36,6 +43,29 @@ export function AfkButton() {
 
   const enableAFKButtonTimer = useRef(-1);
 
+  function cooldownChangeAFKButtonState(state: AFKButtonState) {
+    enableAFKButtonTimer.current = Number(
+      setTimeout(() => {
+        setCurrentAFKButtonState(state);
+        enableAFKButtonTimer.current = -1;
+      }, FIVE_SECONDS)
+    );
+  }
+
+  function handleEmitAFKAlert() {
+    broadcastAfkAlert();
+    onShowAFKAlert({ play: false });
+  }
+
+  function onShowAFKAlert({ play = true }) {
+    if (play) {
+      playAlert();
+    }
+
+    setCurrentAFKButtonState(AFKButtonState.COOLDOWN);
+    cooldownChangeAFKButtonState(AFKButtonState.DISABLED);
+  }
+
   useEffect(() => {
     roomSubscription.bind(ClientRoomEvents.ROOM_SHOW_AFK_ALERT, onShowAFKAlert);
 
@@ -46,8 +76,8 @@ export function AfkButton() {
 
   useEffect(() => {
     if (
+      currentAFKButtonState !== AFKButtonState.DISABLED ||
       !hasPeopleWithPoints ||
-      isAFKButtonCooldown ||
       enableAFKButtonTimer.current !== -1
     ) {
       return;
@@ -64,41 +94,15 @@ export function AfkButton() {
       return;
     }
 
-    enableAFKButtonTimer.current = Number(
-      setTimeout(() => {
-        setIsAFKButtonDisabled(false);
-        enableAFKButtonTimer.current = -1;
-      }, FIVE_SECONDS)
-    );
-  }, [hasPeopleWithPoints, peoples, isAFKButtonCooldown]);
-
-  function handleEmitAFKAlert() {
-    broadcastAfkAlert();
-    onShowAFKAlert({ play: false });
-  }
-
-  function onShowAFKAlert({ play = true }) {
-    if (play) {
-      playAlert();
-    }
-
-    setIsAFKButtonDisabled(true);
-    setIsAFKButtonCooldown(true);
-
-    enableAFKButtonTimer.current = Number(
-      setTimeout(() => {
-        setIsAFKButtonCooldown(false);
-        enableAFKButtonTimer.current = -1;
-      }, FIVE_SECONDS)
-    );
-  }
+    cooldownChangeAFKButtonState(AFKButtonState.ENABLED);
+  }, [hasPeopleWithPoints, peoples, currentAFKButtonState]);
 
   return (
     <Button
       isShort
       colorScheme="primary"
       outlined
-      disabled={isAFKButtonDisabled}
+      disabled={currentAFKButtonState !== AFKButtonState.ENABLED}
       onClick={handleEmitAFKAlert}
     >
       <BsBellFill size={14} />
