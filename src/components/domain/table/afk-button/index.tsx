@@ -67,6 +67,10 @@ export function AfkButton() {
   }
 
   useEffect(() => {
+    if (!roomSubscription) {
+      return;
+    }
+
     roomSubscription.bind(ClientRoomEvents.ROOM_SHOW_AFK_ALERT, onShowAFKAlert);
 
     return () => {

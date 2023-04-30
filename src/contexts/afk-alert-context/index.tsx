@@ -1,4 +1,6 @@
 import { ReactNode, createContext, useContext, useRef, useState } from "react";
+import { toast } from "react-hot-toast";
+import { BsInfoCircleFill } from "react-icons/bs";
 
 interface AfkAlertProviderProps {
   children: ReactNode;
@@ -9,6 +11,8 @@ interface AfkAlertContextProps {
   isPlayingAlert: boolean;
 }
 
+const FIVE_SECONDS = 5000;
+
 const AfkAlertContext = createContext({} as AfkAlertContextProps);
 
 export function AfkAlertProvider({ children }: AfkAlertProviderProps) {
@@ -17,7 +21,21 @@ export function AfkAlertProvider({ children }: AfkAlertProviderProps) {
 
   function playAlert() {
     setIsPlayingAlert(true);
-    audioRef.current.play();
+
+    audioRef.current
+      .play()
+      .catch(() => console.log("[afk-alert] Unable to play alert"));
+
+    const alertMessage = "Estão te chamando para votar!";
+
+    toast.success(alertMessage, {
+      icon: <BsInfoCircleFill color="#4863f7" />,
+      duration: FIVE_SECONDS,
+    });
+
+    Notification.requestPermission().then(() => {
+      new Notification(alertMessage);
+    });
   }
 
   function handleOnSoundEnded() {
