@@ -77,8 +77,7 @@ export function AfkButton() {
   useEffect(() => {
     if (
       currentAFKButtonState !== AFKButtonState.DISABLED ||
-      !hasPeopleWithPoints ||
-      enableAFKButtonTimer.current !== -1
+      !hasPeopleWithPoints
     ) {
       return;
     }
@@ -91,6 +90,7 @@ export function AfkButton() {
       countOfPeoplesWithPoints === countOfPeoples;
 
     if (allPeoplesSelectedPoints) {
+      clearTimeout(enableAFKButtonTimer.current);
       return;
     }
 
