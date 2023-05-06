@@ -62,6 +62,7 @@ export interface RoomStoreProps {
     highlight?: PeopleHighlightColor
   ): void;
   highlightAfkPeoples(delay: number): void;
+  hasMeWithoutPoints(): boolean;
 }
 
 export type MountRoomEventsProps = Parameters<

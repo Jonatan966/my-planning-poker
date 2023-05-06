@@ -47,6 +47,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     setPeoplesHighlight,
     broadcastAfkAlert,
     highlightAfkPeoples,
+    hasMeWithoutPoints,
   };
 
   function _reset() {
@@ -230,6 +231,14 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     setPeoplesHighlight(idsOfPeoplesWithoutPoints, "orange");
 
     setTimeout(() => setPeoplesHighlight(idsOfPeoplesWithoutPoints), delay);
+  }
+
+  function hasMeWithoutPoints() {
+    const { peoples, basicInfo } = get();
+
+    const myID = basicInfo?.subscription?.members?.myID;
+
+    return typeof peoples[myID]?.points === "undefined";
   }
 
   return INITIAL_STORE_VALUE;
