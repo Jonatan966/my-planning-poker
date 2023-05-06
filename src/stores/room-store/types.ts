@@ -61,6 +61,7 @@ export interface RoomStoreProps {
     peoples_id: string[],
     highlight?: PeopleHighlightColor
   ): void;
+  highlightAfkPeoples(delay: number): void;
 }
 
 export type MountRoomEventsProps = Parameters<

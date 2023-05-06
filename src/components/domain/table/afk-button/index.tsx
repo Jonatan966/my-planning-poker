@@ -23,21 +23,17 @@ export function AfkButton() {
 
   const {
     broadcastAfkAlert,
-    showPoints,
+    highlightAfkPeoples,
     roomSubscription,
     countOfPeoples,
     peoples,
-    room,
-    myID,
     hasPeopleWithPoints,
   } = useRoomStore((state) => ({
     broadcastAfkAlert: state.broadcastAfkAlert,
-    showPoints: state.basicInfo.showPoints,
+    highlightAfkPeoples: state.highlightAfkPeoples,
     roomSubscription: state.basicInfo.subscription,
     countOfPeoples: Object.keys(state.peoples).length,
-    room: state.basicInfo,
     peoples: state.peoples,
-    myID: state.basicInfo?.subscription?.members?.myID,
     hasPeopleWithPoints: state.hasPeopleWithPoints,
   }));
 
@@ -61,6 +57,8 @@ export function AfkButton() {
     if (play) {
       playAlert();
     }
+
+    highlightAfkPeoples(FIVE_SECONDS);
 
     setCurrentAFKButtonState(AFKButtonState.COOLDOWN);
     cooldownChangeAFKButtonState(AFKButtonState.DISABLED);

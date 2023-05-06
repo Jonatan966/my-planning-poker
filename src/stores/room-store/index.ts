@@ -46,6 +46,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     broadcastConfetti,
     setPeoplesHighlight,
     broadcastAfkAlert,
+    highlightAfkPeoples,
   };
 
   function _reset() {
@@ -217,6 +218,18 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       peoples_id,
       highlight,
     });
+  }
+
+  function highlightAfkPeoples(delay: number) {
+    const { peoples } = get();
+
+    const idsOfPeoplesWithoutPoints = Object.values(peoples).map((people) =>
+      typeof people?.points === "undefined" ? people?.id : undefined
+    );
+
+    setPeoplesHighlight(idsOfPeoplesWithoutPoints, "orange");
+
+    setTimeout(() => setPeoplesHighlight(idsOfPeoplesWithoutPoints), delay);
   }
 
   return INITIAL_STORE_VALUE;
