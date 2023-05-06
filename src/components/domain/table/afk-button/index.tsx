@@ -24,17 +24,21 @@ export function AfkButton() {
   const {
     broadcastAfkAlert,
     highlightAfkPeoples,
+    hasMeWithoutPoints,
     roomSubscription,
     countOfPeoples,
     peoples,
     hasPeopleWithPoints,
+    myID,
   } = useRoomStore((state) => ({
     broadcastAfkAlert: state.broadcastAfkAlert,
     highlightAfkPeoples: state.highlightAfkPeoples,
+    hasMeWithoutPoints: state.hasMeWithoutPoints,
     roomSubscription: state.basicInfo.subscription,
     countOfPeoples: Object.keys(state.peoples).length,
     peoples: state.peoples,
     hasPeopleWithPoints: state.hasPeopleWithPoints,
+    myID: state.basicInfo.subscription?.members?.myID,
   }));
 
   const enableAFKButtonTimer = useRef(-1);
@@ -69,7 +73,9 @@ export function AfkButton() {
       return;
     }
 
-    roomSubscription.bind(ClientRoomEvents.ROOM_SHOW_AFK_ALERT, onShowAFKAlert);
+    roomSubscription.bind(ClientRoomEvents.ROOM_SHOW_AFK_ALERT, () =>
+      onShowAFKAlert({ play: hasMeWithoutPoints() })
+    );
 
     return () => {
       roomSubscription.unbind(ClientRoomEvents.ROOM_SHOW_AFK_ALERT);
@@ -88,10 +94,15 @@ export function AfkButton() {
       (people) => typeof people?.points !== "undefined"
     ).length;
 
+    const meSelectedPoints = typeof peoples[myID]?.points !== "undefined";
+
+    const everyoneButMeSelectPoints =
+      countOfPeoplesWithPoints === countOfPeoples - 1 && !meSelectedPoints;
+
     const allPeoplesSelectedPoints =
       countOfPeoplesWithPoints === countOfPeoples;
 
-    if (allPeoplesSelectedPoints) {
+    if (allPeoplesSelectedPoints || everyoneButMeSelectPoints) {
       clearTimeout(enableAFKButtonTimer.current);
       return;
     }
