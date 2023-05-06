@@ -5,7 +5,7 @@ import { Members } from "pusher-js";
 import { api } from "../../lib/axios";
 import {
   MountRoomEventsProps,
-  OnHighlightPeopleProps,
+  OnHighlightPeoplesProps,
   OnLoadPeopleProps,
   People,
   RoomStoreProps,
@@ -164,13 +164,19 @@ export function mountRoomHandler(
     );
   }
 
-  function onHighlightPeople({
-    people_id: targetPeopleID,
-    highlight = true,
-  }: OnHighlightPeopleProps) {
+  function onHighlightPeoples({
+    peoples_id: targetPeoplesID,
+    highlight,
+  }: OnHighlightPeoplesProps) {
     set(
       produce((state: RoomStoreProps) => {
-        state.peoples[targetPeopleID].highlight = highlight;
+        for (const targetPeopleID of targetPeoplesID) {
+          if (!state.peoples[targetPeopleID]) {
+            continue;
+          }
+
+          state.peoples[targetPeopleID].highlight = highlight;
+        }
       })
     );
   }
@@ -182,6 +188,6 @@ export function mountRoomHandler(
     onSelectPoint,
     onShowPoints,
     onSyncPeople,
-    onHighlightPeople,
+    onHighlightPeoples,
   };
 }

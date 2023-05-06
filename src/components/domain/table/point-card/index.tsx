@@ -3,13 +3,16 @@ import { ReactNode } from "react";
 import { BsFillSuitClubFill, BsPiggyBankFill } from "react-icons/bs";
 
 import styles from "./styles.module.css";
-import { useRoomStore } from "../../../../stores/room-store";
+import {
+  PeopleHighlightColor,
+  useRoomStore,
+} from "../../../../stores/room-store";
 
 interface PointCardProps {
   points?: number;
   showPoints?: boolean;
   isMe?: boolean;
-  highlight?: boolean;
+  highlight?: PeopleHighlightColor;
   children?: ReactNode;
 }
 
@@ -48,7 +51,7 @@ function PointCard({
       <div
         className={classNames(styles.point, {
           [styles.showPoints]: showPoints,
-          [styles.highlight]: highlight,
+          [styles[`${highlight}Highlight`]]: !!highlight,
         })}
       >
         <Point />

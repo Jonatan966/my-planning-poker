@@ -10,7 +10,13 @@ import {
   ClientRoomEvents,
   roomEvents,
 } from "../../services/room-events";
-import { BasicRoomInfo, EventMode, RoomInfo, RoomStoreProps } from "./types";
+import {
+  BasicRoomInfo,
+  EventMode,
+  PeopleHighlightColor,
+  RoomInfo,
+  RoomStoreProps,
+} from "./types";
 
 let connection: pusherJs;
 
@@ -38,7 +44,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     selectPoint,
     setRoomPointsVisibility,
     broadcastConfetti,
-    setPeopleHighlight,
+    setPeoplesHighlight,
     broadcastAfkAlert,
   };
 
@@ -86,9 +92,9 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       roomHandler.onShowPoints
     );
     subscription.bind(ClientRoomEvents.PEOPLE_FIRE_CONFETTI, (params) =>
-      roomHandler.onHighlightPeople({
-        people_id: params.people_id,
-        highlight: true,
+      roomHandler.onHighlightPeoples({
+        peoples_id: [params.people_id],
+        highlight: "cyan",
       })
     );
 
@@ -203,9 +209,12 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     });
   }
 
-  function setPeopleHighlight(people_id: string, highlight?: boolean) {
-    roomHandler.onHighlightPeople({
-      people_id,
+  function setPeoplesHighlight(
+    peoples_id: string[],
+    highlight?: PeopleHighlightColor
+  ) {
+    roomHandler.onHighlightPeoples({
+      peoples_id,
       highlight,
     });
   }
