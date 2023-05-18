@@ -83,27 +83,39 @@ export function AfkButton() {
   }, [roomSubscription]);
 
   useEffect(() => {
-    if (
-      currentAFKButtonState !== AFKButtonState.DISABLED ||
-      !hasPeopleWithPoints
-    ) {
+    if (!hasPeopleWithPoints) {
       return;
     }
 
-    const countOfPeoplesWithPoints = Object.values(peoples).filter(
-      (people) => typeof people?.points !== "undefined"
-    ).length;
+    const { peoplesButMeWithPoints, peoplesWithPoints } = Object.values(
+      peoples
+    ).reduce(
+      (acc, people) => {
+        if (typeof people?.points === "undefined") {
+          return acc;
+        }
 
-    const meSelectedPoints = typeof peoples[myID]?.points !== "undefined";
+        acc.peoplesWithPoints += 1;
 
-    const everyoneButMeSelectPoints =
-      countOfPeoplesWithPoints === countOfPeoples - 1 && !meSelectedPoints;
+        if (people.id !== myID) {
+          acc.peoplesButMeWithPoints += 1;
+        }
 
-    const allPeoplesSelectedPoints =
-      countOfPeoplesWithPoints === countOfPeoples;
+        return acc;
+      },
+      { peoplesWithPoints: 0, peoplesButMeWithPoints: 0 }
+    );
 
-    if (allPeoplesSelectedPoints || everyoneButMeSelectPoints) {
+    if (
+      countOfPeoples - 1 === peoplesButMeWithPoints ||
+      countOfPeoples === peoplesWithPoints
+    ) {
       clearTimeout(enableAFKButtonTimer.current);
+      setCurrentAFKButtonState(AFKButtonState.DISABLED);
+      return;
+    }
+
+    if (currentAFKButtonState !== AFKButtonState.DISABLED) {
       return;
     }
 
