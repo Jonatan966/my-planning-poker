@@ -6,30 +6,32 @@ import { randomUUID } from "crypto";
 
 // Temporary route to stay database alive
 async function handler(_: NextApiRequest, response: NextApiResponse) {
+  const temporaryRoomId = randomUUID();
+
+  await database.$transaction([
+    database.room.create({
+      data: {
+        name: "[TEST] stay alive",
+        id: temporaryRoomId,
+      },
+    }),
+    database.room.delete({
+      where: {
+        id: temporaryRoomId,
+      },
+    }),
+  ]);
+
+  return response.status(200).end();
+}
+
+export default async (request: NextApiRequest, response: NextApiResponse) => {
   try {
-    const temporaryRoomId = randomUUID();
-
-    await database.$transaction([
-      database.room.create({
-        data: {
-          name: "[TEST] stay alive",
-          id: temporaryRoomId,
-        },
-      }),
-      database.room.delete({
-        where: {
-          id: temporaryRoomId,
-        },
-      }),
-    ]);
-
-    return response.status(200).end();
+    return await verifySignature(handler)(request, response);
   } catch {
     return response.status(400).end();
   }
-}
-
-export default verifySignature(handler);
+};
 
 export const config = {
   api: {
