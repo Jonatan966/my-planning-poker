@@ -139,8 +139,10 @@ export function FeedbackDialog() {
           isShort
           onClick={openDialog}
           title="Enviar um feedback"
+          className={styles.feedbackButton}
         >
           <MdFeedback size={18} />
+          <p>Feedback</p>
         </Button>
       </Tooltip>
     </>
