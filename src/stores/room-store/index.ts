@@ -10,8 +10,13 @@ import {
   ClientRoomEvents,
   roomEvents,
 } from "../../services/room-events";
-import { getDateWithTimezone } from "../../utils/get-date-with-timezone";
-import { BasicRoomInfo, EventMode, RoomInfo, RoomStoreProps } from "./types";
+import {
+  BasicRoomInfo,
+  EventMode,
+  PeopleHighlightColor,
+  RoomInfo,
+  RoomStoreProps,
+} from "./types";
 
 let connection: pusherJs;
 
@@ -29,8 +34,9 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       showPointsCountdown: 0,
       subscription: undefined,
     },
-    peoples: [],
+    peoples: {},
     showEasterEgg: false,
+    hasPeopleWithPoints: false,
     setEasterEggVisibility,
     connectOnRoom,
     createRoom,
@@ -38,7 +44,10 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     selectPoint,
     setRoomPointsVisibility,
     broadcastConfetti,
-    setPeopleHighlight,
+    setPeoplesHighlight,
+    broadcastAfkAlert,
+    highlightAfkPeoples,
+    hasMeWithoutPoints,
   };
 
   function _reset() {
@@ -84,9 +93,11 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       ClientRoomEvents.ROOM_SHOW_POINTS,
       roomHandler.onShowPoints
     );
-    subscription.bind(
-      ClientRoomEvents.PEOPLE_FIRE_CONFETTI,
-      roomHandler.onHighlightPeople
+    subscription.bind(ClientRoomEvents.PEOPLE_FIRE_CONFETTI, (params) =>
+      roomHandler.onHighlightPeoples({
+        peoples_id: [params.people_id],
+        highlight: "cyan",
+      })
     );
 
     connection.user.bind(
@@ -192,11 +203,42 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     });
   }
 
-  function setPeopleHighlight(people_id: string, highlight?: boolean) {
-    roomHandler.onHighlightPeople({
-      sender_id: people_id,
+  function broadcastAfkAlert() {
+    const { basicInfo } = get();
+
+    roomEvents.onRoomShowAfkAlert(basicInfo.subscription, {
+      people_id: basicInfo.subscription.members.myID,
+    });
+  }
+
+  function setPeoplesHighlight(
+    peoples_id: string[],
+    highlight?: PeopleHighlightColor
+  ) {
+    roomHandler.onHighlightPeoples({
+      peoples_id,
       highlight,
     });
+  }
+
+  function highlightAfkPeoples(delay: number) {
+    const { peoples } = get();
+
+    const idsOfPeoplesWithoutPoints = Object.values(peoples).map((people) =>
+      typeof people?.points === "undefined" ? people?.id : undefined
+    );
+
+    setPeoplesHighlight(idsOfPeoplesWithoutPoints, "orange");
+
+    setTimeout(() => setPeoplesHighlight(idsOfPeoplesWithoutPoints), delay);
+  }
+
+  function hasMeWithoutPoints() {
+    const { peoples, basicInfo } = get();
+
+    const myID = basicInfo?.subscription?.members?.myID;
+
+    return typeof peoples[myID]?.points === "undefined";
   }
 
   return INITIAL_STORE_VALUE;

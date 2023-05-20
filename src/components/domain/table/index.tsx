@@ -1,84 +1,20 @@
-import cloneDeep from "lodash/cloneDeep";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import useDimensions from "react-cool-dimensions";
-import { useRoomStore, People } from "../../../stores/room-store";
-import Button from "../../ui/button";
-import PointCard from "./point-card";
+import { useRoomStore } from "../../../stores/room-store";
+
+import { TableCenter } from "./table-center";
+import { Dimensions, TableModulePosition } from "./types";
+import { TableModule } from "./table-module";
+
+import { TABLE_RESPONSIVE_CONFIGS } from "./constants";
+import { separatePeoplesInModules } from "./utils/separate-peoples-in-modules";
 
 import styles from "./styles.module.css";
 
-type Dimensions = "XS" | "default";
-
-type TableResponsiveConfigs = Record<
-  Dimensions,
-  {
-    limits: number[];
-    newMatchButton: string;
-    revealCardsButton: string;
-  }
->;
-
-const ONE_SECOND = 1000;
-
-const tableModuleNames = ["bottom", "top", "left", "right"];
-
-const tableResponsiveConfigs: TableResponsiveConfigs = {
-  XS: {
-    limits: [2, 2, -1, -1],
-    newMatchButton: "RESETAR",
-    revealCardsButton: "REVELAR",
-  },
-  default: {
-    limits: [-1, -1, -1, -1],
-    newMatchButton: "NOVA PARTIDA",
-    revealCardsButton: "REVELAR CARTAS",
-  },
-};
-
-function isReachedTheLimit(
-  limits: number[],
-  modules: People[][],
-  currentModule: number
-) {
-  const hasLimit = limits?.[currentModule] > -1;
-
-  return hasLimit && modules[currentModule].length >= limits?.[currentModule];
-}
-
-function buildTableModules(
-  peoples: People[] = [],
-  limits = tableResponsiveConfigs.default.limits
-) {
-  const tableModules = [[], [], [], []] as People[][];
-  let currentModule = 0;
-
-  const peoplesQueue = cloneDeep(peoples);
-
-  while (peoplesQueue.length) {
-    if (!isReachedTheLimit(limits, tableModules, currentModule)) {
-      tableModules[currentModule].push(peoplesQueue.shift());
-    }
-
-    if (
-      isReachedTheLimit(limits, tableModules, currentModule) ||
-      tableModules[currentModule].length % 3 === 0
-    ) {
-      currentModule++;
-    }
-
-    if (currentModule > 3) {
-      currentModule = 0;
-    }
-  }
-
-  return tableModules;
-}
-
 function Table() {
-  const { room, peoples, setRoomPointsVisibility } = useRoomStore((state) => ({
+  const { room, peoples } = useRoomStore((state) => ({
     room: state.basicInfo,
     peoples: state.peoples,
-    setRoomPointsVisibility: state.setRoomPointsVisibility,
   }));
 
   const { observe, currentBreakpoint } = useDimensions({
@@ -86,121 +22,38 @@ function Table() {
     updateOnBreakpointChange: true,
   });
 
-  const [isTableButtonTemporaryDisabled, setIsTableButtonTemporaryDisabled] =
-    useState(false);
+  const tableConfig =
+    TABLE_RESPONSIVE_CONFIGS?.[currentBreakpoint as Dimensions] ||
+    TABLE_RESPONSIVE_CONFIGS.default;
+
+  const [bottomModule, topModule, leftModule, rightModule] = useMemo(() => {
+    if (!currentBreakpoint) {
+      return [];
+    }
+
+    const tableModules = separatePeoplesInModules(
+      Object.values(peoples),
+      tableConfig.limits
+    );
+
+    return tableModules;
+  }, [peoples, room.showPointsCountdown, currentBreakpoint]);
 
   if (!room) {
     return <></>;
   }
 
-  const myID = room?.subscription?.members?.myID;
-
-  const tableConfig =
-    tableResponsiveConfigs?.[currentBreakpoint as Dimensions] ||
-    tableResponsiveConfigs.default;
-
-  const countOfPeoplesWithPoints = peoples.filter(
-    (people) => typeof people.points !== "undefined"
-  ).length;
-
-  const hasPeoplesWithPoints = countOfPeoplesWithPoints > 0;
-
-  const isTableButtonDisabled =
-    isTableButtonTemporaryDisabled ||
-    (!room.showPoints && !hasPeoplesWithPoints);
-
-  function debounceEnableTableButton() {
-    setIsTableButtonTemporaryDisabled(true);
-
-    setTimeout(() => setIsTableButtonTemporaryDisabled(false), ONE_SECOND);
-  }
-
-  async function handleSetRoomPointsVisibility() {
-    const isRoomPointsVisible = !room.showPoints;
-
-    if (isRoomPointsVisible) {
-      setIsTableButtonTemporaryDisabled(true);
-    }
-
-    await setRoomPointsVisibility(isRoomPointsVisible);
-  }
-
-  const renderedTableModules = useMemo(() => {
-    if (!currentBreakpoint) {
-      return [];
-    }
-
-    const tableModules = buildTableModules(peoples, tableConfig.limits);
-
-    const renderedTableModules = tableModules
-      .map((roomPeoples, moduleIndex) => (
-        <div
-          className={styles[`${tableModuleNames[moduleIndex]}TableModule`]}
-          key={`module-${moduleIndex}`}
-        >
-          {roomPeoples.map((roomPeople) => (
-            <PointCard
-              points={roomPeople.points}
-              key={roomPeople.id}
-              showPoints={room.showPoints && room.showPointsCountdown === 0}
-              isMe={roomPeople.id === myID}
-              highlight={roomPeople.highlight}
-            >
-              {roomPeople.name}
-            </PointCard>
-          ))}
-        </div>
-      ))
-      .flat();
-
-    return renderedTableModules;
-  }, [peoples, room.showPointsCountdown, currentBreakpoint]);
-
-  function renderTableCenterContent() {
-    const isInCountdown = room?.showPoints && room.showPointsCountdown > 0;
-
-    if (isInCountdown) {
-      return <h1>{room.showPointsCountdown}</h1>;
-    }
-
-    const isHaveMinimalPeoplesWithPoints =
-      countOfPeoplesWithPoints >= Math.floor(peoples.length / 2);
-
-    const isSafeToShowPoints =
-      room.showPoints || isHaveMinimalPeoplesWithPoints;
-
-    const actionButtonText =
-      tableConfig[room?.showPoints ? "newMatchButton" : "revealCardsButton"];
-    const tableButtonColorScheme = isSafeToShowPoints ? "secondary" : "danger";
-    const tableButtonTitle = isSafeToShowPoints
-      ? ""
-      : "Ainda há pessoas que não selecionaram pontos";
-
-    return (
-      <Button
-        colorScheme={tableButtonColorScheme}
-        onClick={handleSetRoomPointsVisibility}
-        disabled={isTableButtonDisabled}
-        title={tableButtonTitle}
-      >
-        {actionButtonText}
-      </Button>
-    );
-  }
-
-  useEffect(() => {
-    if (!room.showPoints || room.showPointsCountdown > 0) {
-      return;
-    }
-
-    debounceEnableTableButton();
-  }, [room.showPointsCountdown, room.showPoints]);
-
   return (
     <div className={styles.table} ref={observe}>
-      {renderedTableModules}
+      <TableModule
+        position={TableModulePosition.BOTTOM}
+        peoples={bottomModule}
+      />
+      <TableModule position={TableModulePosition.TOP} peoples={topModule} />
+      <TableModule position={TableModulePosition.LEFT} peoples={leftModule} />
+      <TableModule position={TableModulePosition.RIGHT} peoples={rightModule} />
 
-      <div className={styles.tableCenter}>{renderTableCenterContent()}</div>
+      <TableCenter {...{ tableConfig }} />
     </div>
   );
 }

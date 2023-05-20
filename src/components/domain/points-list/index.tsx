@@ -58,15 +58,7 @@ function PointsList() {
   const { fireFocusedConfetti } = useConfetti();
   const hasFiredConfetti = useRef(false);
 
-  const me = useMemo(() => {
-    if (!room || !room.subscription?.members) {
-      return;
-    }
-
-    return peoples.find(
-      (people) => people.id === room.subscription.members.myID
-    );
-  }, [peoples, room]);
+  const me = peoples[room?.subscription?.members.myID];
 
   function fireUnanimousConfetti() {
     if (hasFiredConfetti.current) {
@@ -93,7 +85,9 @@ function PointsList() {
       ));
     }
 
-    const { average, isUnanimous } = calculatePointsAverage(peoples);
+    const { average, isUnanimous } = calculatePointsAverage(
+      Object.values(peoples)
+    );
 
     if (isUnanimous) {
       fireUnanimousConfetti();

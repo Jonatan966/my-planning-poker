@@ -1,6 +1,8 @@
 import pusherJs, { PresenceChannel } from "pusher-js";
 import { StateCreator } from "zustand";
 
+export type PeopleHighlightColor = "cyan" | "orange";
+
 export enum EventMode {
   PUBLIC,
   PRIVATE,
@@ -11,7 +13,7 @@ export interface People {
   name: string;
   entered_at: Date;
   points?: number;
-  highlight?: boolean;
+  highlight?: PeopleHighlightColor;
 }
 
 export interface RoomInfo {
@@ -43,7 +45,8 @@ export interface RoomStoreProps {
     showPointsCountdown?: number;
     subscription?: PresenceChannel;
   };
-  peoples: People[];
+  peoples: Record<string, People>;
+  hasPeopleWithPoints: boolean;
   connection?: pusherJs;
   showEasterEgg?: boolean;
   setEasterEggVisibility(visible: boolean): void;
@@ -53,7 +56,13 @@ export interface RoomStoreProps {
   selectPoint(points: number): Promise<void>;
   setRoomPointsVisibility(show?: boolean, mode?: EventMode): Promise<void>;
   broadcastConfetti(): void;
-  setPeopleHighlight(people_id: string, highlight?: boolean): void;
+  broadcastAfkAlert(): void;
+  setPeoplesHighlight(
+    peoples_id: string[],
+    highlight?: PeopleHighlightColor
+  ): void;
+  highlightAfkPeoples(delay: number): void;
+  hasMeWithoutPoints(): boolean;
 }
 
 export type MountRoomEventsProps = Parameters<
@@ -73,7 +82,7 @@ export interface OnSyncPeopleProps {
   points: number;
 }
 
-export interface OnHighlightPeopleProps {
-  sender_id: string;
-  highlight?: boolean;
+export interface OnHighlightPeoplesProps {
+  peoples_id: string[];
+  highlight?: PeopleHighlightColor;
 }

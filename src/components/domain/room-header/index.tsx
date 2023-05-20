@@ -8,6 +8,7 @@ import { FeedbackDialog } from "../feedback-dialog";
 import { RoomLogo } from "./room-logo";
 
 import styles from "./styles.module.css";
+import { Tooltip } from "../../ui/tooltip";
 
 interface RoomHeaderProps {
   basicMe: {
@@ -51,15 +52,17 @@ function RoomHeader({ basicMe, roomInfo }: RoomHeaderProps) {
         <nav>
           <span className={styles.myName}>{myName}</span>
           <FeedbackDialog />
-          <Button
-            colorScheme="primary"
-            onClick={copyRoomCode}
-            className={styles.copyRoomCode}
-            title="Copiar link da sala"
-          >
-            <p>Copiar link da sala</p>
-            <FaLink />
-          </Button>
+          <Tooltip message="Copiar link da sala">
+            <Button
+              colorScheme="primary"
+              onClick={copyRoomCode}
+              className={styles.copyRoomCode}
+              isShort
+            >
+              <FaLink />
+              <p>Copiar link</p>
+            </Button>
+          </Tooltip>
           <Button
             colorScheme="danger"
             outlined
