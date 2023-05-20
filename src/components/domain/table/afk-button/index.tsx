@@ -5,6 +5,7 @@ import Button from "../../../ui/button";
 import { useRoomStore } from "../../../../stores/room-store";
 import { ClientRoomEvents } from "../../../../services/room-events";
 import { useAfkAlert } from "../../../../contexts/afk-alert-context";
+import { Tooltip } from "../../../ui/tooltip";
 
 const FIVE_SECONDS = 5000;
 
@@ -123,16 +124,18 @@ export function AfkButton() {
   }, [hasPeopleWithPoints, peoples, currentAFKButtonState]);
 
   return (
-    <Button
-      isShort
-      colorScheme="primary"
-      outlined
-      disabled={
-        isPlayingAlert || currentAFKButtonState !== AFKButtonState.ENABLED
-      }
-      onClick={handleEmitAFKAlert}
-    >
-      <BsBellFill size={14} />
-    </Button>
+    <Tooltip message="Alertar quem ainda não votou">
+      <Button
+        isShort
+        colorScheme="primary"
+        outlined
+        disabled={
+          isPlayingAlert || currentAFKButtonState !== AFKButtonState.ENABLED
+        }
+        onClick={handleEmitAFKAlert}
+      >
+        <BsBellFill size={14} />
+      </Button>
+    </Tooltip>
   );
 }
