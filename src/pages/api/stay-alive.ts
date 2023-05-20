@@ -28,7 +28,8 @@ async function handler(_: NextApiRequest, response: NextApiResponse) {
 export default async (request: NextApiRequest, response: NextApiResponse) => {
   try {
     return await verifySignature(handler)(request, response);
-  } catch {
+  } catch (error) {
+    console.log("[stay-alive] error", error);
     return response.status(400).end();
   }
 };
