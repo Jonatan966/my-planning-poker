@@ -21,13 +21,13 @@ function RoomLogo() {
     roomSubscription,
     setEasterEggVisibility,
     broadcastConfetti,
-    setPeopleHighlight,
+    setPeoplesHighlight,
   } = useRoomStore((state) => ({
     showEasterEgg: state.showEasterEgg,
     roomSubscription: state.basicInfo.subscription,
     setEasterEggVisibility: state.setEasterEggVisibility,
     broadcastConfetti: state.broadcastConfetti,
-    setPeopleHighlight: state.setPeopleHighlight,
+    setPeoplesHighlight: state.setPeoplesHighlight,
   }));
 
   const easterEggCountdown = useRef(5);
@@ -50,10 +50,10 @@ function RoomLogo() {
 
   async function showEasterEggConfettis(
     mode: EasterEggMode = EasterEggMode.PUBLIC,
-    sender_id = roomSubscription?.members.myID
+    sender_id = roomSubscription?.members.myID as string
   ) {
     if (confettiIsFiring.current) {
-      setPeopleHighlight(sender_id, false);
+      setPeoplesHighlight([sender_id]);
 
       return;
     }
@@ -62,11 +62,11 @@ function RoomLogo() {
       broadcastConfetti();
     }
 
-    setPeopleHighlight(sender_id, true);
+    setPeoplesHighlight([sender_id], "cyan");
 
     await fireScatteredConfetti();
 
-    setPeopleHighlight(sender_id, false);
+    setPeoplesHighlight([sender_id]);
   }
 
   function enableEasterEgg() {

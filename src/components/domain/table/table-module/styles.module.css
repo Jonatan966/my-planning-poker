@@ -1,0 +1,26 @@
+.left,
+.top,
+.right,
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.left {
+  grid-area: left;
+  flex-direction: column;
+}
+
+.top {
+  grid-area: top;
+}
+
+.right {
+  grid-area: right;
+  flex-direction: column;
+}
+
+.bottom {
+  grid-area: bottom;
+}

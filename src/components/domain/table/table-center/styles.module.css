@@ -1,0 +1,23 @@
+.tableCenter {
+  grid-area: table;
+
+  background: #202024;
+
+  border-radius: 5px;
+
+  min-height: 136px;
+  min-width: 352px;
+
+  gap: 0.5rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 720px) {
+  .tableCenter {
+    min-width: auto;
+    min-height: auto;
+  }
+}

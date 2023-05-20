@@ -8,58 +8,10 @@
   margin: auto;
 }
 
-.tableCenter {
-  grid-area: table;
-
-  background: #202024;
-
-  border-radius: 5px;
-
-  min-height: 136px;
-  min-width: 352px;
-}
-
-.leftTableModule,
-.topTableModule,
-.rightTableModule,
-.bottomTableModule,
-.tableCenter {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.leftTableModule {
-  grid-area: left;
-  flex-direction: column;
-}
-
-.topTableModule {
-  grid-area: top;
-}
-
-.rightTableModule {
-  grid-area: right;
-  flex-direction: column;
-}
-
-.bottomTableModule {
-  grid-area: bottom;
-}
-
 @media (max-width: 720px) {
   .table {
     max-width: 100%;
     min-height: 34rem;
     width: 44rem;
-  }
-
-  .tableCenter {
-    min-width: auto;
-    min-height: auto;
-  }
-
-  .tableCenter button {
-    margin: 0.75rem;
   }
 }

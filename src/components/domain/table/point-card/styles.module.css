@@ -46,6 +46,10 @@
   color: #996dff;
 }
 
-.highlight {
+.cyanHighlight {
   border-color: #1ef7d0;
+}
+
+.orangeHighlight {
+  border-color: #eb8a1d;
 }
