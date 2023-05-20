@@ -1,15 +1,18 @@
 import classNames from "classnames";
 import { ReactNode } from "react";
 import { BsFillSuitClubFill, BsPiggyBankFill } from "react-icons/bs";
-import { useRoomStore } from "../../../../stores/room-store";
 
 import styles from "./styles.module.css";
+import {
+  PeopleHighlightColor,
+  useRoomStore,
+} from "../../../../stores/room-store";
 
 interface PointCardProps {
   points?: number;
   showPoints?: boolean;
   isMe?: boolean;
-  highlight?: boolean;
+  highlight?: PeopleHighlightColor;
   children?: ReactNode;
 }
 
@@ -24,16 +27,20 @@ function PointCard({
     showEasterEgg: state.showEasterEgg,
   }));
 
-  const hasSelectedPoints = typeof points !== "undefined";
-  const parsedPoints =
-    typeof points !== "undefined" && points === 0 ? "?" : points;
+  function Point() {
+    const hasSelectedPoints = typeof points !== "undefined";
+    const parsedPoints =
+      typeof points !== "undefined" && points === 0 ? "?" : points;
 
-  function decideIconToShow() {
-    if (showEasterEgg) {
-      return <BsPiggyBankFill />;
+    if (showPoints) {
+      return <>{parsedPoints}</>;
     }
 
-    return <BsFillSuitClubFill />;
+    if (hasSelectedPoints) {
+      return showEasterEgg ? <BsPiggyBankFill /> : <BsFillSuitClubFill />;
+    }
+
+    return <></>;
   }
 
   return (
@@ -44,10 +51,10 @@ function PointCard({
       <div
         className={classNames(styles.point, {
           [styles.showPoints]: showPoints,
-          [styles.highlight]: highlight,
+          [styles[`${highlight}Highlight`]]: !!highlight,
         })}
       >
-        {showPoints ? parsedPoints : hasSelectedPoints && decideIconToShow()}
+        <Point />
       </div>
       <label
         className={classNames({

@@ -6,6 +6,7 @@ import {
   OnPeopleSelectPointProps,
   OnRoomShowPointsProps,
   OnRoomSyncPeopleProps,
+  OnRoomShowAfkAlertProps,
 } from "./types";
 
 function onPeopleSelectPoint(
@@ -56,10 +57,20 @@ async function onRoomSyncPeople(
   );
 }
 
+function onRoomShowAfkAlert(
+  subscription: PresenceChannel,
+  { people_id }: OnRoomShowAfkAlertProps
+) {
+  subscription.trigger(ClientRoomEvents.ROOM_SHOW_AFK_ALERT, {
+    people_id,
+  });
+}
+
 export const roomEvents = {
   onPeopleFireConfetti,
   onPeopleSelectPoint,
   onRoomShowPoints,
   onRoomSyncPeople,
+  onRoomShowAfkAlert,
 };
 export * from "./types";
