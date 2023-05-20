@@ -1,4 +1,11 @@
-import { ReactNode, createContext, useContext, useRef, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "react-hot-toast";
 import { BsInfoCircleFill } from "react-icons/bs";
 
@@ -18,6 +25,10 @@ const AfkAlertContext = createContext({} as AfkAlertContextProps);
 export function AfkAlertProvider({ children }: AfkAlertProviderProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlayingAlert, setIsPlayingAlert] = useState(false);
+
+  useEffect(() => {
+    Notification.requestPermission();
+  }, []);
 
   function playAlert() {
     setIsPlayingAlert(true);
