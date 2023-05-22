@@ -12,6 +12,7 @@ const eventTypeParsers = {
     WebhookVaultEvent.people_fire_confetti,
   [ClientRoomEvents.PEOPLE_SELECT_POINT]: WebhookVaultEvent.people_select_point,
   [ClientRoomEvents.ROOM_SHOW_POINTS]: WebhookVaultEvent.room_show_points,
+  [ClientRoomEvents.ROOM_SHOW_AFK_ALERT]: WebhookVaultEvent.room_show_afk_alert,
 };
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
