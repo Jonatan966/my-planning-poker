@@ -1,0 +1,46 @@
+.dropdownContainer {
+  display: flex;
+  gap: 0.5rem;
+
+  flex-direction: column;
+  position: relative;
+}
+
+.dropdownLabel {
+  font-size: 14px;
+  color: #87868b;
+}
+
+.dropdown {
+  background: #121214;
+  border: none;
+  height: 3rem;
+
+  border: 2px solid #29292e;
+  color: #e1e1e6;
+  padding: 0 1rem;
+
+  font-size: 1rem;
+
+  transition: border-color 0.2s, filter 0.2s;
+
+  appearance: none;
+  cursor: pointer;
+}
+
+.dropdown:focus {
+  border-color: #eb8a1d;
+  outline: none;
+}
+
+.dropdown:focus ~ .dropdownArrow {
+  transform: rotate(180deg);
+}
+
+.dropdownArrow {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+
+  pointer-events: none;
+}
