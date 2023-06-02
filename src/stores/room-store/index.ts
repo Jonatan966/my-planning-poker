@@ -1,13 +1,13 @@
 import pusherJs, { PresenceChannel } from "pusher-js";
 import createStore, { StateCreator } from "zustand";
 
-import { mountRoomHandler } from "./mount-room-handler";
 import { api } from "../../lib/axios";
 import { createWebConnection } from "../../lib/pusher";
+import { mountRoomHandler } from "./mount-room-handler";
 
 import {
-  InternalRoomEvents,
   ClientRoomEvents,
+  InternalRoomEvents,
   roomEvents,
 } from "../../services/room-events";
 import {
@@ -159,7 +159,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   }
 
   async function selectPoint(points: number) {
-    const { basicInfo } = get();
+    const { basicInfo, peoples } = get();
 
     const myID = basicInfo.subscription.members.myID;
 
@@ -172,6 +172,17 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       people_id: myID,
       people_selected_points: points,
     });
+
+    const peoplesWithPoints = Object.values(peoples).filter(
+      (people) => typeof people.points !== "undefined"
+    ).length;
+
+    const ableToShowPoints =
+      peoplesWithPoints >= Object.keys(peoples).length - 1;
+
+    if (ableToShowPoints) {
+      await setRoomPointsVisibility(true);
+    }
   }
 
   async function setRoomPointsVisibility(
@@ -221,7 +232,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     });
   }
 
-  function highlightAfkPeoples(delay: number) {
+  function highlightAfkPeoples(delay: number, senderPeopleId?: string) {
     const { peoples } = get();
 
     const idsOfPeoplesWithoutPoints = Object.values(peoples).map((people) =>
@@ -230,7 +241,14 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
     setPeoplesHighlight(idsOfPeoplesWithoutPoints, "orange");
 
-    setTimeout(() => setPeoplesHighlight(idsOfPeoplesWithoutPoints), delay);
+    if (senderPeopleId) {
+      setPeoplesHighlight([senderPeopleId], "cyan");
+    }
+
+    setTimeout(
+      () => setPeoplesHighlight([...idsOfPeoplesWithoutPoints, senderPeopleId]),
+      delay
+    );
   }
 
   function hasMeWithoutPoints() {
