@@ -22,8 +22,10 @@ function RoomCard({ roomInfo, onRemoveRoom, onClick }: RoomCardProps) {
     event.stopPropagation();
 
     const parsedUrl = `${window.location.origin}/rooms/${roomInfo.id}`;
+    const writeText =
+      navigator?.clipboard?.writeText(parsedUrl) || Promise.reject();
 
-    await toast.promise(navigator.clipboard.writeText(parsedUrl), {
+    await toast.promise(writeText, {
       error: "Não foi possível copiar o link da sala",
       loading: "Copiando link da sala...",
       success: "Link da sala copiado com sucesso!",
