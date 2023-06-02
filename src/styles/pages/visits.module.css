@@ -9,8 +9,6 @@
 .visitsList {
   background: #121214;
 
-  border-radius: 5px;
-
   padding: 0.5rem;
 
   overflow-y: auto;

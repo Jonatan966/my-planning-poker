@@ -61,7 +61,7 @@ export interface RoomStoreProps {
     peoples_id: string[],
     highlight?: PeopleHighlightColor
   ): void;
-  highlightAfkPeoples(delay: number): void;
+  highlightAfkPeoples(delay: number, senderPeopleId?: string): void;
   hasMeWithoutPoints(): boolean;
 }
 

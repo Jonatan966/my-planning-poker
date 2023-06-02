@@ -19,8 +19,9 @@
   max-width: 500px;
   width: 100%;
 
-  padding: 32px;
-  border-radius: 5px;
+  padding: 24px;
+  box-shadow: 0 0px 8px #121214;
+
   margin: 1rem;
   background: #202024;
 

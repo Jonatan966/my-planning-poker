@@ -34,6 +34,7 @@ export function AfkButton() {
   } = useRoomStore((state) => ({
     broadcastAfkAlert: state.broadcastAfkAlert,
     highlightAfkPeoples: state.highlightAfkPeoples,
+    setPeoplesHighlight: state.setPeoplesHighlight,
     hasMeWithoutPoints: state.hasMeWithoutPoints,
     roomSubscription: state.basicInfo.subscription,
     countOfPeoples: Object.keys(state.peoples).length,
@@ -58,12 +59,12 @@ export function AfkButton() {
     onShowAFKAlert({ play: false });
   }
 
-  function onShowAFKAlert({ play = true }) {
+  function onShowAFKAlert({ play = true, people_id = myID }) {
     if (play) {
       playAlert();
     }
 
-    highlightAfkPeoples(FIVE_SECONDS);
+    highlightAfkPeoples(FIVE_SECONDS, people_id);
 
     setCurrentAFKButtonState(AFKButtonState.COOLDOWN);
     cooldownChangeAFKButtonState(AFKButtonState.DISABLED);
@@ -74,8 +75,10 @@ export function AfkButton() {
       return;
     }
 
-    roomSubscription.bind(ClientRoomEvents.ROOM_SHOW_AFK_ALERT, () =>
-      onShowAFKAlert({ play: hasMeWithoutPoints() })
+    roomSubscription.bind(
+      ClientRoomEvents.ROOM_SHOW_AFK_ALERT,
+      ({ people_id }) =>
+        onShowAFKAlert({ play: hasMeWithoutPoints(), people_id })
     );
 
     return () => {

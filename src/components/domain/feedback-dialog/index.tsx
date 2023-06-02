@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { MdFeedback } from "react-icons/md";
 
@@ -8,12 +8,14 @@ import { api } from "../../../lib/axios";
 import Button from "../../ui/button";
 import Dialog from "../../ui/dialog";
 import { DialogHeader } from "../../ui/dialog/dialog-header";
+import { Dropdown } from "../../ui/dropdown";
 import { TextArea } from "../../ui/text-area";
-import { FeedbackType, FeedbackTypes } from "./feedback-types";
+import { Tooltip } from "../../ui/tooltip";
 import { SuccessMessage } from "./success-message";
 
 import styles from "./styles.module.css";
-import { Tooltip } from "../../ui/tooltip";
+
+export type FeedbackType = "problem" | "suggestion";
 
 export function FeedbackDialog() {
   const router = useRouter();
@@ -35,8 +37,8 @@ export function FeedbackDialog() {
     }
   }, [isOpen]);
 
-  function handleSelectFeedbackType(type: FeedbackType) {
-    setSelectedFeedbackType(type);
+  function handleSelectFeedbackType(event: ChangeEvent<HTMLSelectElement>) {
+    setSelectedFeedbackType(event.target.value as FeedbackType);
   }
 
   function onRecreateFeedback() {
@@ -95,38 +97,36 @@ export function FeedbackDialog() {
             Fechar
           </Button>
         </DialogHeader>
-
         {hasSentFeedback ? (
           <SuccessMessage onRecreateFeedback={onRecreateFeedback} />
         ) : (
-          <>
-            <FeedbackTypes
-              isDisabled={isSendingFeedback}
-              selectedFeedbackType={selectedFeedbackType}
-              onSelectFeedbackType={handleSelectFeedbackType}
-            />
-            <form
-              onSubmit={handleSendFeedback}
-              className={styles.suggestionForm}
+          <form onSubmit={handleSendFeedback} className={styles.suggestionForm}>
+            <Dropdown
+              title="Tipo do feedback"
+              onChange={handleSelectFeedbackType}
             >
-              <TextArea
-                title="Descrição"
-                rows={5}
-                disabled={isSendingFeedback || !isFilledFeedbackType}
-                required
-                ref={descriptionRef}
-              />
+              <option value="">Selecione uma opção</option>
+              <option value="suggestion">Sugestão</option>
+              <option value="problem">Feedback</option>
+            </Dropdown>
 
-              <Button
-                className={styles.sendButton}
-                disabled={!isFilledFeedbackType}
-                type="submit"
-                isLoading={isSendingFeedback}
-              >
-                Enviar feedback
-              </Button>
-            </form>
-          </>
+            <TextArea
+              title="Descrição"
+              rows={6}
+              disabled={isSendingFeedback || !isFilledFeedbackType}
+              required
+              ref={descriptionRef}
+            />
+
+            <Button
+              className={styles.sendButton}
+              disabled={!isFilledFeedbackType}
+              type="submit"
+              isLoading={isSendingFeedback}
+            >
+              Enviar feedback
+            </Button>
+          </form>
         )}
       </Dialog>
 

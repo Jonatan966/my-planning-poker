@@ -232,7 +232,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     });
   }
 
-  function highlightAfkPeoples(delay: number) {
+  function highlightAfkPeoples(delay: number, senderPeopleId?: string) {
     const { peoples } = get();
 
     const idsOfPeoplesWithoutPoints = Object.values(peoples).map((people) =>
@@ -241,7 +241,14 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
     setPeoplesHighlight(idsOfPeoplesWithoutPoints, "orange");
 
-    setTimeout(() => setPeoplesHighlight(idsOfPeoplesWithoutPoints), delay);
+    if (senderPeopleId) {
+      setPeoplesHighlight([senderPeopleId], "cyan");
+    }
+
+    setTimeout(
+      () => setPeoplesHighlight([...idsOfPeoplesWithoutPoints, senderPeopleId]),
+      delay
+    );
   }
 
   function hasMeWithoutPoints() {
