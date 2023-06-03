@@ -1,7 +1,7 @@
 import pusherJs, { PresenceChannel } from "pusher-js";
 import { StateCreator } from "zustand";
 
-export type PeopleHighlightColor = "cyan" | "orange";
+export type PeopleHighlightColor = "cyan" | "orange" | "red";
 
 export enum EventMode {
   PUBLIC,
