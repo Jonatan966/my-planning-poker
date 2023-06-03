@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { FaNewspaper, FaInfoCircle } from "react-icons/fa";
+import { FaInfoCircle, FaNewspaper } from "react-icons/fa";
 import { ConnectionForm } from "../components/domain/connection-form";
 import { FeedbackDialog } from "../components/domain/feedback-dialog";
 import { QuickRoomAccess } from "../components/domain/quick-room-access";

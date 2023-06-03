@@ -1,20 +1,21 @@
-import { useState } from "react";
-import { GetServerSideProps } from "next";
 import * as Sentry from "@sentry/nextjs";
+import { GetServerSideProps } from "next";
+import { useState } from "react";
 
+import ConnectionDialog from "../../components/domain/connection-dialog";
 import PointsList from "../../components/domain/points-list";
 import RoomHeader from "../../components/domain/room-header";
 import Table from "../../components/domain/table";
-import ConnectionDialog from "../../components/domain/connection-dialog";
 
+import { errorCodes } from "../../configs/error-codes";
+import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
 import { database } from "../../lib/database";
 import { cookieStorageManager } from "../../utils/cookie-storage-manager";
-import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
-import { errorCodes } from "../../configs/error-codes";
 
-import styles from "../../styles/pages/room.module.css";
+import { InactivityDialog } from "../../components/domain/inactivity-dialog";
 import PageHead from "../../components/engine/page-head";
 import { appConfig } from "../../configs/app";
+import styles from "../../styles/pages/room.module.css";
 
 interface RoomPageProps {
   basicMe: {
@@ -42,6 +43,8 @@ function RoomPage({ basicMe, roomInfo }: RoomPageProps) {
       />
       {!isLoading && (
         <>
+          <InactivityDialog />
+
           <main className={styles.mainConatainer}>
             <Table />
           </main>
