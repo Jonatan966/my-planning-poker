@@ -28,7 +28,7 @@ My Planning Poker é uma plataforma de realização de Planning Pokers, livre de
 - [NextPWA](https://www.npmjs.com/package/next-pwa)
 - [Upstash](https://upstash.com/)
 - [Pusher](http://pusher.com/)
-- [Axios](https://axios-http.com/ptbr/docs/intro)
+- [Ky](https://github.com/sindresorhus/ky)
 - [Nookies](https://github.com/maticzav/nookies)
 - [React Canvas Confetti](react-canvas-confetti)
 - [React Icons](https://react-icons.github.io/react-icons/)
