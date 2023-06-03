@@ -57,6 +57,7 @@ export interface RoomStoreProps {
   setRoomPointsVisibility(show?: boolean, mode?: EventMode): Promise<void>;
   broadcastConfetti(): void;
   broadcastAfkAlert(): void;
+  broadcastInactivity(hasLeave: boolean): void;
   setPeoplesHighlight(
     peoples_id: string[],
     highlight?: PeopleHighlightColor

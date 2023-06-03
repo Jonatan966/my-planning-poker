@@ -19,11 +19,22 @@ const THREE_MINUTES_MILISECONDS = 1000 * 60 * 3;
 export function InactivityDialog() {
   const router = useRouter();
   const { closeDialog, isOpen, openDialog } = useDialog();
-  const { me } = useRoomStore((state) => ({
+  const { me, broadcastInactivity } = useRoomStore((state) => ({
     me: state.peoples?.[state.basicInfo.subscription?.members?.myID],
+    broadcastInactivity: state.broadcastInactivity,
   }));
 
   const inactivityTimer = useRef(-1);
+
+  function onShowInactivityDialog() {
+    broadcastInactivity(false);
+    openDialog();
+  }
+
+  function onConfirmActivity() {
+    broadcastInactivity(true);
+    closeDialog();
+  }
 
   useEffect(() => {
     if (!me || isOpen) {
@@ -33,7 +44,7 @@ export function InactivityDialog() {
     clearTimeout(inactivityTimer.current);
 
     inactivityTimer.current = Number(
-      setTimeout(() => openDialog(), THREE_MINUTES_MILISECONDS)
+      setTimeout(onShowInactivityDialog, THREE_MINUTES_MILISECONDS)
     );
   }, [me, isOpen]);
 
@@ -70,7 +81,7 @@ export function InactivityDialog() {
             Sair
           </Button>
         </Link>
-        <Button colorScheme="secondary" onClick={closeDialog}>
+        <Button colorScheme="secondary" onClick={onConfirmActivity}>
           Continuar na sala
         </Button>
       </div>

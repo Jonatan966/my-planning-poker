@@ -50,6 +50,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     broadcastAfkAlert,
     highlightAfkPeoples,
     hasMeWithoutPoints,
+    broadcastInactivity,
   };
 
   function _reset() {
@@ -234,6 +235,15 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
     roomEvents.onRoomShowAfkAlert(basicInfo.subscription, {
       people_id: basicInfo.subscription.members.myID,
+    });
+  }
+
+  function broadcastInactivity(hasConfirmedActivity = false) {
+    const { basicInfo } = get();
+
+    roomEvents.onPeopleInactivate(basicInfo.subscription, {
+      people_id: basicInfo.subscription.members.myID,
+      has_confirmed_activity: hasConfirmedActivity,
     });
   }
 
