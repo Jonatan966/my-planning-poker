@@ -1456,15 +1456,15 @@
 
 "@upstash/qstash@^0.3.6":
   version "0.3.6"
-  resolved "https://registry.npmjs.org/@upstash/qstash/-/qstash-0.3.6.tgz"
+  resolved "https://registry.yarnpkg.com/@upstash/qstash/-/qstash-0.3.6.tgz#1407f6f6fc1785d21497d31cbaf0a771946fa59c"
   integrity sha512-NKN4jbPhB5lfHoSIaU7AuQ3F+yGS20e/FBRiUuPetcKoi354wHhKj9AJFfkFT5SSeLq0XEsXRNynm8gqCS4HjQ==
   dependencies:
     "@deno/shim-crypto" "~0.3.0"
 
 "@upstash/redis@^1.12.0":
-  version "1.20.6"
-  resolved "https://registry.npmjs.org/@upstash/redis/-/redis-1.20.6.tgz"
-  integrity sha512-q1izaYEUsq/WiXNOjf4oOjFZe8fIeBSZN8d5cEyOD4nem+zxc4jccieorQQrNlEahKPE1ZYLzVEkMODRUfch2g==
+  version "1.21.0"
+  resolved "https://registry.yarnpkg.com/@upstash/redis/-/redis-1.21.0.tgz#a1096f096800032d65b5d819aa2c60af3011b9e8"
+  integrity sha512-c6M+cl0LOgGK/7Gp6ooMkIZ1IDAJs8zFR+REPkoSkAq38o7CWFX5FYwYEqGZ6wJpUGBuEOr/7hTmippXGgL25A==
   dependencies:
     isomorphic-fetch "^3.0.0"
 
@@ -2559,6 +2559,11 @@ jsonpointer@^5.0.0:
   version "5.0.1"
   resolved "https://registry.npmjs.org/jsonpointer/-/jsonpointer-5.0.1.tgz"
   integrity sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==
+
+ky@^0.33.3:
+  version "0.33.3"
+  resolved "https://registry.yarnpkg.com/ky/-/ky-0.33.3.tgz#bf1ad322a3f2c3428c13cfa4b3af95e6c4a2f543"
+  integrity sha512-CasD9OCEQSFIam2U8efFK81Yeg8vNMTBUqtMOHlrcWQHqUX3HeCl9Dr31u4toV7emlH8Mymk5+9p0lL6mKb/Xw==
 
 leven@^3.1.0:
   version "3.1.0"
