@@ -8,6 +8,8 @@ import { mountRoomHandler } from "./mount-room-handler";
 import {
   ClientRoomEvents,
   InternalRoomEvents,
+  OnPeopleFireConfettiProps,
+  OnPeopleInactivateProps,
   roomEvents,
 } from "../../services/room-events";
 import {
@@ -93,11 +95,22 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       ClientRoomEvents.ROOM_SHOW_POINTS,
       roomHandler.onShowPoints
     );
-    subscription.bind(ClientRoomEvents.PEOPLE_FIRE_CONFETTI, (params) =>
-      roomHandler.onHighlightPeoples({
-        peoples_id: [params.people_id],
-        highlight: "cyan",
-      })
+    subscription.bind(
+      ClientRoomEvents.PEOPLE_FIRE_CONFETTI,
+      (params: OnPeopleFireConfettiProps) =>
+        roomHandler.onHighlightPeoples({
+          peoples_id: [params.people_id],
+          highlight: "cyan",
+        })
+    );
+    subscription.bind(
+      ClientRoomEvents.PEOPLE_INACTIVATE,
+      (params: OnPeopleInactivateProps) => {
+        roomHandler.onHighlightPeoples({
+          peoples_id: [params.people_id],
+          highlight: params?.has_confirmed_activity ? undefined : "red",
+        });
+      }
     );
 
     connection.user.bind(

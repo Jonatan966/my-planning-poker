@@ -1,9 +1,9 @@
 import { amplitude } from "../../lib/amplitude";
 import {
   FreeVaultEvent,
-  WebhookVaultEventHandlers,
-  WebhookVaultEvent,
   FreeVaultEventHandlers,
+  WebhookVaultEvent,
+  WebhookVaultEventHandlers,
 } from "./types";
 import { prepareBasicEvent, prepareBasicRoomEvent } from "./utils";
 
@@ -96,6 +96,22 @@ async function onPeopleSendFeedback(
   await amplitude.logEvent(event);
 }
 
+async function onPeopleInactivate(
+  props: WebhookVaultEventHandlers.OnPeopleInactivateProps
+) {
+  const event = prepareBasicRoomEvent(
+    WebhookVaultEvent.people_inactivate,
+    props,
+    {
+      event_properties: {
+        has_confirmed_activity: props.has_confirmed_activity,
+      },
+    }
+  );
+
+  await amplitude.logEvent(event);
+}
+
 export const eventVault = {
   [WebhookVaultEvent.room_people_enter]: onRoomPeopleEnter,
   [WebhookVaultEvent.room_people_leave]: onRoomPeopleLeave,
@@ -103,5 +119,6 @@ export const eventVault = {
   [WebhookVaultEvent.room_show_afk_alert]: onRoomShowAfkAlert,
   [WebhookVaultEvent.people_select_point]: onPeopleSelectPoint,
   [WebhookVaultEvent.people_fire_confetti]: onPeopleFireConfetti,
+  [WebhookVaultEvent.people_inactivate]: onPeopleInactivate,
   [FreeVaultEvent.people_send_feedback]: onPeopleSendFeedback,
 };

@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { usePusherWebhook } from "../../hooks/use-pusher-webhook";
-import { ClientRoomEvents } from "../../services/room-events";
-import { WebhookVaultEvent } from "../../services/event-vault/types";
 import { eventVault } from "../../services/event-vault";
+import { WebhookVaultEvent } from "../../services/event-vault/types";
+import { ClientRoomEvents } from "../../services/room-events";
 
 const eventTypeParsers = {
   member_added: WebhookVaultEvent.room_people_enter,
@@ -13,6 +13,7 @@ const eventTypeParsers = {
   [ClientRoomEvents.PEOPLE_SELECT_POINT]: WebhookVaultEvent.people_select_point,
   [ClientRoomEvents.ROOM_SHOW_POINTS]: WebhookVaultEvent.room_show_points,
   [ClientRoomEvents.ROOM_SHOW_AFK_ALERT]: WebhookVaultEvent.room_show_afk_alert,
+  [ClientRoomEvents.PEOPLE_INACTIVATE]: WebhookVaultEvent.people_inactivate,
 };
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
@@ -53,6 +54,15 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
           people_id: event.user_id,
           room_id: parsedRoomID,
           people_selected_points: parsedEventData.people_selected_points,
+        });
+        break;
+
+      case WebhookVaultEvent.people_inactivate:
+        await eventVault[parsedEventType]({
+          event_sended_at: eventsSendedAt,
+          people_id: event.user_id,
+          room_id: parsedRoomID,
+          has_confirmed_activity: parsedEventData.has_confirmed_activity,
         });
         break;
 
