@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { MdFeedback } from "react-icons/md";
 
 import { useDialog } from "../../../hooks/use-dialog";
-import { api } from "../../../lib/axios";
+import { api } from "../../../lib/ky";
 import Button from "../../ui/button";
 import Dialog from "../../ui/dialog";
 import { DialogHeader } from "../../ui/dialog/dialog-header";
@@ -57,10 +57,12 @@ export function FeedbackDialog() {
     setIsSendingFeedback(true);
 
     try {
-      await api.post("/feedbacks", {
-        description: descriptionRef.current.value,
-        roomId: router.query?.room_id,
-        type: selectedFeedbackType,
+      await api.post("feedbacks", {
+        json: {
+          description: descriptionRef.current.value,
+          roomId: router.query?.room_id,
+          type: selectedFeedbackType,
+        },
       });
 
       setHasSentFeedback(true);

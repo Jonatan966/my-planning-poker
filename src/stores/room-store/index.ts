@@ -1,7 +1,7 @@
 import pusherJs, { PresenceChannel } from "pusher-js";
 import createStore, { StateCreator } from "zustand";
 
-import { api } from "../../lib/axios";
+import { api } from "../../lib/ky";
 import { createWebConnection } from "../../lib/pusher";
 import { mountRoomHandler } from "./mount-room-handler";
 
@@ -129,9 +129,11 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   }
 
   async function createRoom(roomName: string) {
-    const { data: roomInfo } = await api.post<RoomInfo>("/rooms", {
-      name: roomName,
-    });
+    const roomInfo = await api
+      .post("rooms", {
+        json: { name: roomName },
+      })
+      .json<RoomInfo>();
 
     return roomInfo;
   }
