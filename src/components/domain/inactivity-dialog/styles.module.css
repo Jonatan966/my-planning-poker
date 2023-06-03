@@ -1,0 +1,17 @@
+.inactivityActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+
+  margin-top: 1rem;
+}
+
+.countdownSpinner {
+  margin: auto;
+  padding: 1rem 0;
+}
+
+.message {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
