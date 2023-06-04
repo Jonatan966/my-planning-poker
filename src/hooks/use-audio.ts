@@ -1,17 +1,13 @@
 import { useRef, useState } from "react";
 
-export function useAudio(audioName: string) {
+export function useAudio(audioName: string, volume?: number) {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
-  const inServerSide = typeof window === "undefined";
-
   const audioRef = useRef<HTMLAudioElement>(
-    inServerSide ? null : new Audio(`/sounds/${audioName}`)
+    mountAudio({ audioName, onStop: () => setIsPlayingAudio(false), volume })
   );
 
   async function playAudio() {
-    audioRef.current.onended = () => setIsPlayingAudio(false);
-
     try {
       await audioRef.current.play();
       setIsPlayingAudio(true);
@@ -31,4 +27,22 @@ export function useAudio(audioName: string) {
     playAudio,
     stopAudio,
   };
+}
+
+function mountAudio(params: {
+  audioName: string;
+  onStop: Function;
+  volume?: number;
+}) {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const audio = new Audio(`/sounds/${params.audioName}`);
+
+  audio.onended = () => params.onStop();
+
+  audio.volume = typeof params.volume === "undefined" ? 1 : params.volume;
+
+  return audio;
 }
