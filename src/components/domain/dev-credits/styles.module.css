@@ -1,0 +1,19 @@
+.devCreditsText {
+  text-align: center;
+  padding: 0.75rem;
+
+  position: sticky;
+  bottom: 0;
+
+  background: #121214;
+  color: #c4c4cc;
+}
+
+.devLink {
+  font-weight: bold;
+  color: #eb8a1d;
+}
+
+.pig {
+  cursor: help;
+}
