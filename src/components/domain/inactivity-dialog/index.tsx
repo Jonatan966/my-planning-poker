@@ -6,6 +6,7 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import Button from "../../ui/button";
 import Dialog from "../../ui/dialog";
 
+import { useAudio } from "../../../hooks/use-audio";
 import { useDialog } from "../../../hooks/use-dialog";
 import { useRoomStore } from "../../../stores/room-store";
 import { convertSecondsToTime } from "../../../utils/convert-seconds-to-time";
@@ -16,9 +17,13 @@ const THIRTY_SECONDS = 30;
 const TWO_MINUTES = ONE_MINUTE * 2;
 const THREE_MINUTES_MILISECONDS = 1000 * 60 * 3;
 
+const HALF_AUDIO_VOLUME = 0.5;
+
 export function InactivityDialog() {
   const router = useRouter();
   const { closeDialog, isOpen, openDialog } = useDialog();
+  const { playAudio } = useAudio("inactivity-alert.wav", HALF_AUDIO_VOLUME);
+
   const { me, broadcastInactivity } = useRoomStore((state) => ({
     me: state.peoples?.[state.basicInfo.subscription?.members?.myID],
     broadcastInactivity: state.broadcastInactivity,
@@ -26,9 +31,11 @@ export function InactivityDialog() {
 
   const inactivityTimer = useRef(-1);
 
-  function onShowInactivityDialog() {
+  async function onShowInactivityDialog() {
     broadcastInactivity(false);
     openDialog();
+
+    await playAudio();
   }
 
   function onConfirmActivity() {
