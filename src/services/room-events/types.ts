@@ -10,6 +10,7 @@ export enum ClientRoomEvents {
   ROOM_SHOW_AFK_ALERT = "client-room_show_afk_alert",
   PEOPLE_SELECT_POINT = "client-people_select_point",
   PEOPLE_FIRE_CONFETTI = "client-people_fire_confetti",
+  PEOPLE_INACTIVATE = "client-people_inactivate",
 }
 
 export interface OnPeopleSelectPointProps {
@@ -34,4 +35,9 @@ export interface OnRoomSyncPeopleProps {
 
 export interface OnRoomShowAfkAlertProps {
   people_id: string;
+}
+
+export interface OnPeopleInactivateProps {
+  people_id: string;
+  has_confirmed_activity?: boolean;
 }

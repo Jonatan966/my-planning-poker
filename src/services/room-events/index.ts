@@ -3,10 +3,11 @@ import { PresenceChannel } from "pusher-js";
 import {
   ClientRoomEvents,
   OnPeopleFireConfettiProps,
+  OnPeopleInactivateProps,
   OnPeopleSelectPointProps,
+  OnRoomShowAfkAlertProps,
   OnRoomShowPointsProps,
   OnRoomSyncPeopleProps,
-  OnRoomShowAfkAlertProps,
 } from "./types";
 
 function onPeopleSelectPoint(
@@ -66,11 +67,23 @@ function onRoomShowAfkAlert(
   });
 }
 
+function onPeopleInactivate(
+  subscription: PresenceChannel,
+  { people_id, has_confirmed_activity = false }: OnPeopleInactivateProps
+) {
+  subscription.trigger(ClientRoomEvents.PEOPLE_INACTIVATE, {
+    people_id,
+    has_confirmed_activity,
+  });
+}
+
 export const roomEvents = {
   onPeopleFireConfetti,
   onPeopleSelectPoint,
   onRoomShowPoints,
   onRoomSyncPeople,
   onRoomShowAfkAlert,
+  onPeopleInactivate,
 };
+
 export * from "./types";

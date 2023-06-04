@@ -1,13 +1,7 @@
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, createContext, useContext, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { BsInfoCircleFill } from "react-icons/bs";
+import { useAudio } from "../../hooks/use-audio";
 
 interface AfkAlertProviderProps {
   children: ReactNode;
@@ -23,19 +17,14 @@ const FIVE_SECONDS = 5000;
 const AfkAlertContext = createContext({} as AfkAlertContextProps);
 
 export function AfkAlertProvider({ children }: AfkAlertProviderProps) {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [isPlayingAlert, setIsPlayingAlert] = useState(false);
+  const { playAudio, isPlayingAudio } = useAudio("afk-alert.wav");
 
   useEffect(() => {
     Notification.requestPermission();
   }, []);
 
   function playAlert() {
-    setIsPlayingAlert(true);
-
-    audioRef.current
-      .play()
-      .catch(() => console.log("[afk-alert] Unable to play alert"));
+    playAudio().then();
 
     const alertMessage = "Estão te chamando para votar!";
 
@@ -49,22 +38,13 @@ export function AfkAlertProvider({ children }: AfkAlertProviderProps) {
     });
   }
 
-  function handleOnSoundEnded() {
-    setIsPlayingAlert(false);
-  }
-
   return (
     <AfkAlertContext.Provider
       value={{
         playAlert,
-        isPlayingAlert,
+        isPlayingAlert: isPlayingAudio,
       }}
     >
-      <audio
-        src="/sounds/afk-alert.wav"
-        ref={audioRef}
-        onEnded={handleOnSoundEnded}
-      />
       {children}
     </AfkAlertContext.Provider>
   );
