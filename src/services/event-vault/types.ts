@@ -11,6 +11,7 @@ export enum WebhookVaultEvent {
   room_show_afk_alert = "mpp_room_show_afk_alert",
   people_select_point = "mpp_people_select_point",
   people_fire_confetti = "mpp_people_fire_confetti",
+  people_inactivate = "mpp_people_inactivate",
 }
 
 export interface BasicEventProps {
@@ -38,6 +39,10 @@ export namespace WebhookVaultEventHandlers {
   }
 
   export interface OnPeopleFireConfettiProps extends BasicRoomEventProps {}
+
+  export interface OnPeopleInactivateProps extends BasicRoomEventProps {
+    has_confirmed_activity: boolean;
+  }
 }
 
 export namespace FreeVaultEventHandlers {

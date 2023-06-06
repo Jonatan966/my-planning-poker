@@ -1,8 +1,9 @@
-import sortBy from "lodash/sortBy";
 import produce from "immer";
+import sortBy from "lodash/sortBy";
 import { Members } from "pusher-js";
 
-import { api } from "../../lib/axios";
+import { api } from "../../lib/ky";
+import * as RoomEvents from "../../services/room-events";
 import {
   MountRoomEventsProps,
   OnHighlightPeoplesProps,
@@ -10,7 +11,6 @@ import {
   People,
   RoomStoreProps,
 } from "./types";
-import * as RoomEvents from "../../services/room-events";
 
 function sortPeoplesByArrival(peoples: Record<string, People>) {
   return Object.fromEntries(
@@ -57,13 +57,15 @@ export function mountRoomHandler(
     const me = state.peoples[state.basicInfo.subscription.members.myID];
 
     if (me.points !== undefined || state.basicInfo.showPoints) {
-      await api.post("/peoples/sync", {
-        senderPeople: {
-          id: me.id,
-          points: me.points,
+      await api.post("peoples/sync", {
+        json: {
+          senderPeople: {
+            id: me.id,
+            points: me.points,
+          },
+          targetPeopleID: people.id,
+          showPoints: state.basicInfo.showPoints,
         },
-        targetPeopleID: people.id,
-        showPoints: state.basicInfo.showPoints,
       });
     }
   }

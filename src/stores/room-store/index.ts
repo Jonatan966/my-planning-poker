@@ -1,13 +1,15 @@
 import pusherJs, { PresenceChannel } from "pusher-js";
 import createStore, { StateCreator } from "zustand";
 
-import { api } from "../../lib/axios";
+import { api } from "../../lib/ky";
 import { createWebConnection } from "../../lib/pusher";
 import { mountRoomHandler } from "./mount-room-handler";
 
 import {
   ClientRoomEvents,
   InternalRoomEvents,
+  OnPeopleFireConfettiProps,
+  OnPeopleInactivateProps,
   roomEvents,
 } from "../../services/room-events";
 import {
@@ -48,6 +50,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     broadcastAfkAlert,
     highlightAfkPeoples,
     hasMeWithoutPoints,
+    broadcastInactivity,
   };
 
   function _reset() {
@@ -93,11 +96,22 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       ClientRoomEvents.ROOM_SHOW_POINTS,
       roomHandler.onShowPoints
     );
-    subscription.bind(ClientRoomEvents.PEOPLE_FIRE_CONFETTI, (params) =>
-      roomHandler.onHighlightPeoples({
-        peoples_id: [params.people_id],
-        highlight: "cyan",
-      })
+    subscription.bind(
+      ClientRoomEvents.PEOPLE_FIRE_CONFETTI,
+      (params: OnPeopleFireConfettiProps) =>
+        roomHandler.onHighlightPeoples({
+          peoples_id: [params.people_id],
+          highlight: "cyan",
+        })
+    );
+    subscription.bind(
+      ClientRoomEvents.PEOPLE_INACTIVATE,
+      (params: OnPeopleInactivateProps) => {
+        roomHandler.onHighlightPeoples({
+          peoples_id: [params.people_id],
+          highlight: params?.has_confirmed_activity ? undefined : "red",
+        });
+      }
     );
 
     connection.user.bind(
@@ -129,9 +143,11 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   }
 
   async function createRoom(roomName: string) {
-    const { data: roomInfo } = await api.post<RoomInfo>("/rooms", {
-      name: roomName,
-    });
+    const roomInfo = await api
+      .post("rooms", {
+        json: { name: roomName },
+      })
+      .json<RoomInfo>();
 
     return roomInfo;
   }
@@ -219,6 +235,15 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
 
     roomEvents.onRoomShowAfkAlert(basicInfo.subscription, {
       people_id: basicInfo.subscription.members.myID,
+    });
+  }
+
+  function broadcastInactivity(hasConfirmedActivity = false) {
+    const { basicInfo } = get();
+
+    roomEvents.onPeopleInactivate(basicInfo.subscription, {
+      people_id: basicInfo.subscription.members.myID,
+      has_confirmed_activity: hasConfirmedActivity,
     });
   }
 

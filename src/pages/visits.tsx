@@ -1,16 +1,17 @@
+import classNames from "classnames";
 import Link from "next/link";
 import { FaHistory } from "react-icons/fa";
-import classNames from "classnames";
 
+import RoomCard from "../components/domain/quick-room-access/room-card";
+import ClientOnly from "../components/engine/client-only";
+import PageHead from "../components/engine/page-head";
 import Button from "../components/ui/button";
 import { useVisitsStore } from "../stores/visits-store";
-import ClientOnly from "../components/engine/client-only";
-import RoomCard from "../components/domain/quick-room-access/room-card";
-import PageHead from "../components/engine/page-head";
 
+import { DevCredits } from "../components/domain/dev-credits";
+import { useRoomAccess } from "../contexts/room-access-context";
 import homeStyles from "../styles/pages/home.module.css";
 import visitsStyles from "../styles/pages/visits.module.css";
-import { useRoomAccess } from "../contexts/room-access-context";
 
 function VisitsPage() {
   const { visits, removeVisit } = useVisitsStore((state) => ({
@@ -67,6 +68,7 @@ function VisitsPage() {
           </div>
         </section>
       </div>
+      <DevCredits />
     </>
   );
 }
