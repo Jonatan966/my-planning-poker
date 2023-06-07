@@ -6,16 +6,12 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import Button from "../../ui/button";
 import Dialog from "../../ui/dialog";
 
+import { appConfig } from "../../../configs/app";
 import { useAudio } from "../../../hooks/use-audio";
 import { useDialog } from "../../../hooks/use-dialog";
 import { useRoomStore } from "../../../stores/room-store";
 import { convertSecondsToTime } from "../../../utils/convert-seconds-to-time";
 import styles from "./styles.module.css";
-
-const ONE_MINUTE = 60;
-const THIRTY_SECONDS = 30;
-const TWO_MINUTES = ONE_MINUTE * 2;
-const THREE_MINUTES_MILISECONDS = 1000 * 60 * 3;
 
 const HALF_AUDIO_VOLUME = 0.5;
 
@@ -51,7 +47,7 @@ export function InactivityDialog() {
     clearTimeout(inactivityTimer.current);
 
     inactivityTimer.current = Number(
-      setTimeout(onShowInactivityDialog, THREE_MINUTES_MILISECONDS)
+      setTimeout(onShowInactivityDialog, appConfig.inactivityDialog.delay)
     );
   }, [me, isOpen]);
 
@@ -61,9 +57,9 @@ export function InactivityDialog() {
       <div className={styles.countdownSpinner}>
         <CountdownCircleTimer
           isPlaying={isOpen}
-          duration={TWO_MINUTES}
+          duration={appConfig.inactivityDialog.countdown}
           colors={["#4863f7", "#eb8a1d", "#f75a68"]}
-          colorsTime={[TWO_MINUTES, THIRTY_SECONDS, 0]}
+          colorsTime={createColorsTime()}
           trailColor="#121214"
           size={128}
           strokeWidth={12}
@@ -94,4 +90,10 @@ export function InactivityDialog() {
       </div>
     </Dialog>
   );
+}
+
+function createColorsTime(): [number, number, number] {
+  const secondColorTime = 0.25 * appConfig.inactivityDialog.countdown;
+
+  return [appConfig.inactivityDialog.countdown, secondColorTime, 0];
 }

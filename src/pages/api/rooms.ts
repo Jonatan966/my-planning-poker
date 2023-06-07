@@ -1,4 +1,7 @@
+import { Environment } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
+
+import { appConfig } from "../../configs/app";
 import { database } from "../../lib/database";
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
@@ -18,6 +21,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
   const newRoom = await database.room.create({
     data: {
       name,
+      environment: appConfig.environment as Environment,
     },
   });
 

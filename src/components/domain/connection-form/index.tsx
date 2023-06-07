@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
-import { useState, FormEvent, useRef, ReactNode } from "react";
+import { FormEvent, ReactNode, useRef, useState } from "react";
 import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
+import { useRoomStore } from "../../../stores/room-store";
 import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 import Button from "../../ui/button";
 import TextInput from "../../ui/text-input";
-import { useRoomStore } from "../../../stores/room-store";
 
 import styles from "./styles.module.css";
 
@@ -86,6 +86,7 @@ function ConnectionForm({
             required
             maxLength={20}
             disabled={isLoading}
+            spellCheck={false}
           />
           <TextInput
             title="Nome da sala"
@@ -95,6 +96,7 @@ function ConnectionForm({
             required
             maxLength={32}
             disabled={isLoading}
+            spellCheck={false}
           />
           {children}
 
@@ -115,6 +117,7 @@ function ConnectionForm({
             required
             maxLength={20}
             disabled={isLoading}
+            spellCheck={false}
           />
           <TextInput
             title="Código da sala"
@@ -123,6 +126,7 @@ function ConnectionForm({
             onChange={(e) => setRoomCode(e.target.value)}
             required
             disabled={isLoading}
+            spellCheck={false}
           />
           {children}
 
