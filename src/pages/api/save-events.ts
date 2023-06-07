@@ -32,48 +32,18 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
 
   for (const event of events) {
     const parsedRoomID = event.channel.replace("presence-", "");
+    const eventName = event?.event || event?.name;
 
-    const parsedEventType: WebhookVaultEvent =
-      eventTypeParsers?.[event?.event || event?.name];
+    const parsedEventType: WebhookVaultEvent = eventTypeParsers?.[eventName];
 
     const parsedEventData = JSON.parse(event.data || "{}");
 
-    switch (parsedEventType) {
-      case WebhookVaultEvent.room_show_points:
-        await eventVault[parsedEventType]({
-          event_sended_at: eventsSendedAt,
-          people_id: event.user_id,
-          room_id: parsedRoomID,
-          show_points: parsedEventData.show_points,
-        });
-        break;
-
-      case WebhookVaultEvent.people_select_point:
-        await eventVault[parsedEventType]({
-          event_sended_at: eventsSendedAt,
-          people_id: event.user_id,
-          room_id: parsedRoomID,
-          people_selected_points: parsedEventData.people_selected_points,
-        });
-        break;
-
-      case WebhookVaultEvent.people_inactivate:
-        await eventVault[parsedEventType]({
-          event_sended_at: eventsSendedAt,
-          people_id: event.user_id,
-          room_id: parsedRoomID,
-          has_confirmed_activity: parsedEventData.has_confirmed_activity,
-        });
-        break;
-
-      default:
-        await eventVault[parsedEventType]({
-          event_sended_at: eventsSendedAt,
-          people_id: event.user_id,
-          room_id: parsedRoomID,
-        });
-        break;
-    }
+    await eventVault[parsedEventType]({
+      event_sended_at: eventsSendedAt,
+      people_id: event.user_id,
+      room_id: parsedRoomID,
+      ...parsedEventData,
+    });
   }
 
   return response.end();

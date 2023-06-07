@@ -36,6 +36,7 @@ function PeopleForm({
           ref={peopleNameInputRef}
           required
           maxLength={20}
+          spellCheck={false}
         />
 
         <div className={styles.formButtons}>
