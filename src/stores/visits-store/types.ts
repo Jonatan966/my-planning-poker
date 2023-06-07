@@ -5,6 +5,6 @@ export type Visits = Record<string, Room>;
 export interface VisitsStoreProps {
   visits: Visits;
   lastVisitedRoom?: Room;
-  addVisit(room: Omit<Room, "countdown_started_at">): void;
+  addVisit(room: Omit<Room, "countdown_started_at" | "environment">): void;
   removeVisit(roomId: string): void;
 }

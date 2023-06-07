@@ -26,11 +26,14 @@ const visitsStore: StateCreator<VisitsStoreProps, [], [], VisitsStoreProps> = (
     );
   }
 
-  function addVisit(room: Room) {
+  function addVisit(room: Omit<Room, "environment">) {
     const { visits } = get();
 
     if (!visits[room.id]) {
-      visits[room.id] = room;
+      visits[room.id] = {
+        ...room,
+        environment: null,
+      };
     }
 
     _persistVisits(visits, room.id);
