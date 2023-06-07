@@ -20,9 +20,10 @@ enum FeedbackType {
 }
 
 model Room {
-  id         String   @id @default(uuid())
-  name       String
-  created_at DateTime @default(now())
+  id          String       @id @default(uuid())
+  name        String
+  environment Environment?
+  created_at  DateTime     @default(now())
 }
 
 model Feedback {
