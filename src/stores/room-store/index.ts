@@ -175,7 +175,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   }
 
   async function selectPoint(points: number) {
-    const { basicInfo, peoples } = get();
+    const { basicInfo } = get();
 
     const myID = basicInfo.subscription.members.myID;
 
@@ -184,17 +184,20 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       people_selected_points: points,
     });
 
+    const { peoples } = get();
+
     roomEvents.onPeopleSelectPoint(basicInfo.subscription, {
       people_id: myID,
       people_selected_points: points,
     });
 
-    const peoplesWithPoints = Object.values(peoples).filter(
+    const peoplesArray = Object.values(peoples);
+
+    const peoplesWithPoints = peoplesArray.filter(
       (people) => typeof people.points !== "undefined"
     ).length;
 
-    const ableToShowPoints =
-      peoplesWithPoints >= Object.keys(peoples).length - 1;
+    const ableToShowPoints = peoplesWithPoints >= peoplesArray.length;
 
     if (ableToShowPoints) {
       await setRoomPointsVisibility(true);
