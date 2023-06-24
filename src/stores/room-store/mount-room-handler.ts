@@ -54,9 +54,9 @@ export function mountRoomHandler(
 
     set({ peoples: sortedPeoplesList });
 
-    const me = state.peoples[state.basicInfo.subscription.members.myID];
+    const me = state.peoples?.[state.basicInfo?.subscription?.members.myID];
 
-    if (me.points !== undefined || state.basicInfo.showPoints) {
+    if (me && (me.points !== undefined || state.basicInfo.showPoints)) {
       await api.post("peoples/sync", {
         json: {
           senderPeople: {
