@@ -5,6 +5,7 @@ import { api } from "../../lib/ky";
 import { createWebConnection } from "../../lib/pusher";
 import { mountRoomHandler } from "./mount-room-handler";
 
+import produce from "immer";
 import {
   ClientRoomEvents,
   InternalRoomEvents,
@@ -21,6 +22,8 @@ import {
 } from "./types";
 
 let connection: pusherJs;
+
+const ONE_SECOND_IN_MS = 1000;
 
 const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   set,
@@ -186,7 +189,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       people_selected_points: points,
     });
 
-    const { peoples } = get();
+    const { peoples, basicInfo: newBasicInfo } = get();
 
     roomEvents.onPeopleSelectPoint(basicInfo.subscription, {
       people_id: myID,
@@ -199,10 +202,22 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       (people) => typeof people.points !== "undefined"
     ).length;
 
-    const ableToShowPoints = peoplesWithPoints >= peoplesArray.length;
+    const ableToShowPoints =
+      peoplesWithPoints >= peoplesArray.length &&
+      !newBasicInfo.showPoints &&
+      newBasicInfo.showPointsCountdown === 0;
 
     if (ableToShowPoints) {
-      await setRoomPointsVisibility(true);
+      set(
+        produce((newValues) => {
+          newValues.basicInfo.inPreInitCooldown = true;
+          return newValues;
+        })
+      );
+
+      setTimeout(async () => {
+        await setRoomPointsVisibility(true);
+      }, ONE_SECOND_IN_MS);
     }
   }
 
