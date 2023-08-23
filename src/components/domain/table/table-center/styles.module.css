@@ -13,9 +13,23 @@
   justify-content: center;
 }
 
+.spinner {
+  animation: 1.5s linear 0s normal none infinite spin;
+}
+
 @media (max-width: 720px) {
   .tableCenter {
     min-width: auto;
     min-height: auto;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
   }
 }
