@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRoomStore } from "../../../../stores/room-store";
 import Button from "../../../ui/button";
 import { AfkButton } from "../afk-button";
 import { TableResponsiveConfig } from "../types";
 
+import { FaSpinner } from "react-icons/fa";
 import styles from "./styles.module.css";
 
 interface TableCenterProps {
@@ -62,6 +63,8 @@ export function TableCenter({ tableConfig }: TableCenterProps) {
     <div className={styles.tableCenter}>
       {isInCountdown ? (
         <h1>{room.showPointsCountdown}</h1>
+      ) : room?.inPreInitCooldown ? (
+        <FaSpinner className={styles.spinner} size={24} />
       ) : (
         <>
           <Button

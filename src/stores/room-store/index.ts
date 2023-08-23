@@ -35,6 +35,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       showPoints: false,
       showPointsCountdown: 0,
       subscription: undefined,
+      inPreInitCooldown: false,
     },
     peoples: {},
     showEasterEgg: false,
@@ -65,6 +66,7 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
         name: roomInfo.name,
         subscription: roomInfo.subscription,
         showPointsCountdown: 0,
+        inPreInitCooldown: false,
       },
     });
   }
