@@ -44,6 +44,7 @@ export interface RoomStoreProps {
     showPoints: boolean;
     showPointsCountdown?: number;
     subscription?: PresenceChannel;
+    inPreInitCooldown?: boolean;
   };
   peoples: Record<string, People>;
   hasPeopleWithPoints: boolean;

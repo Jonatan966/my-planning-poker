@@ -104,6 +104,12 @@ export function mountRoomHandler(
   }
 
   function onShowPoints({ show_points }: RoomEvents.OnRoomShowPointsProps) {
+    set(
+      produce((newValues) => {
+        newValues.basicInfo.inPreInitCooldown = false;
+      })
+    );
+
     if (show_points) {
       const ONE_SECOND = 1000;
       const INIT_COUNTDOWN = 4;
