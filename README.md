@@ -36,13 +36,7 @@ My Planning Poker é uma plataforma de realização de Planning Pokers, livre de
 
 ## :camera: Demonstração
 
-### 🖥️ Telas maiores
-
-https://user-images.githubusercontent.com/37812781/188995122-3cc87b98-9d3a-4139-82ee-bf3c98b4bd6d.mp4
-
-### 📱 Telas menores
-
-https://user-images.githubusercontent.com/37812781/188995147-82c7bedf-9c06-4843-ac82-a75f3de5dbc3.mp4
+https://github.com/Jonatan966/my-planning-poker/assets/37812781/292a1ede-932f-473d-b689-059c68b93f27
 
 ## :toolbox: Como iniciar
 
