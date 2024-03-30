@@ -1,10 +1,9 @@
-import { useRouter } from "next/router";
+import * as Sentry from "@sentry/nextjs";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { MdFeedback } from "react-icons/md";
 
 import { useDialog } from "../../../hooks/use-dialog";
-import { api } from "../../../lib/ky";
 import Button from "../../ui/button";
 import Dialog from "../../ui/dialog";
 import { DialogHeader } from "../../ui/dialog/dialog-header";
@@ -13,13 +12,13 @@ import { TextArea } from "../../ui/text-area";
 import { Tooltip } from "../../ui/tooltip";
 import { SuccessMessage } from "./success-message";
 
+import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
+import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 import styles from "./styles.module.css";
 
 export type FeedbackType = "problem" | "suggestion";
 
 export function FeedbackDialog() {
-  const router = useRouter();
-
   const { isOpen, openDialog, closeDialog } = useDialog();
   const [selectedFeedbackType, setSelectedFeedbackType] =
     useState<FeedbackType>();
@@ -57,12 +56,13 @@ export function FeedbackDialog() {
     setIsSendingFeedback(true);
 
     try {
-      await api.post("feedbacks", {
-        json: {
-          description: descriptionRef.current.value,
-          roomId: router.query?.room_id,
-          type: selectedFeedbackType,
-        },
+      const peopleName = cookieStorageManager.getItem(
+        persistedCookieVars.PEOPLE_NAME
+      );
+
+      await Sentry.sendFeedback({
+        message: descriptionRef.current.value,
+        name: `${selectedFeedbackType} <${peopleName || "Unknown"}>`,
       });
 
       setHasSentFeedback(true);
