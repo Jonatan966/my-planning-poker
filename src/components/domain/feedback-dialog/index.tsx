@@ -12,6 +12,8 @@ import { TextArea } from "../../ui/text-area";
 import { Tooltip } from "../../ui/tooltip";
 import { SuccessMessage } from "./success-message";
 
+import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
+import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 import styles from "./styles.module.css";
 
 export type FeedbackType = "problem" | "suggestion";
@@ -54,9 +56,13 @@ export function FeedbackDialog() {
     setIsSendingFeedback(true);
 
     try {
+      const peopleName = cookieStorageManager.getItem(
+        persistedCookieVars.PEOPLE_NAME
+      );
+
       await Sentry.sendFeedback({
         message: descriptionRef.current.value,
-        name: selectedFeedbackType,
+        name: `${selectedFeedbackType} <${peopleName || "Unknown"}>`,
       });
 
       setHasSentFeedback(true);
