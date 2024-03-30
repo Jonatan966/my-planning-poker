@@ -1,5 +1,5 @@
-import preparePWA from "next-pwa";
 import { withSentryConfig } from "@sentry/nextjs";
+import preparePWA from "next-pwa";
 
 const inDevelopment = process.env.NODE_ENV === "development";
 
@@ -11,6 +11,7 @@ const withPWA = preparePWA({
 const sentryOptions = {
   sentry: {
     autoInstrumentServerFunctions: true,
+    hideSourceMaps: true,
   },
 };
 
