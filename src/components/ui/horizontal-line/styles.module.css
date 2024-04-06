@@ -1,0 +1,15 @@
+.horizontalLineContainer {
+  width: 100%;
+  height: 2px;
+  background: #29292e;
+  margin: 8px 0;
+
+  display: flex;
+}
+
+.horizontalLineContainer::after {
+  content: attr(title);
+  margin: auto;
+  transform: translateY(-50%);
+  font-weight: bold;
+}
