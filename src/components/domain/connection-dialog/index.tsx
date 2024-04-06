@@ -21,19 +21,14 @@ interface ConnectionDialogProps {
   basicMe: {
     name?: string;
   };
-  roomInfo: {
-    id: string;
-    name: string;
-    countdown_started_at?: number;
-    created_at: Date;
-  };
+  roomId: string;
 }
 
 function ConnectionDialog({
   onRequestClose,
   isOpen,
   basicMe,
-  roomInfo,
+  roomId,
 }: ConnectionDialogProps) {
   const router = useRouter();
   const { connectOnRoom, disconnectOnRoom, room, connection } = useRoomStore(
@@ -67,7 +62,7 @@ function ConnectionDialog({
 
   async function handleConnectOnRoom() {
     try {
-      return await connectOnRoom(roomInfo);
+      return await connectOnRoom(roomId);
     } catch (e) {
       console.log(e);
       toast.error("Não foi possível se conectar a essa sala");
@@ -97,7 +92,7 @@ function ConnectionDialog({
 
     let disconnect: () => void;
 
-    addVisit(roomInfo);
+    addVisit({ id: roomId });
     handleConnectOnRoom().then((onDisconnect) => (disconnect = onDisconnect));
 
     return () => {

@@ -14,7 +14,6 @@ import {
   roomEvents,
 } from "../../services/room-events";
 import {
-  BasicRoomInfo,
   EventMode,
   PeopleHighlightColor,
   RoomInfo,
@@ -34,7 +33,6 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   const INITIAL_STORE_VALUE: RoomStoreProps = {
     basicInfo: {
       id: undefined,
-      name: undefined,
       showPoints: false,
       showPointsCountdown: 0,
       subscription: undefined,
@@ -66,7 +64,6 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
       basicInfo: {
         showPoints: false,
         id: roomInfo.id,
-        name: roomInfo.name,
         subscription: roomInfo.subscription,
         showPointsCountdown: 0,
         inPreInitCooldown: false,
@@ -157,20 +154,20 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     return roomInfo;
   }
 
-  async function connectOnRoom(roomBasicInfo: BasicRoomInfo) {
+  async function connectOnRoom(roomId: string) {
     connection = await createWebConnection();
     set({ connection });
 
     connection.user.signin();
 
     const subscription = connection.subscribe(
-      `presence-${roomBasicInfo.id}`
+      `presence-${roomId}`
     ) as PresenceChannel;
 
     const preparedRoom = prepareRoomConnection(subscription);
 
     const roomInfo: RoomInfo = {
-      ...roomBasicInfo,
+      id: roomId,
       subscription,
     };
 

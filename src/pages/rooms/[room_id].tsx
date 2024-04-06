@@ -21,25 +21,21 @@ interface RoomPageProps {
   basicMe: {
     name?: string;
   };
-  roomInfo: {
-    id: string;
-    name: string;
-    created_at: Date;
-  };
+  roomId: string;
 }
 
-function RoomPage({ basicMe, roomInfo }: RoomPageProps) {
+function RoomPage({ basicMe, roomId }: RoomPageProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
     <>
-      <PageHead title={roomInfo.name} />
+      <PageHead title="Em Sala" />
       <RoomHeader basicMe={basicMe} />
       <ConnectionDialog
         isOpen={isLoading}
         onRequestClose={() => setIsLoading(false)}
         basicMe={basicMe}
-        roomInfo={roomInfo}
+        roomId={roomId}
       />
       {!isLoading && (
         <>
@@ -81,11 +77,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         basicMe: {
           name: peopleName || null,
         },
-        roomInfo: {
-          id: room_id,
-          name: "Nova Sala",
-          created_at: new Date().toISOString(),
-        },
+        roomId: room_id,
       },
     };
   } catch (error) {
