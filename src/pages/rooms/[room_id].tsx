@@ -9,13 +9,13 @@ import Table from "../../components/domain/table";
 
 import { errorCodes } from "../../configs/error-codes";
 import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
-import { database } from "../../lib/database";
 import { cookieStorageManager } from "../../utils/cookie-storage-manager";
 
 import { InactivityDialog } from "../../components/domain/inactivity-dialog";
 import PageHead from "../../components/engine/page-head";
 import { appConfig } from "../../configs/app";
 import styles from "../../styles/pages/room.module.css";
+import { validateRoomId } from "../../utils/validate-room-id";
 
 interface RoomPageProps {
   basicMe: {
@@ -60,13 +60,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { room_id } = ctx.query;
 
   try {
-    const room = await database.room.findUnique({
-      where: {
-        id: String(room_id),
-      },
-    });
+    const isValidRoomId = validateRoomId(String(room_id));
 
-    if (!room) {
+    if (!isValidRoomId) {
       return {
         redirect: {
           destination: `/?error=${errorCodes.ROOM_NOT_EXISTS}`,
@@ -86,9 +82,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           name: peopleName || null,
         },
         roomInfo: {
-          id: room.id,
-          name: room.name,
-          created_at: room.created_at.toISOString(),
+          id: room_id,
+          name: "Nova Sala",
+          created_at: new Date().toISOString(),
         },
       },
     };

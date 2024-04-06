@@ -13,7 +13,6 @@ import { errorCodes } from "../configs/error-codes";
 import styles from "../styles/pages/home.module.css";
 
 function HomePage() {
-  const [menu, setMenu] = useState("enter");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
