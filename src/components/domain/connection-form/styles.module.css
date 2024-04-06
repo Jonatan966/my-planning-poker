@@ -2,12 +2,15 @@
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 0.5rem;
+
+  margin-top: 8px;
 }
 
-.form button[type="submit"] {
-  margin-top: 1rem;
-}
+.form .box {
+  background: #202024;
+  padding: 12px;
 
-.form label ~ label {
-  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }

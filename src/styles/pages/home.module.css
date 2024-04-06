@@ -6,12 +6,8 @@
 }
 
 .contentBox {
-  padding: 24px;
-  margin: 0.75rem;
+  margin: 1.25rem;
 
-  background: #202024;
-
-  min-height: 25.5rem;
   max-width: 500px;
   width: 100%;
 }
@@ -25,6 +21,9 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
+  background: #202024;
+  padding: 12px;
 }
 
 .menu {

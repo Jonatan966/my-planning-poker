@@ -1,14 +1,12 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { FaGithub, FaInfoCircle } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 import { ConnectionForm } from "../components/domain/connection-form";
 import { FeedbackDialog } from "../components/domain/feedback-dialog";
-import { QuickRoomAccess } from "../components/domain/quick-room-access";
 import Button from "../components/ui/button";
 
 import { DevCredits } from "../components/domain/dev-credits";
-import { TabMenu } from "../components/ui/tab-menu";
 import { Tooltip } from "../components/ui/tooltip";
 import { appConfig } from "../configs/app";
 import { errorCodes } from "../configs/error-codes";
@@ -61,32 +59,7 @@ function HomePage() {
             </div>
           </div>
 
-          <TabMenu
-            disabled={isLoading}
-            menus={[
-              {
-                id: "enter",
-                name: "Entrar na sala",
-              },
-              {
-                id: "create",
-                name: "Criar sala",
-              },
-            ]}
-            selectedMenu={menu}
-            setSelectedMenu={setMenu}
-          >
-            <Tooltip message="Entre em uma sala existente ou crie uma nova">
-              <FaInfoCircle size={20} />
-            </Tooltip>
-          </TabMenu>
-          <ConnectionForm
-            menu={menu}
-            setIsLoading={setIsLoading}
-            isLoading={isLoading}
-          >
-            <QuickRoomAccess />
-          </ConnectionForm>
+          <ConnectionForm setIsLoading={setIsLoading} isLoading={isLoading} />
         </section>
       </div>
       <DevCredits />
