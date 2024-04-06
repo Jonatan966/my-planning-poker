@@ -1,8 +1,7 @@
-import { Room } from "@prisma/client";
 import createStore, { StateCreator } from "zustand";
 import { persistentLocalVars } from "../../configs/persistent-local-vars";
 import { localStorageManager } from "../../utils/local-storage-manager";
-import { Visits, VisitsStoreProps } from "./types";
+import { Room, Visits, VisitsStoreProps } from "./types";
 
 const visitsStore: StateCreator<VisitsStoreProps, [], [], VisitsStoreProps> = (
   set,
@@ -26,13 +25,12 @@ const visitsStore: StateCreator<VisitsStoreProps, [], [], VisitsStoreProps> = (
     );
   }
 
-  function addVisit(room: Omit<Room, "environment">) {
+  function addVisit(room: Room) {
     const { visits } = get();
 
     if (!visits[room.id]) {
       visits[room.id] = {
         ...room,
-        environment: null,
       };
     }
 

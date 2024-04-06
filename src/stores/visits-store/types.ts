@@ -1,15 +1,12 @@
-import { Room } from "@prisma/client";
+export type Room = {
+  id: string;
+};
 
 export type Visits = Record<string, Room>;
 
 export interface VisitsStoreProps {
   visits: Visits;
   lastVisitedRoom?: Room;
-  addVisit(
-    room: Omit<
-      Room,
-      "countdown_started_at" | "environment" | "name" | "created_at"
-    >
-  ): void;
+  addVisit(room: Room): void;
   removeVisit(roomId: string): void;
 }
