@@ -5,22 +5,18 @@ import { useRoomStore } from "../../../stores/room-store";
 
 import Button from "../../ui/button";
 import { FeedbackDialog } from "../feedback-dialog";
-import { RoomLogo } from "./room-logo";
 
-import styles from "./styles.module.css";
 import { Tooltip } from "../../ui/tooltip";
+import { RoomLogo } from "./room-logo";
+import styles from "./styles.module.css";
 
 interface RoomHeaderProps {
   basicMe: {
     name?: string;
   };
-  roomInfo: {
-    id: string;
-    name: string;
-  };
 }
 
-function RoomHeader({ basicMe, roomInfo }: RoomHeaderProps) {
+function RoomHeader({ basicMe }: RoomHeaderProps) {
   const { disconnectOnRoom, room } = useRoomStore((state) => ({
     disconnectOnRoom: state.disconnectOnRoom,
     room: state.basicInfo,
@@ -44,34 +40,27 @@ function RoomHeader({ basicMe, roomInfo }: RoomHeaderProps) {
 
   return (
     <header className={styles.headerContainer}>
-      <div>
-        <strong className={styles.room}>
+      <nav>
+        <div className={styles.my}>
           <RoomLogo />
-          {roomInfo.name}
-        </strong>
-        <nav>
-          <span className={styles.myName}>{myName}</span>
-          <FeedbackDialog />
-          <Tooltip message="Copiar link da sala">
-            <Button
-              colorScheme="primary"
-              onClick={copyRoomCode}
-              className={styles.copyRoomCode}
-              isShort
-            >
-              <FaLink />
-              <p>Copiar link</p>
-            </Button>
-          </Tooltip>
+          <span>{myName}</span>
+        </div>
+        <FeedbackDialog />
+        <Tooltip message="Copiar link da sala">
           <Button
-            colorScheme="danger"
-            outlined
-            onClick={handleDisconnectOnRoom}
+            colorScheme="primary"
+            onClick={copyRoomCode}
+            className={styles.copyRoomCode}
+            isShort
           >
-            Sair
+            <FaLink />
+            <p>Copiar link</p>
           </Button>
-        </nav>
-      </div>
+        </Tooltip>
+        <Button colorScheme="danger" outlined onClick={handleDisconnectOnRoom}>
+          Sair
+        </Button>
+      </nav>
     </header>
   );
 }

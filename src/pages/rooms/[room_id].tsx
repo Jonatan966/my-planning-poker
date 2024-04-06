@@ -34,7 +34,7 @@ function RoomPage({ basicMe, roomInfo }: RoomPageProps) {
   return (
     <>
       <PageHead title={roomInfo.name} />
-      <RoomHeader basicMe={basicMe} roomInfo={roomInfo} />
+      <RoomHeader basicMe={basicMe} />
       <ConnectionDialog
         isOpen={isLoading}
         onRequestClose={() => setIsLoading(false)}
