@@ -258,6 +258,10 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
   function broadcastInactivity(hasConfirmedActivity = false) {
     const { basicInfo } = get();
 
+    if (!basicInfo?.subscription) {
+      return;
+    }
+
     roomEvents.onPeopleInactivate(basicInfo.subscription, {
       people_id: basicInfo.subscription.members.myID,
       has_confirmed_activity: hasConfirmedActivity,

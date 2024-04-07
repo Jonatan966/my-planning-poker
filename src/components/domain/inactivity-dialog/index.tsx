@@ -49,6 +49,10 @@ export function InactivityDialog() {
     inactivityTimer.current = Number(
       setTimeout(onShowInactivityDialog, appConfig.inactivityDialog.delay)
     );
+
+    return () => {
+      clearTimeout(inactivityTimer.current);
+    };
   }, [me, isOpen]);
 
   return (
