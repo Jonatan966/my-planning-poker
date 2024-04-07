@@ -25,8 +25,16 @@ function RoomHeader({ basicMe }: RoomHeaderProps) {
 
   const myName = basicMe?.name || room?.subscription?.members?.me?.info.name;
 
+  async function executeCopy() {
+    if (!window.isSecureContext || !("clipboard" in navigator)) {
+      throw new Error("Clipboard is not available");
+    }
+
+    await navigator.clipboard.writeText(window.location.href);
+  }
+
   async function copyRoomCode() {
-    toast.promise(navigator.clipboard.writeText(window.location.href), {
+    toast.promise(executeCopy(), {
       error: "Não foi possível copiar o link da sala",
       loading: "Copiando link da sala...",
       success: "Link da sala copiado com sucesso!",
