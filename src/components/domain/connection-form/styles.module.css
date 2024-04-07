@@ -16,3 +16,22 @@
 
   box-shadow: 0 0px 8px #09090a;
 }
+
+.roomCodeContainer {
+  display: flex;
+  gap: 0.5rem;
+
+  align-items: flex-end;
+}
+
+.roomCodeInput {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  flex: 1;
+}
+
+.history {
+  height: 3rem;
+}

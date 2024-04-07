@@ -92,7 +92,7 @@ function ConnectionDialog({
 
     let disconnect: () => void;
 
-    addVisit({ id: roomId });
+    addVisit(roomId);
     handleConnectOnRoom().then((onDisconnect) => (disconnect = onDisconnect));
 
     return () => {

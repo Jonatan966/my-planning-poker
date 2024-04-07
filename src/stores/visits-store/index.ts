@@ -1,60 +1,24 @@
 import createStore, { StateCreator } from "zustand";
 import { persistentLocalVars } from "../../configs/persistent-local-vars";
 import { localStorageManager } from "../../utils/local-storage-manager";
-import { Room, Visits, VisitsStoreProps } from "./types";
+import { VisitsStoreProps } from "./types";
 
 const visitsStore: StateCreator<VisitsStoreProps, [], [], VisitsStoreProps> = (
-  set,
-  get
+  set
 ) => {
-  const visits =
-    localStorageManager.getItem<Visits>(persistentLocalVars.ROOMS) || {};
   const lastVisitedRoomId = localStorageManager.getItem<string>(
     persistentLocalVars.LAST_VISITED_ROOM
   );
 
-  function _persistVisits(visits: Visits, lastVisitedRoomId?: string) {
-    const lastVisitedRoom = visits?.[lastVisitedRoomId];
+  function addVisit(room_id: string) {
+    set({ lastVisitedRoomId: room_id });
 
-    set({ visits, lastVisitedRoom });
-
-    localStorageManager.setItem(persistentLocalVars.ROOMS, visits);
-    localStorageManager.setItem(
-      persistentLocalVars.LAST_VISITED_ROOM,
-      lastVisitedRoomId
-    );
-  }
-
-  function addVisit(room: Room) {
-    const { visits } = get();
-
-    if (!visits[room.id]) {
-      visits[room.id] = {
-        ...room,
-      };
-    }
-
-    _persistVisits(visits, room.id);
-  }
-
-  function removeVisit(roomId: string) {
-    const { visits, lastVisitedRoom } = get();
-
-    if (visits[roomId]) {
-      delete visits[roomId];
-    }
-
-    const persistLastVisit =
-      roomId === lastVisitedRoom?.id ? null : lastVisitedRoom?.id;
-
-    _persistVisits(visits, persistLastVisit);
+    localStorageManager.setItem(persistentLocalVars.LAST_VISITED_ROOM, room_id);
   }
 
   return {
-    visits,
-    lastVisitedRoom: visits?.[lastVisitedRoomId],
+    lastVisitedRoomId: lastVisitedRoomId,
     addVisit,
-    removeVisit,
   };
 };
 
