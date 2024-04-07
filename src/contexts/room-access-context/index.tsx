@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { createContext, ReactNode, useState, useContext } from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import BackdropLoader from "../../components/ui/backdrop-loader";
 
@@ -22,6 +22,8 @@ export function RoomAccessProvider({ children }: RoomAccessProviderProps) {
     setIsVisitingRoom(true);
 
     try {
+      await new Promise((resolve) => setTimeout(resolve, 250));
+
       await router.push(`/rooms/${roomId}`);
     } catch {
       toast.error("Não foi possível entrar na sala");

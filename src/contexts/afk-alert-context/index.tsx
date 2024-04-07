@@ -20,7 +20,11 @@ export function AfkAlertProvider({ children }: AfkAlertProviderProps) {
   const { playAudio, isPlayingAudio } = useAudio("afk-alert.wav");
 
   useEffect(() => {
-    Notification.requestPermission();
+    if (!("Notification" in window)) {
+      return;
+    }
+
+    window.Notification.requestPermission();
   }, []);
 
   function playAlert() {
@@ -33,9 +37,11 @@ export function AfkAlertProvider({ children }: AfkAlertProviderProps) {
       duration: FIVE_SECONDS,
     });
 
-    Notification.requestPermission().then(() => {
-      new Notification(alertMessage);
-    });
+    if ("Notification" in window) {
+      window.Notification.requestPermission().then(() => {
+        new window.Notification(alertMessage);
+      });
+    }
   }
 
   return (

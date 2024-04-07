@@ -96,6 +96,17 @@ async function onPeopleSendFeedback(
   await amplitude.logEvent(event);
 }
 
+async function onRoomCreate(props: FreeVaultEventHandlers.OnRoomCreate) {
+  const event = prepareBasicEvent(FreeVaultEvent.room_create, {
+    event_properties: {
+      room_id: props.room_id,
+    },
+    user_id: props.people_id,
+  });
+
+  await amplitude.logEvent(event);
+}
+
 async function onPeopleInactivate(
   props: WebhookVaultEventHandlers.OnPeopleInactivateProps
 ) {
@@ -121,4 +132,5 @@ export const eventVault = {
   [WebhookVaultEvent.people_fire_confetti]: onPeopleFireConfetti,
   [WebhookVaultEvent.people_inactivate]: onPeopleInactivate,
   [FreeVaultEvent.people_send_feedback]: onPeopleSendFeedback,
+  [FreeVaultEvent.room_create]: onRoomCreate,
 };

@@ -1,29 +1,26 @@
-import { Environment } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { appConfig } from "../../configs/app";
-import { database } from "../../lib/database";
+import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
+import { createId } from "../../lib/cuid";
+import { eventVault } from "../../services/event-vault";
+import { FreeVaultEvent } from "../../services/event-vault/types";
+import { cookieStorageManager } from "../../utils/cookie-storage-manager";
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
   if (request.method !== "POST") {
     return response.status(405).end();
   }
 
-  const { name } = request.body;
+  const newRoomID = createId();
 
-  if (!name) {
-    return response.status(400).json({
-      error: true,
-      message: "Room name is required",
-    });
-  }
-
-  const newRoom = await database.room.create({
-    data: {
-      name,
-      environment: appConfig.environment as Environment,
-    },
+  const peopleID = cookieStorageManager.getItem(persistedCookieVars.PEOPLE_ID, {
+    req: request,
   });
 
-  return response.status(201).json(newRoom);
+  await eventVault[FreeVaultEvent.room_create]({
+    room_id: newRoomID,
+    people_id: peopleID,
+  });
+
+  return response.status(201).json({ id: newRoomID });
 };
