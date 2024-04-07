@@ -2,6 +2,7 @@ export type FeedbackType = "problem" | "suggestion";
 
 export enum FreeVaultEvent {
   people_send_feedback = "mpp_people_send_feedback",
+  room_create = "mpp_room_create",
 }
 
 export enum WebhookVaultEvent {
@@ -48,5 +49,9 @@ export namespace WebhookVaultEventHandlers {
 export namespace FreeVaultEventHandlers {
   export interface OnPeopleSendFeedback extends BasicEventProps {
     feedback_type: FeedbackType;
+  }
+
+  export interface OnRoomCreate extends BasicEventProps {
+    room_id: string;
   }
 }
