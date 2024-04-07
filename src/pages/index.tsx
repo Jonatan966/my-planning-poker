@@ -57,7 +57,10 @@ function HomePage() {
           </div>
         </div>
 
-        <ConnectionForm setIsLoading={setIsLoading} isLoading={isLoading} />
+        <ConnectionForm
+          setIsCreatingRoom={setIsLoading}
+          isCreatingRoom={isLoading}
+        />
       </div>
       <DevCredits />
     </>

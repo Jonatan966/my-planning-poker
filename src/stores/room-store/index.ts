@@ -144,14 +144,10 @@ const roomStore: StateCreator<RoomStoreProps, [], [], RoomStoreProps> = (
     _reset();
   }
 
-  async function createRoom(roomName: string) {
-    const roomInfo = await api
-      .post("rooms", {
-        json: { name: roomName },
-      })
-      .json<RoomInfo>();
+  async function createRoom() {
+    const roomInfo = await api.post("rooms").json<RoomInfo>();
 
-    return roomInfo;
+    return roomInfo.id;
   }
 
   async function connectOnRoom(roomId: string) {

@@ -1,62 +1,54 @@
-import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
 import { useRoomStore } from "../../../stores/room-store";
 import Button from "../../ui/button";
 import TextInput from "../../ui/text-input";
 
+import { useRoomAccess } from "../../../contexts/room-access-context";
 import { HorizontalLine } from "../../ui/horizontal-line";
 import { LastRoomAccess } from "./last-room-access";
 import { PeopleName } from "./people-name";
 import styles from "./styles.module.css";
 
 interface ConnectionFormProps {
-  isLoading: boolean;
-  setIsLoading: (value: boolean) => void;
+  isCreatingRoom: boolean;
+  setIsCreatingRoom: (value: boolean) => void;
 }
 
-function ConnectionForm({ isLoading, setIsLoading }: ConnectionFormProps) {
+function ConnectionForm({
+  isCreatingRoom,
+  setIsCreatingRoom,
+}: ConnectionFormProps) {
   const [roomCode, setRoomCode] = useState("");
+  const { isVisitingRoom, onVisitRoom } = useRoomAccess();
 
-  const router = useRouter();
+  const isLoading = isVisitingRoom || isCreatingRoom;
 
   const { createRoom } = useRoomStore((state) => ({
     createRoom: state.createRoom,
   }));
 
-  async function connectOnRoom(overrideRoomId?: string) {
-    setIsLoading(true);
-
-    await new Promise((resolve) => setTimeout(resolve, 250));
-
-    try {
-      await router.push(`/rooms/${overrideRoomId || roomCode}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   async function handleConnectOnRoom(event: FormEvent) {
     event.preventDefault();
 
-    await connectOnRoom();
+    await onVisitRoom(roomCode);
   }
 
   async function handleCreateRoom() {
-    setIsLoading(true);
+    setIsCreatingRoom(true);
 
     try {
-      const roomInfo = await createRoom("");
+      const roomId = await createRoom();
 
-      await router.push(`/rooms/${roomInfo.id}`);
+      await onVisitRoom(roomId);
     } finally {
-      setIsLoading(false);
+      setIsCreatingRoom(false);
     }
   }
 
   async function accessLastVisitedRoom(room_id: string) {
     setRoomCode(room_id);
-    await connectOnRoom(room_id);
+    await onVisitRoom(room_id);
   }
 
   return (

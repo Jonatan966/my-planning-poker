@@ -49,7 +49,7 @@ export interface RoomStoreProps {
   connection?: pusherJs;
   showEasterEgg?: boolean;
   setEasterEggVisibility(visible: boolean): void;
-  createRoom(roomName: string): Promise<RoomInfo>;
+  createRoom(): Promise<string>;
   connectOnRoom(roomId: string): Promise<() => void>;
   disconnectOnRoom(): void;
   selectPoint(points: number): Promise<void>;
