@@ -3,10 +3,6 @@
   width: 100%;
 }
 
-.dialogContainer {
-  min-height: 26rem;
-}
-
 .suggestionForm {
   flex: 1;
   display: flex;
