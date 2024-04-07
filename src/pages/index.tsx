@@ -35,31 +35,29 @@ function HomePage() {
   return (
     <>
       <div className={styles.container}>
-        <section className={styles.contentBox}>
-          <div className={styles.appName}>
-            <img src="/favicon.png" alt="Logotipo da aplicação" />
-            <h3 translate="no">My Planning Poker</h3>
+        <div className={styles.appName}>
+          <img src="/favicon.png" alt="Logotipo da aplicação" />
+          <h3 translate="no">My Planning Poker</h3>
 
-            <div className={styles.menu}>
-              <FeedbackDialog />
+          <div className={styles.menu}>
+            <FeedbackDialog />
 
-              <Tooltip message="Ir para repositório do projeto">
-                <a
-                  href={appConfig.repositoryUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Repositório do projeto"
-                >
-                  <Button colorScheme="secondary">
-                    <FaGithub size={18} />
-                  </Button>
-                </a>
-              </Tooltip>
-            </div>
+            <Tooltip message="Ir para repositório do projeto">
+              <a
+                href={appConfig.repositoryUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Repositório do projeto"
+              >
+                <Button colorScheme="secondary">
+                  <FaGithub size={18} />
+                </Button>
+              </a>
+            </Tooltip>
           </div>
+        </div>
 
-          <ConnectionForm setIsLoading={setIsLoading} isLoading={isLoading} />
-        </section>
+        <ConnectionForm setIsLoading={setIsLoading} isLoading={isLoading} />
       </div>
       <DevCredits />
     </>
