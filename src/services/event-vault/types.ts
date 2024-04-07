@@ -1,4 +1,4 @@
-import { FeedbackType } from "@prisma/client";
+export type FeedbackType = "problem" | "suggestion";
 
 export enum FreeVaultEvent {
   people_send_feedback = "mpp_people_send_feedback",
