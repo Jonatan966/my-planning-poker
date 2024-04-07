@@ -9,37 +9,33 @@ import Table from "../../components/domain/table";
 
 import { errorCodes } from "../../configs/error-codes";
 import { persistedCookieVars } from "../../configs/persistent-cookie-vars";
-import { database } from "../../lib/database";
 import { cookieStorageManager } from "../../utils/cookie-storage-manager";
 
 import { InactivityDialog } from "../../components/domain/inactivity-dialog";
 import PageHead from "../../components/engine/page-head";
 import { appConfig } from "../../configs/app";
 import styles from "../../styles/pages/room.module.css";
+import { validateRoomId } from "../../utils/validate-room-id";
 
 interface RoomPageProps {
   basicMe: {
     name?: string;
   };
-  roomInfo: {
-    id: string;
-    name: string;
-    created_at: Date;
-  };
+  roomId: string;
 }
 
-function RoomPage({ basicMe, roomInfo }: RoomPageProps) {
+function RoomPage({ basicMe, roomId }: RoomPageProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
     <>
-      <PageHead title={roomInfo.name} />
-      <RoomHeader basicMe={basicMe} roomInfo={roomInfo} />
+      <PageHead title="Em Sala" />
+      <RoomHeader basicMe={basicMe} />
       <ConnectionDialog
         isOpen={isLoading}
         onRequestClose={() => setIsLoading(false)}
         basicMe={basicMe}
-        roomInfo={roomInfo}
+        roomId={roomId}
       />
       {!isLoading && (
         <>
@@ -60,13 +56,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { room_id } = ctx.query;
 
   try {
-    const room = await database.room.findUnique({
-      where: {
-        id: String(room_id),
-      },
-    });
+    const isValidRoomId = validateRoomId(String(room_id));
 
-    if (!room) {
+    if (!isValidRoomId) {
       return {
         redirect: {
           destination: `/?error=${errorCodes.ROOM_NOT_EXISTS}`,
@@ -85,11 +77,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         basicMe: {
           name: peopleName || null,
         },
-        roomInfo: {
-          id: room.id,
-          name: room.name,
-          created_at: room.created_at.toISOString(),
-        },
+        roomId: room_id,
       },
     };
   } catch (error) {

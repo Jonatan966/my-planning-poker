@@ -2,12 +2,36 @@
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 0.5rem;
+
+  margin-top: 8px;
 }
 
-.form button[type="submit"] {
-  margin-top: 1rem;
+.box {
+  background: #202024;
+  padding: 12px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  box-shadow: 0 0px 8px #09090a;
 }
 
-.form label ~ label {
-  margin-top: 0.5rem;
+.roomCodeContainer {
+  display: flex;
+  gap: 0.5rem;
+
+  align-items: flex-end;
+}
+
+.roomCodeInput {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  flex: 1;
+}
+
+.history {
+  height: 3rem;
 }

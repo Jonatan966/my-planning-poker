@@ -13,10 +13,9 @@ import { Tooltip } from "../../ui/tooltip";
 import { SuccessMessage } from "./success-message";
 
 import { persistedCookieVars } from "../../../configs/persistent-cookie-vars";
+import { FeedbackType } from "../../../services/event-vault/types";
 import { cookieStorageManager } from "../../../utils/cookie-storage-manager";
 import styles from "./styles.module.css";
-
-export type FeedbackType = "problem" | "suggestion";
 
 export function FeedbackDialog() {
   const { isOpen, openDialog, closeDialog } = useDialog();
