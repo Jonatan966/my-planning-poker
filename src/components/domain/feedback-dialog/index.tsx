@@ -77,7 +77,11 @@ export function FeedbackDialog() {
 
   return (
     <>
-      <Dialog isOpen={isOpen} onRequestClose={handleCloseFeedbackDialog}>
+      <Dialog
+        isOpen={isOpen}
+        onRequestClose={handleCloseFeedbackDialog}
+        className={styles.dialogContainer}
+      >
         <DialogHeader
           title={
             <>

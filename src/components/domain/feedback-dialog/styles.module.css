@@ -11,6 +11,10 @@
   margin-top: 1rem;
 }
 
+.dialogContainer {
+  min-height: 25rem;
+}
+
 .feedbackButton {
   display: flex;
   align-items: center;
