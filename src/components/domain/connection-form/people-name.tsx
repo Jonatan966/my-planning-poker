@@ -28,7 +28,7 @@ export function PeopleName({ isLoading }: PeopleNameProps) {
     const newPeopleName = event.target.value;
 
     setPeopleName(newPeopleName);
-    applyPeopleName(onChangeCookie);
+    applyPeopleName(() => onChangeCookie(newPeopleName));
   }
 
   return (
